@@ -50,6 +50,18 @@
     <Filter Include="Sources\Stages">
       <UniqueIdentifier>{fae925be-cd1c-40e4-a8c0-23905a5b820b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\Stages\GameStage">
+      <UniqueIdentifier>{1b5401d1-7171-440e-a81a-55482cddec1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\Stages\GameStage\1_1">
+      <UniqueIdentifier>{f4322006-7da1-4548-9bc7-347b1f1dc1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\objects\gimik">
+      <UniqueIdentifier>{30074231-4683-452e-9546-6eff0db3a766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\objects\gimic">
+      <UniqueIdentifier>{9f2c7f30-7cbf-433d-81e2-dfe7ef8aa69b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -136,16 +148,13 @@
     <ClCompile Include="sources\scene_title.cpp">
       <Filter>Sources\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Metal.cpp">
-      <Filter>Sources\objects</Filter>
-    </ClCompile>
     <ClCompile Include="sources\object.cpp">
       <Filter>Sources\objects</Filter>
     </ClCompile>
     <ClCompile Include="sources\ObjectManajer.cpp">
       <Filter>Sources\objects</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Destroy_obj.cpp">
+    <ClCompile Include="sources\Cution.cpp">
       <Filter>Sources\objects</Filter>
     </ClCompile>
     <ClCompile Include="sources\variable_management_class_for_hit_test.cpp">
@@ -162,6 +171,33 @@
     </ClCompile>
     <ClCompile Include="sources\Debug_Stage.cpp">
       <Filter>Sources\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Fragile.cpp">
+      <Filter>Sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Hard_to_Break.cpp">
+      <Filter>Sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Heavy.cpp">
+      <Filter>Sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\stage.cpp">
+      <Filter>Sources\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Stage1_1.cpp">
+      <Filter>Sources\Stages\GameStage\1_1</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Gimic.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Switch_Gimic.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Door_Gimic.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Goal.cpp">
+      <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -273,10 +309,10 @@
     <ClInclude Include="sources\object.h">
       <Filter>Headers\objects</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Metal_obj.h">
+    <ClInclude Include="sources\Heavy.h">
       <Filter>Headers\objects</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Destroy_obj.h">
+    <ClInclude Include="sources\Cution.h">
       <Filter>Headers\objects</Filter>
     </ClInclude>
     <ClInclude Include="sources\variable_management_class_for_hit_test.h">
@@ -293,6 +329,18 @@
     </ClInclude>
     <ClInclude Include="sources\Debug_Stage.h">
       <Filter>Headers\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Fragile.h">
+      <Filter>Headers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Hard_to_Break.h">
+      <Filter>Headers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Stage.h">
+      <Filter>Headers\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Gimic.h">
+      <Filter>Headers\objects\gimik</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

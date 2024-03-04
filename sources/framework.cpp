@@ -8,7 +8,7 @@
 #include "camera.h"
 #include "scene_title.h"
 #include "Graphics/RenderContext.h"
-
+#include"Graphics/DebugRenderer.h"
 #include "variable_management_class_for_hit_test.h"
 
 //アダプターをハイパフォーマンスに変更
@@ -520,7 +520,10 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	//レンダーコンテキストを作成
 	RenderContext rc;
 	rc.deviceContext = immediate_context.Get();
-
+	rc.rasterizers[static_cast<int>(rasterizerMode::Sorid_uramen_off)] = rasterizer_states[0];
+	rc.rasterizers[static_cast<int>(rasterizerMode::Wireframe_uramen_off)] = rasterizer_states[1];
+	rc.rasterizers[static_cast<int>(rasterizerMode::Sorid_ryoumen_on)] = rasterizer_states[2];
+	rc.rasterizers[static_cast<int>(rasterizerMode::Wirefream_ryoumen_on)] = rasterizer_states[3];
 	framebuffers[0]->clear(immediate_context.Get(), color);
 	framebuffers[0]->activate(immediate_context.Get());
 
@@ -529,7 +532,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 
 	//ここに"オブジェクト"もしくは"シーン"の描画処理挿入
 	SceneManagement::instance().render(elapsed_time, rc);
-
+	DebugRenderer::incetance(device.Get()).Render(rc.deviceContext, rc.view, rc.projection);
 	framebuffers[0]->deactivate(immediate_context.Get());
 
 #if 1

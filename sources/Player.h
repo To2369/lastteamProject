@@ -12,10 +12,8 @@ public:
 	void Update(float elapsedTime)override;
 
 	//•`‰æˆ—
-	void Render(ID3D11DeviceContext*dc)override;
+	void Render(RenderContext* rc)override;
 
-	
-	const char* GetFbxName()override { return filename; }
 private:
 	const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 };

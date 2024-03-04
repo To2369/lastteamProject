@@ -115,7 +115,7 @@ public:
 				}
 			}
 		}
-
+		SceneManagement::instance().finalize();
 #ifdef USE_IMGUI
 		ImGui_ImplDX11_Shutdown();
 		ImGui_ImplWin32_Shutdown();

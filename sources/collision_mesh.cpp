@@ -127,6 +127,7 @@ bool collision_mesh::raycast(_In_ XMFLOAT3 ray_position, _In_ XMFLOAT3 ray_direc
 	XMMATRIX _T = XMMatrixInverse(NULL, T);
 
 	// Convert to model space.
+
 	XMStoreFloat3(&ray_position, XMVector3TransformCoord(XMLoadFloat3(&ray_position), _T));
 	XMStoreFloat3(&ray_direction, XMVector3TransformNormal(XMLoadFloat3(&ray_direction), _T));
 

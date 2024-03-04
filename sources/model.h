@@ -331,7 +331,7 @@ public:
 	};
 #endif
 	std::unordered_map<uint64_t, material> materials;
-
+	vector<material>material_;
 	// UNIT.25
 	std::vector<animation> animation_clips;
 
@@ -363,8 +363,8 @@ public:
 	// BOUNDING_BOX
 	DirectX::XMFLOAT3 bounding_box[2]
 	{
-		{ +D3D11_FLOAT32_MAX, +D3D11_FLOAT32_MAX, +D3D11_FLOAT32_MAX },
-		{ -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX }
+		{ +D3D11_FLOAT32_MAX, +D3D11_FLOAT32_MAX, +D3D11_FLOAT32_MAX },//ç≈ëÂ
+		{ -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX, -D3D11_FLOAT32_MAX }//ç≈è¨
 	};
 private:
 	// BOUNDING_BOX
@@ -392,4 +392,7 @@ private:
 public://í«â¡
 	unique_ptr<collision_mesh> thisRay_vs_partner;
 	collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
+	
+	Microsoft::WRL::ComPtr<ID3D11Buffer>vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>index_buffer;
 };

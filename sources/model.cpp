@@ -176,6 +176,7 @@ Model::Model(ID3D11Device* device, const char* fbx_filename, bool triangulate, f
 	// UNIT.18
 	create_com_objects(device, fbx_filename);
 	thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename,triangulate);
+	compute_bounding_box();
 }
 Model::Model(ID3D11Device* device, const char* fbx_filename, std::vector<std::string>& animation_filenames, bool triangulate, float sampling_rate)
 {
@@ -499,6 +500,7 @@ void Model::create_com_objects(ID3D11Device* device, const char* fbx_filename)
 	create_vs_from_cso(device, "Shader\\skinned_mesh_vs.cso", vertex_shader.ReleaseAndGetAddressOf(), input_layout.ReleaseAndGetAddressOf(), input_element_desc, ARRAYSIZE(input_element_desc));
 	create_ps_from_cso(device, "Shader\\skinned_mesh_ps.cso", pixel_shader.ReleaseAndGetAddressOf());
 
+
 	D3D11_BUFFER_DESC buffer_desc{};
 	buffer_desc.ByteWidth = sizeof(constants);
 	buffer_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -576,9 +578,10 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 				data.bone_transforms[bone_index] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
 			}
 		}
-
+		int count = 0;
 		for (const mesh::subset& subset : mesh.subsets)
 		{
+
 			const material& material{ materials.at(subset.material_unique_id) };
 
 			XMStoreFloat4(&data.material_color, XMLoadFloat4(&material_color) * XMLoadFloat4(&material.Kd));
@@ -592,6 +595,15 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 			immediate_context->PSSetShaderResources(2, 1, material.shader_resource_views[2].GetAddressOf());
 
 			immediate_context->DrawIndexed(subset.index_count, subset.start_index_location, 0);
+
+			// 定数バッファとして、ワールド行列とマテリアルカラーを設定
+			constants data{ world,material_color };
+			//マテリアルカラーは読み込んだ色も反映
+			DirectX::XMStoreFloat4(&data.material_color, DirectX::XMLoadFloat4(&material_color) * XMLoadFloat4(&material.Kd));
+			immediate_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &data, 0, 0);
+			// 定数(コンスタント)バッファオブジェクトの設定
+			immediate_context->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
+		
 		}
 	}
 }
@@ -655,7 +667,7 @@ void Model::fetch_materials(FbxScene* fbx_scene, std::unordered_map<uint64_t, ma
 				const FbxFileTexture* fbx_texture{ fbx_property.GetSrcObject<FbxFileTexture>() };
 				material.texture_filenames[2] = fbx_texture ? fbx_texture->GetRelativeFileName() : "";
 			}
-
+			material_.push_back(material);
 			materials.emplace(material.unique_id, std::move(material));
 		}
 	}

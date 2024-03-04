@@ -17,7 +17,7 @@ public:
     }
 
     void Update(float elpasedTime);
-    void Render(ID3D11DeviceContext* dc);
+    void Render(RenderContext* rc);
 
     void Clear();
 

@@ -2,8 +2,7 @@
 #include "scene_game.h"
 #include "Input/gamepad.h"
 #include "camera.h"
-#include "objectManajer.h"
-#include"StageManager.h"
+
 
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
@@ -17,6 +16,7 @@ extern ImWchar glyphRangesJapanese[];
 int test = 0;
 void SceneGame::initialize(ID3D11Device* device, float x, float y)
 {
+	device_ = device;
 	Camera& camera = Camera::instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),
@@ -43,28 +43,13 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 	unique_ptr<Player> player = make_unique<Player>(device);
 	player->SetPosition({ -5,0,0 });
 	PlayerManager::Instance().Register(std::move(player));
+	{
+		StageManager& ince = StageManager::incetance();
+		ince.Initialize_GameStage(StageName::stage1_1, device);
+	}
+	//Debug_ParameterObj = make_unique<Switch>(device);
+	//Debug_ParameterObj->SetPosition({1.f, 0.3f, 0.5f});
 
-	Objectmanajer& obj_Manager = Objectmanajer::incetance();
-	{
-		unique_ptr<Metal> obj = make_unique<Metal>(device);
-		obj->SetPosition({ 0.f, 0.5f, -1.0f });
-		obj_Manager.Rigister_obj(std::move(obj));
-		
-	}
-	{
-		unique_ptr<DestroyObj> obj = make_unique<DestroyObj>(device);
-		obj->SetPosition({ 0.f,0.500659713871f,-0.5f });
-		obj_Manager.Rigister_obj(std::move(obj));
-	
-	}
-
-	StageManager& stage_manager = StageManager::incetance();
-	{
-		unique_ptr<DebugStage>stage = make_unique<DebugStage>(device);
-		stage->SetPosition({ 0.f, 0.5f, -0.5f });
-		stage_manager.Rigister(move(stage));
-	}
-	Debug_ParameterObj = nullptr;
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -93,7 +78,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 
 {
 	gamepad& pad = gamepad::Instance();
-
+	
 	//1人称移動
 	{
 		Camera& camera = Camera::instance();
@@ -147,6 +132,8 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 
 			camera_position.x += moveVec.x;
 			camera_position.z += moveVec.z;
+			
+
 		}
 	}
 
@@ -160,67 +147,9 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 	ImGui::End();
 #endif
 #endif
-	
-	{// COLLISION_MESH
-		if (GetAsyncKeyState(VK_LBUTTON) & 1)
-		{
-			VMCFHT::instance().update(scene_data->data.view_projection, scene_data->data.camera_position);
-
-			result_intersection = {};
-			int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
-			for (int i = 0; i < gameobject_count; i++)
-			{
-				Object* obj = Objectmanajer::incetance().Get_GameObject(i);
-
-				if(VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(),obj->GetTransform(),result_intersection))
-				{
-					OutputDebugStringA("Intersected : ");
-					OutputDebugStringA(result_intersection.intersection_mesh.c_str());
-					OutputDebugStringA(" : ");
-					OutputDebugStringA(result_intersection.intersection_material.c_str());
-					OutputDebugStringA("\n");
-					player->Set_attribute(obj->Get_attribute());
-					Debug_ParameterObj = obj;
-					Debug_ParameterPlayer = player;
-					test = 1;
-					break;
-				}
-				else
-				{
-					Debug_ParameterObj = nullptr;
-					Debug_ParameterPlayer = nullptr;
-					OutputDebugStringA("Unintersected...\n");
-				}
-			}
-		}
-	}
-	Objectmanajer::incetance().Update(elapsed_time);
-	if(GetAsyncKeyState(VK_RBUTTON) & 1)
-	{
-		VMCFHT::instance().update(scene_data->data.view_projection, scene_data->data.camera_position);
-		result_intersection = {};
-		int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
-		for (int i = 0; i < gameobject_count; i++)
-		{
-			Object* obj = Objectmanajer::incetance().Get_GameObject(i);
-
-			if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
-			{
-				obj->Set_attribute(player->Get_attribute());
-				Debug_ParameterObj = obj;
-				Debug_ParameterPlayer = player;
-				test = 0;
-				break;
-			}
-			else
-			{
-				Debug_ParameterPlayer = nullptr;
-				Debug_ParameterObj = nullptr;
-			}
-		}
-	}
-
 	StageManager::incetance().Update(elapsed_time);
+	Objectmanajer::incetance().Update(elapsed_time);
+	//Debug_ParameterObj->Update(elapsed_time);
 	//カメラ操作
 	{
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
@@ -244,16 +173,17 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		camera_controller->Update(elapsed_time);
 
 	}
-
+	
 	//マウスカーソル操作変更
-	if (GetKeyState('4') == 1)
+	if (GetKeyState('4') & 1)
 	{
 		mouseMove = !mouseMove;
 	}
 
 	//マウスカーソル固定
 	{
-		DirectX::XMFLOAT2 setCursorWindow = {
+		DirectX::XMFLOAT2 setCursorWindow =
+		{
 			SceneManagement::instance().GetWindowPosition().x + (x / 2),
 			SceneManagement::instance().GetWindowPosition().y + (y / 2)
 		};
@@ -263,6 +193,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 			setCursorWindow.y
 		);
 	}
+	
 
 }
 
@@ -299,24 +230,27 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 	{
 		//プレイヤー描画処理
 		//PlayerManager::Instance().Render(rc.deviceContext);
-
+		
 		//オブジェクト描画処理
-		Objectmanajer::incetance().render(rc.deviceContext);
-		StageManager::incetance().Render(rc.deviceContext);
+		Objectmanajer::incetance().render(&rc);
+		//Debug_ParameterObj->Render(&rc);
+		StageManager::incetance().Render(&rc);
+		
 	}
 
 	//imgui関連
 	{
 #ifdef _DEBUG
 		ImGui::Begin("SceneGame");
-		ImGui::Text("intersected_position : %0.2f, %0.2f, %0.2f",
-			result_intersection.intersection_position.x,
-			result_intersection.intersection_position.y,
-			result_intersection.intersection_position.z);
-		ImGui::Text("intersection_normal : %0.2f, %0.2f, %0.2f",
-			result_intersection.intersection_normal.x, result_intersection.intersection_normal.y, result_intersection.intersection_normal.z);
-		ImGui::Text("intersected_mesh : %s", result_intersection.intersection_mesh.c_str());
-		ImGui::Text("intersected_material : %s", result_intersection.intersection_material.c_str());
+	
+		//bool f = Debug_ParameterObj->Get_GoalFlag();
+		//ImGui::Checkbox("GoalFlag",&f);
+	/*	XMFLOAT3 a = Debug_ParameterObj->GetPosition();
+		ImGui::SliderFloat("position.x", &a.x, -0.0f, +10.0f);
+		ImGui::SliderFloat("position.y", &a.y, -0.0f, +10.0f);
+		ImGui::SliderFloat("position.z", &a.z, -0.0f, +10.0f);
+		Debug_ParameterObj->SetPosition(a);*/
+		
 
 		ImGui::SliderFloat("camera_position.x", &camera_position.x, -100.0f, +100.0f);
 		ImGui::SliderFloat("camera_position.y", &camera_position.y, -100.0f, +100.0f);
@@ -326,18 +260,11 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		ImGui::SliderFloat("light_direction.y", &light_direction.y, -10.0f, +10.0f);
 		ImGui::SliderFloat("light_direction.z", &light_direction.z, -10.0f, +10.0f);
 
-		//for (int i = 0; i < Objectmanajer::incetance().Get_GameObjCount(); i++)
-		//{
-		//	Objectmanajer& ince = Objectmanajer::incetance();
-		//	static XMFLOAT3 pos = {};
-		//	ImGui::SliderFloat3("objPos", &pos.x, -10.0f, -10.0f);
-		//	ince.Get_GameObject(i)->SetPosition(pos);
-
-		//}
+	
 
 		auto p = [](ObjType type) {
 
-		
+
 			switch (type)
 			{
 			case ObjType::cution:
@@ -371,24 +298,27 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 				break;
 			}
 			};
-		if (Debug_ParameterObj != nullptr)
-		{
-			string name = p(Debug_ParameterObj->Get_attribute());
-			ImGui::Text("Object_Type:%s", name.c_str());
-			float t = Debug_ParameterObj->GetReturnTimer();
-			ImGui::InputFloat("return_timer", &t);
-		}
+		
+		
 		if (Debug_ParameterPlayer != nullptr)
 		{
-			string name = p(Debug_ParameterPlayer->Get_attribute());
-			ImGui::Text("Object_Type:%s", name.c_str());
-			float t = Debug_ParameterPlayer->GetReturnTimer();
-			ImGui::InputFloat("return_timer", &t);
+			const int ii = 2;
+			for (int i = 0; i < ii; i++)
+			{
+				ImGui::Text("Object_Type:%s", p(Debug_ParameterPlayer->Get_attribute(i)));
+				float t = Debug_ParameterPlayer->GetReturnTimer(i);
+				ImGui::InputFloat("return_timer", &t);
+
+			}
 		}
 
 
 
 		ImGui::End();
+		StageManager::incetance().Gui(device_.Get(),&rc);
+		Objectmanajer::incetance().Gui(device_.Get());
+		//GetAsyncKeyState(VK_LBUTTON);
+		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG
 	}
 
@@ -399,14 +329,12 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 
 void SceneGame::finalize()
 {
-	if (Debug_ParameterObj != nullptr)
-	{
-		Debug_ParameterObj = nullptr;
-		delete Debug_ParameterObj;
-	}
 
+	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
 	//プレイヤー終了化
 	PlayerManager::Instance().Clear();
-	StageManager::incetance().Clear();
+	
 }
+
+

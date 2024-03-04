@@ -1,133 +1,161 @@
 #include "object.h"
 #include"StageManager.h"
+#include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
 using namespace DirectX;
-void Object::ObjType_effect(float elapsedTime, XMFLOAT3& Pos)
+
+void Object::box_Collition_obj()
 {
+
+    Objectmanajer& ince = Objectmanajer::incetance();
+    int count = ince.Get_GameGimicCount();
+    for (int i = 0; i < count; i++)
+    {
+        Object* obj = ince.Get_GameGimic(i);
+
+        if (obj == this)continue;
+        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, true, 0.045f))
+        {
+            break;
+        }
+    }
+}
+
+void Object::RayCastGround()
+{
+ 
+    enum
+    {
+        attribute1 = 0,
+        attribute2
+    };
     StageManager& ince_st = StageManager::incetance();
     VMCFHT& ince_vf = VMCFHT::instance();
-    XMFLOAT3 normal{ 0.0f,-1.0f,0.0f };
-    float legth=1.0f;
-    
+    XMFLOAT3 normal = GetNormal();;
+    float legth = 1.0f;
+    XMFLOAT3 pos = Position;
+    float start_point = Scale.y*0.005f;
+    if (start_point < 0.1f) start_point = 0.1f;
+    else if (start_point > 0.5f)start_point = 0.5f;
+    pos.y += -start_point;
+    ince_vf.update(pos, normal);
     collision_mesh* mesh = ince_st.GetStages(ince_st.GetNowStage())->GetModel()->Get_RaycastCollition();
-    switch (old_attribute_state)
+    if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
     {
-    case ObjType::cution:
-        //Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-            ince_st.GetStages(ince_st.GetNowStage())->Set_Color({ 1.0f,1.0f,1.0f,1.0f });
-        }
-        //else Pos.y += Velocty.y;
-        color = { 0.0f,1.0f,0.0f,1.0f };
-        break;
-    case ObjType::Super_cution:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-        }
-        else Pos.y += Velocty.y;
 
-        break;
-    case ObjType::Hard_to_Break:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
+        Velocty.y =0.0f;
+    }
+    else
+    {
+        Position.y += Velocty.y;
+    }
+}
+
+void Object::ObjType_effect(float elapsedTime)
+{
+    
+    enum
+    {
+        attribute1 = 0,
+        attribute2
+    };
+    {
+        switch (old_attribute_state[attribute1])
         {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
+        case ObjType::cution:
+
+          
+            break;
+        case ObjType::Super_cution:
+
+            break;
+        case ObjType::Hard_to_Break:
+
+            break;
+        case ObjType::Super_hard_to_Break:
+
+
+            break;
+        case ObjType::heavy:
+
+
+            break;
+        case ObjType::Super_heavy:
+
+            break;
+        case ObjType::Fragile:
+
+            break;
+        case ObjType::Super_fragile:
+            this->Destroy();
+            break;
+        case ObjType::null:
+
+            break;
+        default:
+            break;
         }
-        else Pos.y += Velocty.y;
-
-        break;
-    case ObjType::Super_hard_to_Break:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-        }
-        else Pos.y += Velocty.y;
-
-        break;
-    case ObjType::heavy:
-        //Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-            ince_st.GetStages(ince_st.GetNowStage())->Set_Color({ 1.0f,0.0f,0.0f,1.0f });
-        }
-        //else Pos.y += Velocty.y;
-        color = { 1.0f,1.0f,1.0f,1.0f };
-
-        break;
-    case ObjType::Super_heavy:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-        }
-        else Pos.y += Velocty.y;
-
-        break;
-    case ObjType::Fragile:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-        }
-        else Pos.y += Velocty.y;
-
-        break;
-    case ObjType::Super_fragile:
-        Velocty = { 0.f,1.5f * -elapsedTime,0.5f * elapsedTime };
-        ince_vf.update(Pos, normal);
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
-        {
-            Velocty = {};
-            ince_st.GetStages(ince_st.GetNowStage())->Set_GameObjType(old_attribute_state);
-        }
-        else Pos.y += Velocty.y;
-
-        break;
-    case ObjType::null:
-
-        break;
-    default:
-        break;
     }
 
+    {
+        switch (old_attribute_state[attribute2])
+        {
+        case ObjType::cution:
+
+          
+            break;
+        case ObjType::Super_cution:
+
+            break;
+        case ObjType::Hard_to_Break:
+
+            break;
+        case ObjType::Super_hard_to_Break:
+
+
+            break;
+        case ObjType::heavy:
+
+
+            break;
+        case ObjType::Super_heavy:
+
+            break;
+        case ObjType::Fragile:
+
+            break;
+        case ObjType::Super_fragile:
+            this->Destroy();
+            break;
+        case ObjType::null:
+
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 void Object::Return_orijinal_ObjType(float elapsedTime)
 {
+    const int count = 2;
 
-    if (original_attribute_state == old_attribute_state)return;
-    else
+    for (int i = 0; i < count; i++)
     {
-        ReturnTimer += elapsedTime;
-        if (ReturnTimer >= 10.0f)
+        if (original_attribute_state[i] == old_attribute_state[i])return;
+        else
         {
-            old_attribute_state = original_attribute_state;
-
-            ReturnTimer = 0.0f;
+            ReturnTimer[i] += elapsedTime;
+            if (ReturnTimer[i] >= 10.0f)
+            {
+                old_attribute_state[i] = original_attribute_state[i];
+                ReturnTimer[i] = 0.0f;
+            }
         }
     }
 
 }
+
 
 void Object::UpdateTransform()
 {
@@ -149,7 +177,7 @@ void Object::UpdateTransform()
     XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(Angle.x, Angle.y, Angle.z);
     //位置行列を作成
     XMMATRIX T = XMMatrixTranslation(Position.x, Position.y, Position.z);
-    //３つの行列を組み合わせて、ワールド座標を作成
+    //4つの行列を組み合わせて、ワールド座標を作成
     DirectX::XMMATRIX W = C * S * R * T;
     //計算したワールド座標を取り出す
     DirectX::XMStoreFloat4x4(&Transform, W);

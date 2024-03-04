@@ -18,7 +18,7 @@ SceneManagement::SceneManagement() {}
 
 SceneManagement::~SceneManagement()
 {
-	finalize();
+
 
 	//if (nextScene != nullptr)
 	//{

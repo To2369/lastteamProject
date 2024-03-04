@@ -13,6 +13,11 @@ public:
 	~DebugRenderer() {}
 
 public:
+	static DebugRenderer& incetance(ID3D11Device* device)
+	{
+		static DebugRenderer ince(device);
+		return ince;
+	}
 	// ï`âÊé¿çs
 	void Render(ID3D11DeviceContext* context, const DirectX::XMFLOAT4X4& view, const DirectX::XMFLOAT4X4& projection);
 

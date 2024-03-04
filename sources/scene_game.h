@@ -4,11 +4,13 @@
 #include "Graphics/RenderContext.h"
 #include "camera_controller.h"
 #include "Graphics/sprite.h"
-#include"Metal_obj.h"
-#include"Destroy_obj.h"
+#include"Heavy.h"
+#include"Cution.h"
 #include "objectManajer.h"
 #include"PlayerManager.h"
 #include"Graphics/sprite.h"
+#include"Stage.h"
+#include "StageManager.h"
 class SceneGame : public Scene
 {
 public:
@@ -26,8 +28,9 @@ public:
 	void render(float elapsed_time, RenderContext& rc)override;
 	//èIóπèàóù
 	void finalize()override;
-
-	//íËêî
+	 
+	//void DebugMode_MouseRayCast(DebugMode mode,ID3D11Device* device);
+	//íËêî 
 	struct parametric_constants
 	{
 		float extraction_threshold{ 0.8f };
@@ -59,9 +62,11 @@ private:
 private:
 	std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};
-	Object* Debug_ParameterObj=nullptr;
+	unique_ptr<Switch> Debug_ParameterObj=nullptr;
 	Object* Debug_ParameterPlayer = nullptr;
 	unique_ptr<collision_mesh> debug_collition;
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
+	Player* player = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device> device_;
 };

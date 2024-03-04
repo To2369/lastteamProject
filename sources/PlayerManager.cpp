@@ -25,12 +25,12 @@ void PlayerManager::Update(float elapsedTime)
     remove.clear();
 }
 
-void PlayerManager::Render(ID3D11DeviceContext* dc)
+void PlayerManager::Render(RenderContext* rc)
 {
     int count = players.size();
     for (int i = 0; i < count; i++)
     {
-        players[i]->Render(dc);
+        players[i]->Render(rc);
     }
 }
 

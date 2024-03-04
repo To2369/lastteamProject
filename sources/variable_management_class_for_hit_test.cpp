@@ -40,7 +40,7 @@ void VMCFHT::update(DirectX::XMFLOAT3& pos0, DirectX::XMFLOAT3& normal)
 	DirectX::XMVECTOR P = DirectX::XMLoadFloat3(&pos0);
 	DirectX::XMVECTOR D = DirectX::XMLoadFloat3(&normal);
 	
-	DirectX::XMVector3Normalize(D);
+	//DirectX::XMVector3Normalize(D);
 
 	DirectX::XMStoreFloat3(&ray_position, P);
 	DirectX::XMStoreFloat3(&ray_direction, D);
@@ -48,6 +48,7 @@ void VMCFHT::update(DirectX::XMFLOAT3& pos0, DirectX::XMFLOAT3& normal)
 
 bool VMCFHT::raycast(collision_mesh& collision_mesh, DirectX::XMFLOAT4X4 transform, Intersection& intersection,float length,bool skip)
 {
+	
 	return collision_mesh.raycast(ray_position, ray_direction, transform, intersection, length, skip);
 }
 
