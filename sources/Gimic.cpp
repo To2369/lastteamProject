@@ -51,7 +51,7 @@ bool Gimic::gimic_VS_Object()
        {
            if (obj->Get_isGimic_UpPosNow())
            {
-               if (obj->Get_isGimic_UpPosNow())type.push_back(obj->Get_attribute(0));
+               if (obj->Get_isGimic_UpPosNow())type.push_back(obj->Get_Objtype(0));
            }
        }
    }
@@ -81,6 +81,7 @@ void Gimic::Gimic_effect(Gimic_Type type)
         {
             switchFlag = true;
         }
+        else switchFlag = false;
         break;
     case Gimic_Type::Door:
         Gimic_VS_GimicFlagBoot();
@@ -88,7 +89,14 @@ void Gimic::Gimic_effect(Gimic_Type type)
         {
             if (bootFlag[0])
             {
+                ObjType oldtype = this->Get_Objtype(0);
                 this->Set_attribute(ObjType::Super_fragile, 0);
+                ObjType newtype = this->Get_Objtype(0);
+                if (oldtype == newtype)
+                {
+                    this->SetReturnTimer();
+                }
+               
             }
         }
         break;
@@ -116,5 +124,6 @@ void Gimic::Gimic_VS_GimicFlagBoot()
         {
             this->SetBootFlag(true);
         }
+        
     }
 }

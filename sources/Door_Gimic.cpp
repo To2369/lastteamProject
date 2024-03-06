@@ -7,6 +7,7 @@ Door::Door(ID3D11Device* device)
     Gimic_type = Gimic_Type::Door;
     MyGimicFlagType = Gimic_Type::Switch;
     Normal = { 0.f,1.f,0.f };
+    UpdateTransform();
 }
 
 void Door::Update(float elapsedTime)
@@ -14,6 +15,7 @@ void Door::Update(float elapsedTime)
     color = InitColor();
     ObjType_effect(elapsedTime);
     Gimic_effect(Gimic_Type::Door);
+    Return_orijinal_ObjType(elapsedTime);
     UpdateTransform();
 }
 

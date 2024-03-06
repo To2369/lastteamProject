@@ -32,7 +32,8 @@ void Cution::Update(float elapsedTime)
 
 void Cution::Render(RenderContext* rc)
 {
-	model->render(rc->deviceContext, Transform, 0.0f, { 1,1,1,1 });
+    
+	model->render(rc->deviceContext, Transform, 0.0f,color);
 	rc->deviceContext->RSSetState(rc->rasterizers[3].Get());
     //model->render(rc->deviceContext, UpdateBounding_Box() , 0.0f,color);
 	rc->deviceContext->RSSetState(rc->rasterizers[2].Get());
@@ -68,5 +69,6 @@ void Super_Cution::Update(float elapsedTime)
 
 void Super_Cution::Render(RenderContext* rc)
 {
+    
     model->render(rc->deviceContext, Transform, 0.0f, color);
 }

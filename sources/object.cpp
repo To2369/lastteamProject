@@ -87,7 +87,7 @@ void Object::ObjType_effect(float elapsedTime)
 
             break;
         case ObjType::Super_fragile:
-            this->Destroy();
+            this->SetColor({0.f,0.f,0.f,0.f});
             break;
         case ObjType::null:
 
@@ -101,31 +101,25 @@ void Object::ObjType_effect(float elapsedTime)
         switch (old_attribute_state[attribute2])
         {
         case ObjType::cution:
-
-          
             break;
         case ObjType::Super_cution:
-
+            break;
+        case ObjType::heavy:
+            break;
+        case ObjType::Super_heavy:
             break;
         case ObjType::Hard_to_Break:
 
             break;
         case ObjType::Super_hard_to_Break:
 
-
             break;
-        case ObjType::heavy:
-
-
-            break;
-        case ObjType::Super_heavy:
-
-            break;
+     
         case ObjType::Fragile:
 
             break;
         case ObjType::Super_fragile:
-            this->Destroy();
+            this->SetColor({ 0.f,0.f,0.f,0.f });
             break;
         case ObjType::null:
 

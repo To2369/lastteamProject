@@ -228,7 +228,7 @@ void Objectmanajer::Gui(ID3D11Device* device)
             DirectX::XMStoreFloat3(&rightdown_back,DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Min)));
 
         }
-        if (obj->Get_attribute(0)==ObjType::cution)
+        if (obj->Get_Objtype(0)==ObjType::cution)
         {
             XMFLOAT3 pos{ obj->GetPosition() };
             XMFLOAT4 color_{ 1,1,1,1 };

@@ -6,6 +6,7 @@ Goal::Goal(ID3D11Device* device)
     Gimic_type = Gimic_Type::Goal;
     Scale = { 0.05f,0.05f,0.05f };
     initialaize_Set_attribute(ObjType::null, ObjType::null);
+    UpdateTransform();
 }
 void Goal::Update(float elapsedTime)
 {
@@ -14,7 +15,7 @@ void Goal::Update(float elapsedTime)
     {
         Goal_Flag = true;
     }
-    UpdateTransform();
+  
 }
 
 bool Goal::GoalInPosition()

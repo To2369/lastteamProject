@@ -87,10 +87,11 @@ private:
 
 private://debugÇ≈ÇµÇ©égÇÌÇ»Ç¢ïœêîíB
     ObjType debug_type_set_pos = ObjType::null;
+    DebugMode oldMode = DebugMode::null;
     DebugMode mode =DebugMode::null ;
     ObjType CreateObjeType = ObjType::null;
     Gimic_Type CreateGimicType = Gimic_Type::null;
-    debugType_obj_or_gimic o_or_g;//object_or_gimic
+    debugType_obj_or_gimic o_or_g=debugType_obj_or_gimic::null;//object_or_gimic
     bool complete_createobje;
     vector<thread*> newObject_Thread;
     Intersection result_intersection{};

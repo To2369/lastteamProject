@@ -231,11 +231,11 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		//プレイヤー描画処理
 		//PlayerManager::Instance().Render(rc.deviceContext);
 		
-		//オブジェクト描画処理
-		Objectmanajer::incetance().render(&rc);
+		
 		//Debug_ParameterObj->Render(&rc);
 		StageManager::incetance().Render(&rc);
-		
+		//オブジェクト描画処理
+		Objectmanajer::incetance().render(&rc);
 	}
 
 	//imgui関連
@@ -305,7 +305,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 			const int ii = 2;
 			for (int i = 0; i < ii; i++)
 			{
-				ImGui::Text("Object_Type:%s", p(Debug_ParameterPlayer->Get_attribute(i)));
+				ImGui::Text("Object_Type:%s", p(Debug_ParameterPlayer->Get_Objtype(i)));
 				float t = Debug_ParameterPlayer->GetReturnTimer(i);
 				ImGui::InputFloat("return_timer", &t);
 

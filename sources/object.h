@@ -48,7 +48,7 @@ public:
     XMFLOAT4X4 GetTransform()const { return Transform; }
     XMFLOAT3 GetPosition()const { return Position; }
     XMFLOAT3 GetScale() const { return Scale; }
-    ObjType Get_attribute(int Number)const { return old_attribute_state[Number]; };
+    ObjType Get_Objtype(int Number)const { return old_attribute_state[Number]; };
     float GetReturnTimer(int i)const { return ReturnTimer[i]; }
     Intersection GetIntersection()const { return result_intersection; }
     bool GetDestroyObje()const { return DestroyObj; }
@@ -57,6 +57,7 @@ public:
     bool Get_isGimic_UpPosNow()const { return isGimic_UpPosNow; }
     XMFLOAT4 InitColor()const { return { 1.f,1.f,1.f,1.f }; }//orijinalcolor
 public:
+    void SetReturnTimer(float timer1 = 0.f, float timer2 = 0.f) { ReturnTimer[0] = timer2; ReturnTimer[1] = timer2; }
     void SetColor(XMFLOAT4 color_) { color = color_; }
     void SetPosition(XMFLOAT3 Pos) { Position = Pos; }
     void SetScale(XMFLOAT3 scale) { Scale = scale; }
