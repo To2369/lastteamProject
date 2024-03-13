@@ -6,7 +6,8 @@
 using namespace DirectX;
 #include"variable_management_class_for_hit_test.h"
 #include"Graphics/RenderContext.h"
-
+#include"Collision.h"
+#include"Mathf.h"
 enum class Obj_attribute
 {
     cution,//軽い//作った
@@ -69,13 +70,67 @@ public:
     void SetNormal(XMFLOAT3 normal) { Normal = normal; };
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
 protected:
+    void UpdateTransform();
+
+    //垂直速力更新処理
+    void UpdateVerticalVelocity(float elapsedFrame);
+
+    //垂直移動更新処理
+    void UpdateVerticalMove(float elapsedTime);
+
+    //水平速力更新処理
+    void UpdateHorizontalVelocity(float elapsedFrame);
+
+    //水平移動更新処理
+    void UpdateHorizontalMove(float elapsedTime);
+protected:
+    //移動処理
+    void Move(float vx, float vz, float speed);
+
+    //旋回処理
+    void Turn(float elapsedTime, float vx, float vz, float speed);
+
+    //ジャンプ処理
+    void Jump(float speed);
+
+    //速力処理更新
+    void UpdateVelocity(float elapsedTime);
+
+    //着地したときに呼ばれる
+    virtual void OnLanding() {}
+protected:
+    //重力
+    float gravity = -1.0f;
+    //地面に着地したか
+    bool isGround = false;
+    //摩擦
+    float friction = 0.5f;
+
+    //加速度
+    float acceleration = 1.0f;
+
+    //最大速度
+    float maxMoveSpeed = 5.0f;
+
+    //計算用
+    float moveVecX = 0.0f;
+    float moveVecZ = 0.0f;
+
+    //空中移動
+    float airControl = 0.3f;
+
+    //開始位置を上にするため
+    float stepOffset = 1.0f;
+
+    //斜めの時間制限
+    float slopeRate = 1.0f;
+protected:
     void box_Collition_obj();
     void RayCastGround();
     //性質の効果
     void ObjType_effect(float elapsedTime);
     //自分が持っていたオリジナルの性質に戻す関数
     void Return_orijinal_ObjType(float elapsedTime);
-    void UpdateTransform();
     //この関数はコンストラクタ以外で使わない
     void initialaize_Set_attribute(ObjType type1, ObjType type2)
     {

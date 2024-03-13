@@ -43,3 +43,8 @@ void PlayerManager::Remove(Player* player)
 {
     remove.insert(player);
 }
+
+void PlayerManager::DrawDebugGui()
+{
+
+}

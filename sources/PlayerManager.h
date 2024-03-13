@@ -25,6 +25,8 @@ public:
     void Register(std::unique_ptr<Player> player) { players.emplace_back(std::move(player)); }
     int GetPlayerCount() { return players.size(); }
     Player* GetPlayer(int num) { return players.at(num).get(); }
+
+    void DrawDebugGui();
 private:
     vector<unique_ptr<Player>> players;
     set<Player*>remove;
