@@ -11,6 +11,7 @@
 #include"Heavy.h"
 #include"Fragile.h"
 #include"Hard_to_Break.h"
+#include"Crack.h"
 #include"camera.h"
 void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 {
@@ -23,11 +24,12 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 		break;
 	case StageName::stage1_1:
 		
-		obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 0.f,1.500659713871f,-0.5f });
-		obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-0.5f });
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, { 2.f,1.000659713871f,-0.5f });
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Door, device, { 1.5f,1.000659713871f,-0.5f });
-		
+		obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 0.f,2.500659713871f,0.f });
+		/*obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-1.5f });
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, { 2.f,1.000659713871f,-1.5f });
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Door, device, { 1.5f,1.000659713871f,-1.5f });
+	*/
+		//obj_Manager.Initialize_Gimic(name, Gimic_Type::Drop_Road, device, { 1.f,1.f,0.5f });
 		{
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
@@ -117,12 +119,14 @@ void StageManager::Result_Object_Info(Object& obj)
 			break;
 		case ObjType::null:
 			return "null";
+		case ObjType::Crack:
+			return"Crack";
 			break;
 
 		}
 	};
 	
-	string s = typeMap(obj.Get_Objtype(0));
+	string s = typeMap(obj.Get_Old_Objtype(0));
 	string pos;
 	string scale;
 	OutputDebugStringA(s.c_str());
@@ -205,7 +209,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 
 		DirectX::XMStoreFloat4x4(&scene_data.view_projection, VP);
 	}
-#ifdef _DEBUG
+
 #if USE_IMGUI
     ImGui::Begin("Stage_SetUp");
     auto m = [](DebugMode mode)
@@ -259,6 +263,9 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		case ObjType::Super_fragile:
 			return "Super_fragile";
 			break;
+		case ObjType::Crack:
+			return "Crack";
+			break;
 		case ObjType::null:
 			return "null";
 			break;
@@ -277,6 +284,9 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 			break;
 		case Gimic_Type::Goal:
 			return "Goal";
+			break;
+		case Gimic_Type::Drop_Road:
+			return "Drop_Load";
 			break;
 		case Gimic_Type::null:
 			return "null";
@@ -319,7 +329,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 	}
     else if (mode == DebugMode::StageSetUp)
     {
-		if (o_or_g != debugType_obj_or_gimic::null)
+		if (o_or_g == debugType_obj_or_gimic::null)
 		{
 			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
 			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
@@ -375,6 +385,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 					if (ImGui::Button("Super_hard_to_Break")) CreateObjeType = ObjType::Super_hard_to_Break;
 					if (ImGui::Button("Fragile")) CreateObjeType = ObjType::Fragile;
 					if (ImGui::Button("Super_fragile")) CreateObjeType = ObjType::Super_fragile;
+					if (ImGui::Button("Crack")) CreateObjeType = ObjType::Crack;
 				}
 			}
 			if (CreateGimicType != Gimic_Type::null && CreateObjeType != ObjType::null)
@@ -391,6 +402,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 					if (ImGui::Button("Switch")) CreateGimicType = Gimic_Type::Switch;
 					if (ImGui::Button("Door")) CreateGimicType = Gimic_Type::Door;
 					if (ImGui::Button("Goal")) CreateGimicType = Gimic_Type::Goal;
+					if (ImGui::Button("Drop_Load")) CreateGimicType = Gimic_Type::Drop_Road;
 					
 				}
 			}
@@ -427,10 +439,19 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
     }
 	else if (mode == DebugMode::Delete_Object)
 	{
+		if (o_or_g == debugType_obj_or_gimic::null)
+		{
+			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
+			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
+		}
+		else
+		{
+			if (ImGui::Button("Cancel"))o_or_g = debugType_obj_or_gimic::null;
+		}
 		DebugMode_MouseRayCast(mode, device);
 	}
     ImGui::End();
-#endif
+
 #endif
 }
 
@@ -487,6 +508,12 @@ void StageManager::CreateObject(ObjType type, ID3D11Device* device, Intersection
             ince.Rigister_obj(move(obj));
 
             break;
+		case ObjType::Crack:
+			obj = make_unique<Crack>(device);
+			obj->SetPosition(in.intersection_position);
+			ince.Rigister_obj(move(obj));
+
+			break;
         case ObjType::null:
             break;
         default:
@@ -514,6 +541,11 @@ void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersecti
 		break;
 	case Gimic_Type::Goal:
 		obj = make_unique<Goal>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Drop_Road:
+		obj = make_unique<DropBox_Road>(device);
 		obj->SetPosition(in.intersection_position);
 		ince.Rigister_Gimic(move(obj));
 		break;
@@ -582,6 +614,86 @@ void StageManager::Object_Info()
 
 				}
 			}
+			
+		}
+		{
+			
+			auto s = [](string s1, int s2, bool stringFlag = false)
+				{
+					if (stringFlag)return s1 += to_string(s2) += ":%s";
+					return s1 += to_string(s2) += ":";
+				};
+			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
+			{
+				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 1.3f, 5.f);
+				const int ii = 2;
+				for (int i = 0; i < ii; i++)
+				{
+					string name = GetObjectType_S(Debug_ParameterObj->Get_Old_Objtype(i));
+					ImGui::Text(s("ObjectType", i, true).c_str(), name.c_str());
+					float t = Debug_ParameterObj->GetReturnTimer(i);
+
+					ImGui::InputFloat(s("returnTimer", i).c_str(), &t);
+				}
+				XMFLOAT3 pos{ Debug_ParameterObj->GetPosition() };
+				if (ImGui::CollapsingHeader("Object_Position", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("Position.x:", &pos.x, 0.f, 5.f);
+					ImGui::SliderFloat("Position.y:", &pos.y, 0.f, 5.f);
+					ImGui::SliderFloat("Position.z:", &pos.z, 0.f, 5.f);
+					Debug_ParameterObj->SetPosition(pos);
+				}
+				XMFLOAT3 Scale{ Debug_ParameterObj->GetScale() };
+				if (ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("objectScaleX:", &Scale.x, 0.f, 100.f);
+					ImGui::SliderFloat("objectScaleY:", &Scale.y, 0.f, 100.f);
+					ImGui::SliderFloat("objectScaleZ:", &Scale.z, 0.f, 100.f);
+					Debug_ParameterObj->SetScale(Scale);
+
+				}
+				XMFLOAT3 normal{ Debug_ParameterObj->GetNormal() };
+				if (ImGui::CollapsingHeader("Normal", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("objectNormalX:", &normal.x, -1.f, 1.f);
+					ImGui::SliderFloat("objectNormalY:", &normal.y, -1.f, 1.f);
+					ImGui::SliderFloat("objectNormalZ:", &normal.z, -1.f, 1.f);
+					Debug_ParameterObj->SetNormal(normal);
+				}
+
+				if (ImGui::CollapsingHeader("Change_ObjectType", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					enum class Num
+					{
+						num0,
+						num1,
+						null
+					};
+
+					static Num num=Num::null;
+					if (ImGui::Button("heavy")) SetObjType = ObjType::heavy;
+					if (ImGui::Button("Super_heavy")) SetObjType = ObjType::Super_heavy;
+					if (ImGui::Button("Cution")) SetObjType = ObjType::cution;
+					if (ImGui::Button("Super_cution")) SetObjType = ObjType::Super_cution;
+					if (ImGui::Button("Hard_to_Break")) SetObjType = ObjType::Hard_to_Break;
+					if (ImGui::Button("Super_hard_to_Break")) SetObjType = ObjType::Super_hard_to_Break;
+					if (ImGui::Button("Fragile")) SetObjType = ObjType::Fragile;
+					if (ImGui::Button("Super_fragile")) SetObjType = ObjType::Super_fragile;
+					if (ImGui::Button("Crack")) SetObjType = ObjType::Crack;
+					if (SetObjType != ObjType::null)
+					{
+						if (ImGui::Button("SetTypeNumber0"))num = Num::num0;
+						if (ImGui::Button("SetTypeNumber1"))num = Num::num1;
+						if (num !=Num::null)
+						{
+							Debug_ParameterObj->Set_attribute(SetObjType, static_cast<int>(num));
+							SetObjType = ObjType::null;
+							num = Num::null;
+						}
+					}
+				}
+
+			}
 		}
 		break;
 	case debugType_obj_or_gimic::gimic:
@@ -610,95 +722,61 @@ void StageManager::Object_Info()
 				}
 			}
 		}
+
+		{
+			
+			auto s = [](string s1, int s2, bool stringFlag = false)
+				{
+					if (stringFlag)return s1 += to_string(s2) += ":%s";
+					return s1 += to_string(s2) += ":";
+				};
+			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
+			{
+				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 1.3f, 5.f);
+				const int ii = 2;
+				for (int i = 0; i < ii; i++)
+				{
+					string name = GetObjectType_S(Debug_ParameterObj->Get_Old_Objtype(i));
+					ImGui::Text(s("ObjectType", i, true).c_str(), name.c_str());
+					float t = Debug_ParameterObj->GetReturnTimer(i);
+
+					ImGui::InputFloat(s("returnTimer", i).c_str(), &t);
+				}
+				XMFLOAT3 pos{ Debug_ParameterObj->GetPosition() };
+				if (ImGui::CollapsingHeader("Object_Position", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("Position.x:", &pos.x, 0.f, 5.f);
+					ImGui::SliderFloat("Position.y:", &pos.y, 0.f, 5.f);
+					ImGui::SliderFloat("Position.z:", &pos.z, 0.f, 5.f);
+					Debug_ParameterObj->SetPosition(pos);
+				}
+				XMFLOAT3 Scale{ Debug_ParameterObj->GetScale() };
+				if (ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("objectScaleX:", &Scale.x, 0.f, 100.f);
+					ImGui::SliderFloat("objectScaleY:", &Scale.y, 0.f, 100.f);
+					ImGui::SliderFloat("objectScaleZ:", &Scale.z, 0.f, 100.f);
+					Debug_ParameterObj->SetScale(Scale);
+
+				}
+				XMFLOAT3 normal{ Debug_ParameterObj->GetNormal() };
+				if (ImGui::CollapsingHeader("Normal", ImGuiTreeNodeFlags_DefaultOpen))
+				{
+					ImGui::SliderFloat("objectNormalX:", &normal.x, -1.f, 1.f);
+					ImGui::SliderFloat("objectNormalY:", &normal.y, -1.f, 1.f);
+					ImGui::SliderFloat("objectNormalZ:", &normal.z, -1.f, 1.f);
+					Debug_ParameterObj->SetNormal(normal);
+				}
+
+				
+
+			}
+		}
 		break;	
 	}
 
 
-	{
-		auto p = [](ObjType type) {
-
-
-			switch (type)
-			{
-			case ObjType::cution:
-				return "cushion";
-				break;
-			case ObjType::Super_cution:
-				return "Super_cution";
-				break;
-			case ObjType::Hard_to_Break:
-				return "Hard_to_Break";
-				break;
-			case ObjType::Super_hard_to_Break:
-				return "Super_hard_to_Break";
-				break;
-			case ObjType::heavy:
-				return "heavy";
-				break;
-			case ObjType::Super_heavy:
-				return "Super_heavy";
-				break;
-			case ObjType::Fragile:
-				return "Fragile";
-				break;
-			case ObjType::Super_fragile:
-				return "Super_fragile";
-				break;
-			case ObjType::null:
-				return "null";
-				break;
-		
-			}
-			};
-		auto s = [](string s1, int s2,bool stringFlag=false)
-			{
-                 
-				if (stringFlag)return s1 += to_string(s2) += ":%s";
-
-				return s1 += to_string(s2)+=":";
-			};
-		if (Debug_ParameterObj)
-		{
-			const int ii = 2;
-			for (int i = 0; i < ii; i++)
-			{
-				string name = p(Debug_ParameterObj->Get_Objtype(i));
-				ImGui::Text(s("ObjectType", i,true).c_str(), name.c_str());
-				float t = Debug_ParameterObj->GetReturnTimer(i);
-				 
-				ImGui::InputFloat(s("returnTimer",i).c_str(), &t);
-			}
-			XMFLOAT3 pos{ Debug_ParameterObj->GetPosition() };
-			if (ImGui::CollapsingHeader("Object_Position", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::SliderFloat("Position.x:", &pos.x, 0.f, 5.f);
-				ImGui::SliderFloat("Position.y:", &pos.y, 0.f, 5.f);
-				ImGui::SliderFloat("Position.z:", &pos.z, 0.f, 5.f);
-				Debug_ParameterObj->SetPosition(pos);
-			}
-			XMFLOAT3 Scale{ Debug_ParameterObj->GetScale() };
-			if (ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::SliderFloat("objectScaleX:", &Scale.x, 0.f, 100.f);
-				ImGui::SliderFloat("objectScaleY:", &Scale.y, 0.f, 100.f);
-				ImGui::SliderFloat("objectScaleZ:", &Scale.z, 0.f, 100.f);
-				Debug_ParameterObj->SetScale(Scale);
-				
-			}
-			XMFLOAT3 normal {Debug_ParameterObj->GetNormal()};
-			if (ImGui::CollapsingHeader("Normal", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::SliderFloat("objectNormalX:", &normal.x, -1.f, 1.f);
-				ImGui::SliderFloat("objectNormalY:", &normal.y, -1.f, 1.f);
-				ImGui::SliderFloat("objectNormalZ:", &normal.z, -1.f, 1.f);
-				Debug_ParameterObj->SetNormal(normal);
-			}
-			ImGui::SliderFloat("ObgectLength:", &objLength, 1.3f, 5.f);
-		
-		} 
-		
-
-	}
+	
 }
 
 void StageManager::StageSetup()
@@ -709,8 +787,6 @@ void StageManager::StageSetup()
 	result_intersection = {};
 	int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
 	int gamegimic_count = Objectmanajer::incetance().Get_GameGimicCount();
-	
-
 	
 	switch (o_or_g)
 	{
@@ -894,28 +970,55 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 void StageManager::Delete_Object()
 {
-	if (GetAsyncKeyState(VK_RBUTTON) & 1)
+	Objectmanajer& ince_obj = Objectmanajer::incetance();
+	
+	switch (o_or_g)
 	{
-		VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
-
-		result_intersection = {};
-		int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
-		for (int i = 0; i < gameobject_count; i++)
+	case debugType_obj_or_gimic::obj:
+		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
-			StageManager& ince = StageManager::incetance();
-			Object* stage_ = ince.GetStages(StageName::stage1_1);
-			Object* obj = ince_obj.Get_GameObject(i);
+			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
 
-			if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+			result_intersection = {};
+			int gameobject_count = ince_obj.Get_GameObjCount();
+			for (int i = 0; i < gameobject_count; i++)
 			{
-				obj->Destroy();
-				break;
-			}
-			else
-			{
-				Debug_ParameterObj = nullptr;
+				
+				Object* obj = ince_obj.Get_GameObject(i);
+				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+				{
+					obj->Destroy();
+					break;
+				}
+				else
+				{
+					Debug_ParameterObj = nullptr;
+				}
 			}
 		}
+		break;
+	case debugType_obj_or_gimic::gimic:
+		if (GetAsyncKeyState(VK_RBUTTON) & 1)
+		{
+			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
+
+			result_intersection = {};
+			int gamegimic_count = Objectmanajer::incetance().Get_GameGimicCount();
+			for (int i = 0; i < gamegimic_count; i++)
+			{
+				Gimic* obj = ince_obj.Get_GameGimic(i);
+
+				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+				{
+					obj->Destroy();
+					break;
+				}
+				else
+				{
+					Debug_ParameterObj = nullptr;
+				}
+			}
+		}
+	break;
 	}
 }

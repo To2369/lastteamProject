@@ -20,6 +20,8 @@ enum class Obj_attribute
     Hard_to_Break,//壊れにくい
     Super_hard_to_Break,//超壊れにくい
 
+    Crack,//ひび割れ
+
     null,
 };
 enum class StageName
@@ -48,7 +50,8 @@ public:
     XMFLOAT4X4 GetTransform()const { return Transform; }
     XMFLOAT3 GetPosition()const { return Position; }
     XMFLOAT3 GetScale() const { return Scale; }
-    ObjType Get_Objtype(int Number)const { return old_attribute_state[Number]; };
+    ObjType Get_Old_Objtype(int Number)const { return old_attribute_state[Number]; };//この関数がリアルタイムで更新されるType
+    ObjType Get_Original_Objtype(int Number)const { return original_attribute_state[Number]; };//定数Type
     float GetReturnTimer(int i)const { return ReturnTimer[i]; }
     Intersection GetIntersection()const { return result_intersection; }
     bool GetDestroyObje()const { return DestroyObj; }
@@ -57,15 +60,19 @@ public:
     bool Get_isGimic_UpPosNow()const { return isGimic_UpPosNow; }
     XMFLOAT4 InitColor()const { return { 1.f,1.f,1.f,1.f }; }//orijinalcolor
 public:
-    void SetReturnTimer(float timer1 = 0.f, float timer2 = 0.f) { ReturnTimer[0] = timer2; ReturnTimer[1] = timer2; }
+    void SetVeloty(XMFLOAT3 sp) { Velocty = sp; }
+    void SetReturnTimer(float timer1 = 0.f, int num=0) { ReturnTimer[num] =timer1; }
     void SetColor(XMFLOAT4 color_) { color = color_; }
     void SetPosition(XMFLOAT3 Pos) { Position = Pos; }
     void SetScale(XMFLOAT3 scale) { Scale = scale; }
     void SetAngle(XMFLOAT3 angle) { Angle = angle; }
     void SetTransform(XMFLOAT4X4 t) { Transform = t; }
-    void Set_attribute(ObjType type,int Number) { old_attribute_state[Number]=type; };
+    void Set_attribute(ObjType type,int Number) { 
+        old_attribute_state[Number]=type;
+    };
+    void Set_NotUpdateFlag(bool f) { NotUpdateFlag = f; }
     void Set_MystageName(StageName name) { stage_name = name; }
-    void Destroy() { DestroyObj = true; }
+    void Destroy() { DestroyObj = true; }//オブジェクト破棄するための関数
     void SetNormal(XMFLOAT3 normal) { Normal = normal; };
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
 protected:
@@ -84,8 +91,9 @@ protected:
         old_attribute_state.push_back(type1);
         old_attribute_state.push_back(type2);
     }
-    bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,とギミックに対してでしか使わない
+    bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない
     bool DestroyObj = false;
+    bool NotUpdateFlag = false;//gimic_VS_Object関数にしか使わない予定
     float ReturnTimer[2]{};
     StageName stage_name = StageName::null;
    vector<ObjType> original_attribute_state;

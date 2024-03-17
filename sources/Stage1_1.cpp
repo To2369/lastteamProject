@@ -6,7 +6,7 @@ Stage_1_1::Stage_1_1(ID3D11Device* device)
 {
     model = make_unique<Model>(device,filename,true);
     initialaize_Set_attribute(ObjType::null, ObjType::null);
-    Scale = { 10.f,10.f,10.f };
+    Scale = { 10.f,2.f,2.f };
 
 }
 

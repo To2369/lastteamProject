@@ -392,7 +392,4 @@ private:
 public://’Ç‰Á
 	unique_ptr<collision_mesh> thisRay_vs_partner;
 	collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
-	
-	Microsoft::WRL::ComPtr<ID3D11Buffer>vertex_buffer;
-	Microsoft::WRL::ComPtr<ID3D11Buffer>index_buffer;
 };

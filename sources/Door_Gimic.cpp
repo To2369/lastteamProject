@@ -1,4 +1,5 @@
 #include"Gimic.h"
+#include"objectManajer.h"
 Door::Door(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::Super_hard_to_Break, ObjType::null);
@@ -23,4 +24,21 @@ void Door::Render(RenderContext* rc)
 {
     model->render(rc->deviceContext, Transform, 0.0f, color);
   
+}
+
+void Door::Gimic_VS_GimicFlagBoot()
+{
+    bootFlag.clear();
+    Objectmanajer& ince = Objectmanajer::incetance();
+    int count = ince.Get_GameGimicCount();
+    for (int i = 0; i < count; i++)
+    {
+        Gimic* gimic = ince.Get_GameGimic(i);
+        if (this->Get_GimicType() == gimic->Get_GimicType())continue;
+        if (gimic->Get_GimicType() == this->GetMyGimicFlagType() && gimic->Get_SwitchFlag())
+        {
+            this->SetBootFlag(true);
+        }
+
+    }
 }

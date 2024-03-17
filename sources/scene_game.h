@@ -62,7 +62,7 @@ private:
 private:
 	std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};
-	unique_ptr<Switch> Debug_ParameterObj=nullptr;
+	unique_ptr<DropBox_Road> Debug_ParameterObj=nullptr;
 	Object* Debug_ParameterPlayer = nullptr;
 	unique_ptr<collision_mesh> debug_collition;
 	unique_ptr<sprite> text;

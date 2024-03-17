@@ -38,11 +38,19 @@ public:
     }
     void Rigister_obj(std::unique_ptr<Object> obj) { game_objs.push_back(std::move(obj)); }
     void Rigister_Gimic(std::unique_ptr<Gimic> obj) { game_Gimics.push_back(std::move(obj)); }
-    int Get_GameObjCount() { return game_objs.size(); }
+    int Get_GameObjCount() { return static_cast<int>(game_objs.size()); }
     int Get_GameGimicCount() { return game_Gimics.size(); }
     Object* Get_GameObject(int i) { return game_objs[i].get(); }
     Gimic* Get_GameGimic(int i) { return game_Gimics[i].get(); }
-    bool Bounding_Box_vs_Bounding_Box(Object* obj1, Object* obj2,bool UpcheckFlag=false, float offset=0.0f);
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="thisobj">自分がオブジェクトの上に乗ってるかチェックを行うオブジェクト</param>
+    /// <param name="obj2"></param>
+    /// <param name="UpcheckFlag"></param>
+    /// <param name="offset"></param>
+    /// <returns></returns>
+    bool Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2,bool UpcheckFlag=false, float offset=0.0f);
    
     void Gui(ID3D11Device* device);
 private:

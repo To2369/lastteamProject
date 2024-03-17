@@ -14,7 +14,7 @@ void Object::box_Collition_obj()
         Object* obj = ince.Get_GameGimic(i);
 
         if (obj == this)continue;
-        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, true, 0.045f))
+        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, false, 0.045f))
         {
             break;
         }
@@ -24,11 +24,7 @@ void Object::box_Collition_obj()
 void Object::RayCastGround()
 {
  
-    enum
-    {
-        attribute1 = 0,
-        attribute2
-    };
+    
     StageManager& ince_st = StageManager::incetance();
     VMCFHT& ince_vf = VMCFHT::instance();
     XMFLOAT3 normal = GetNormal();;
@@ -42,7 +38,6 @@ void Object::RayCastGround()
     collision_mesh* mesh = ince_st.GetStages(ince_st.GetNowStage())->GetModel()->Get_RaycastCollition();
     if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
     {
-
         Velocty.y =0.0f;
     }
     else
@@ -54,13 +49,13 @@ void Object::RayCastGround()
 void Object::ObjType_effect(float elapsedTime)
 {
     
-    enum
+    enum class Num
     {
         attribute1 = 0,
         attribute2
     };
     {
-        switch (old_attribute_state[attribute1])
+        switch (old_attribute_state[static_cast<int>(Num::attribute1)])
         {
         case ObjType::cution:
 
@@ -84,10 +79,13 @@ void Object::ObjType_effect(float elapsedTime)
 
             break;
         case ObjType::Fragile:
-
+            if (this->Get_Original_Objtype(0) == ObjType::Crack)this->Destroy();
             break;
         case ObjType::Super_fragile:
             this->SetColor({0.f,0.f,0.f,0.f});
+            break;
+        case ObjType::Crack:
+            
             break;
         case ObjType::null:
 
@@ -98,7 +96,7 @@ void Object::ObjType_effect(float elapsedTime)
     }
 
     {
-        switch (old_attribute_state[attribute2])
+        switch (old_attribute_state[static_cast<int>(Num::attribute2)])
         {
         case ObjType::cution:
             break;
@@ -120,6 +118,9 @@ void Object::ObjType_effect(float elapsedTime)
             break;
         case ObjType::Super_fragile:
             this->SetColor({ 0.f,0.f,0.f,0.f });
+            break;
+        case ObjType::Crack:
+
             break;
         case ObjType::null:
 

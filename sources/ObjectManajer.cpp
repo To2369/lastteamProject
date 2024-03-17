@@ -7,6 +7,7 @@
 #include"Graphics/DebugRenderer.h"
 #include <Fragile.h>
 #include <Hard_to_Break.h>
+#include"Crack.h"
 using namespace std;
 using namespace DirectX;
 void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11Device* device,XMFLOAT3 pos)
@@ -63,6 +64,12 @@ void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11De
         obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
+    case Obj_attribute::Crack:
+        obj = make_unique<Crack>(device);
+        obj->SetPosition({ pos });
+        obj->Set_MystageName(s_name_);
+        Rigister_obj(move(obj));
+        break;
     case Obj_attribute::null:
         break;
     default:
@@ -91,6 +98,12 @@ void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID
         break;
     case Gimic_Type::Goal:
         gimic = make_unique<Goal>(device);
+        gimic->SetPosition(pos);
+        gimic->Set_MystageName(s_name_);
+        Rigister_Gimic(move(gimic));
+        break;
+    case Gimic_Type::Drop_Road:
+        gimic = make_unique<DropBox_Road>(device);
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
         Rigister_Gimic(move(gimic));
@@ -228,7 +241,7 @@ void Objectmanajer::Gui(ID3D11Device* device)
             DirectX::XMStoreFloat3(&rightdown_back,DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Min)));
 
         }
-        if (obj->Get_Objtype(0)==ObjType::cution)
+        if (obj->Get_Old_Objtype(0)==ObjType::cution)
         {
             XMFLOAT3 pos{ obj->GetPosition() };
             XMFLOAT4 color_{ 1,1,1,1 };
@@ -303,7 +316,7 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2, 
     DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&thisobj->GetPosition())));
     DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&obj2->GetPosition())));
     DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&obj2->GetPosition())));
-    thisobj->SetColor({ 1,1,1,1 });
+    
     if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
         thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
         thisobj_min.z <= obj2_max.z && thisobj_max.z >= obj2_min.z)
@@ -314,7 +327,7 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2, 
             float o_pos2 = obj2->GetPosition().y +offset;
             if (t_pos > o_pos2)
             {
-                thisobj->SetColor({ 1,0,0,1 });
+               
                 thisobj->Set_isGimic_UpPosNow(true);
             }
             else thisobj->Set_isGimic_UpPosNow(false);

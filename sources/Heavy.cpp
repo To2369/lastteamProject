@@ -18,9 +18,18 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
+    if (NotUpdateFlag)
+    {
+        Return_orijinal_ObjType(elapsedTime);
+        ObjType_effect(elapsedTime);
+        UpdateTransform();
+        Velocty.y = 0;
+        return;
+    }
+    
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
-    box_Collition_obj();
+    //box_Collition_obj();
 
     if (isGimic_UpPosNow)Velocty.y = 0.f;
     else if (!isGimic_UpPosNow)RayCastGround();
@@ -51,9 +60,17 @@ Super_Heavy::~Super_Heavy()
 
 void Super_Heavy::Update(float elapsedTime)
 {
+    if (NotUpdateFlag)
+    {
+        Return_orijinal_ObjType(elapsedTime);
+        ObjType_effect(elapsedTime);
+        UpdateTransform();
+        Velocty.y = 0;
+        return;
+    }
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
-    box_Collition_obj();
+    //box_Collition_obj();
 
     if (isGimic_UpPosNow)Velocty.y = 0.f;
     else if (!isGimic_UpPosNow)RayCastGround();
