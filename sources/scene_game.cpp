@@ -3,7 +3,7 @@
 #include "Input/gamepad.h"
 #include "camera.h"
 #include"Graphics/DebugRenderer.h"
-
+#include"Gimic.h"
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"

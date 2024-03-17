@@ -196,7 +196,9 @@
     <ClCompile Include="imgui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="sources\Collision.cpp" />
+    <ClCompile Include="sources\Crack.cpp" />
     <ClCompile Include="sources\Door_Gimic.cpp" />
+    <ClCompile Include="sources\DropBox_Road.cpp" />
     <ClCompile Include="sources\Goal.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
     <ClCompile Include="sources\Switch_Gimic.cpp" />
@@ -248,6 +250,7 @@
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="sources\Collision.h" />
     <ClInclude Include="sources\collision_mesh.h" />
+    <ClInclude Include="sources\Crack.h" />
     <ClInclude Include="sources\Debug_Stage.h" />
     <ClInclude Include="sources\Cution.h" />
     <ClInclude Include="sources\Fragile.h" />

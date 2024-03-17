@@ -205,6 +205,12 @@
     <ClCompile Include="sources\Collision.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Crack.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\DropBox_Road.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -353,6 +359,9 @@
     </ClInclude>
     <ClInclude Include="sources\Mathf.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Crack.h">
+      <Filter>Headers\objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
