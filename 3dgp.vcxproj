@@ -195,10 +195,10 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
-    <ClCompile Include="sources\Crack.cpp" />
+    <ClCompile Include="sources\Collision.cpp" />
     <ClCompile Include="sources\Door_Gimic.cpp" />
-    <ClCompile Include="sources\DropBox_Road.cpp" />
     <ClCompile Include="sources\Goal.cpp" />
+    <ClCompile Include="sources\Mathf.cpp" />
     <ClCompile Include="sources\Switch_Gimic.cpp" />
     <ClCompile Include="sources\camera.cpp" />
     <ClCompile Include="sources\camera_controller.cpp" />
@@ -246,8 +246,8 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\Collision.h" />
     <ClInclude Include="sources\collision_mesh.h" />
-    <ClInclude Include="sources\Crack.h" />
     <ClInclude Include="sources\Debug_Stage.h" />
     <ClInclude Include="sources\Cution.h" />
     <ClInclude Include="sources\Fragile.h" />
@@ -255,6 +255,7 @@
     <ClInclude Include="sources\Graphics\DebugRenderer.h" />
     <ClInclude Include="sources\Hard_to_Break.h" />
     <ClInclude Include="sources\Heavy.h" />
+    <ClInclude Include="sources\Mathf.h" />
     <ClInclude Include="sources\object.h" />
     <ClInclude Include="sources\objectManajer.h" />
     <ClInclude Include="sources\Player.h" />

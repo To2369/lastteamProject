@@ -41,7 +41,7 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 	//プレイヤー初期設定
 	PlayerManager& playerManager = PlayerManager::Instance();
 	unique_ptr<Player> player = make_unique<Player>(device);
-	player->SetPosition({ -5,0,0 });
+	player->SetPosition({ 5,5,0 });
 	PlayerManager::Instance().Register(std::move(player));
 	{
 		//ステージのオブジェクト初期化
@@ -381,7 +381,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 	}
 	{
 		//プレイヤー描画処理
-		//PlayerManager::Instance().Render(rc.deviceContext);
+		//PlayerManager::Instance().Render(&rc);
 		
 		
 		

@@ -199,11 +199,11 @@
     <ClCompile Include="sources\Goal.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Crack.cpp">
-      <Filter>Sources\objects</Filter>
+    <ClCompile Include="sources\Mathf.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\DropBox_Road.cpp">
-      <Filter>Sources\objects\gimic</Filter>
+    <ClCompile Include="sources\Collision.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -348,8 +348,11 @@
     <ClInclude Include="sources\Gimic.h">
       <Filter>Headers\objects\gimik</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Crack.h">
-      <Filter>Headers\objects</Filter>
+    <ClInclude Include="sources\Collision.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Mathf.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
