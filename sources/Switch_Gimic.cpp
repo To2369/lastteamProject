@@ -71,14 +71,12 @@ bool Switch::gimic_VS_Object()
     for (int i = 0; i < count; i++)
     {
         Object* obj = ince.Get_GameObject(i);
-
-        if (ince.Bounding_Box_vs_Bounding_Box(obj, this, true, 0.045f))
+        
+        if (obj->Get_isGimic_UpPosNow()&&obj->Get_BootGimicType()==this->Get_GimicType())
         {
-            if (obj->Get_isGimic_UpPosNow())
-            {
-                if (obj->Get_isGimic_UpPosNow())type.push_back(obj->Get_Old_Objtype(0));
-            }
+            type.push_back(obj->Get_Old_Objtype(0));
         }
+       
     }
 
     count = type.size();

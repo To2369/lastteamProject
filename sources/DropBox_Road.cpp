@@ -9,6 +9,7 @@ DropBox_Road::DropBox_Road(ID3D11Device* device)
     model = make_unique<Model>(device, filename,true);
     HitBox = make_unique<Model>(device, filename,true);
     initialaize_Set_attribute(ObjType::null, ObjType::null);
+    Gimic_type = Gimic_Type::Drop_Road;
     Scale = { 10.f,10.f,10.f };
     color = {1.f,1.f,1.f,1.f};
   
@@ -31,12 +32,12 @@ void DropBox_Road::Update(float elapsedTime)
                     dropbox.oppnentPos = obj->GetPosition();
                     dropbox.flag = true;
                     dropbox.scaleX = obj->GetScale().x;
-                    obj->Set_NotUpdateFlag(true);
+                    
                 }
             }
             else
             {
-                obj->Set_NotUpdateFlag(false);
+               
                 dropbox.oppnentPos = {};
                 dropbox.flag = false;
             }

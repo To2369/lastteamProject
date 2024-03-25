@@ -25,11 +25,11 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 	case StageName::stage1_1:
 		
 		obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 0.f,2.500659713871f,0.f });
-		/*obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-1.5f });
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, { 2.f,1.000659713871f,-1.5f });
+	//	obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-1.5f });
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, { 0.f,1.000659713871f,0.f });
 		obj_Manager.Initialize_Gimic(name, Gimic_Type::Door, device, { 1.5f,1.000659713871f,-1.5f });
-	*/
-		//obj_Manager.Initialize_Gimic(name, Gimic_Type::Drop_Road, device, { 1.f,1.f,0.5f });
+	
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Drop_Road, device, { 1.f,1.f,0.5f });
 		{
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
@@ -157,6 +157,9 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 			break;
 		case Gimic_Type::Goal:
 			return "Goal";
+			break;
+		case Gimic_Type::Drop_Road:
+			return "Drop_Road";
 			break;
 		case Gimic_Type::null:
 			return "null";

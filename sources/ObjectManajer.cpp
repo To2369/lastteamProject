@@ -273,49 +273,48 @@ void Objectmanajer::Gui(ID3D11Device* device)
 }
 
 
-bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2, bool UpcheckFlag, float offset)
+bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj, bool UpcheckFlag, float offset)
 {
     enum
     {
         max,
         min,
     };
-
-
+  
     XMFLOAT3 thisobj_min{};
     XMFLOAT3 thisobj_max{};
     XMFLOAT3 obj2_min{};
     XMFLOAT3 obj2_max{};
 
-    XMFLOAT3 Maxpos1 = thisobj->GetModel()->bounding_box[min];
-    XMFLOAT3 Minpos1 = thisobj->GetModel()->bounding_box[max];
+    XMFLOAT3 Maxpos1 = obj->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos1 = obj->GetModel()->bounding_box[max];
     {
-        XMStoreFloat(&Maxpos1.x, XMVectorScale(XMLoadFloat(&Maxpos1.x), 0.1f * (thisobj->GetScale().x * 0.1f)));
-        XMStoreFloat(&Maxpos1.y, XMVectorScale(XMLoadFloat(&Maxpos1.y), 0.1f * (thisobj->GetScale().y * 0.1f)));
-        XMStoreFloat(&Maxpos1.z, XMVectorScale(XMLoadFloat(&Maxpos1.z), 0.1f * (thisobj->GetScale().z * 0.1f)));
+        XMStoreFloat(&Maxpos1.x, XMVectorScale(XMLoadFloat(&Maxpos1.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Maxpos1.y, XMVectorScale(XMLoadFloat(&Maxpos1.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Maxpos1.z, XMVectorScale(XMLoadFloat(&Maxpos1.z), 0.1f * (obj->GetScale().z * 0.1f)));
 
-        XMStoreFloat(&Minpos1.x, XMVectorScale(XMLoadFloat(&Minpos1.x), 0.1f * (thisobj->GetScale().x * 0.1f)));
-        XMStoreFloat(&Minpos1.y, XMVectorScale(XMLoadFloat(&Minpos1.y), 0.1f * (thisobj->GetScale().y * 0.1f)));
-        XMStoreFloat(&Minpos1.z, XMVectorScale(XMLoadFloat(&Minpos1.z), 0.1f * (thisobj->GetScale().z * 0.1f)));
+        XMStoreFloat(&Minpos1.x, XMVectorScale(XMLoadFloat(&Minpos1.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Minpos1.y, XMVectorScale(XMLoadFloat(&Minpos1.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Minpos1.z, XMVectorScale(XMLoadFloat(&Minpos1.z), 0.1f * (obj->GetScale().z * 0.1f)));
     }
 
-    XMFLOAT3 Maxpos2 = obj2->GetModel()->bounding_box[min];
-    XMFLOAT3 Minpos2 = obj2->GetModel()->bounding_box[max];
+    XMFLOAT3 Maxpos2 = gimic_obj->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos2 = gimic_obj->GetModel()->bounding_box[max];
     {
-        XMStoreFloat(&Maxpos2.x, XMVectorScale(XMLoadFloat(&Maxpos2.x), 0.1f * (obj2->GetScale().x * 0.1f)));
-        XMStoreFloat(&Maxpos2.y, XMVectorScale(XMLoadFloat(&Maxpos2.y), 0.1f * (obj2->GetScale().y * 0.1f)));
-        XMStoreFloat(&Maxpos2.z, XMVectorScale(XMLoadFloat(&Maxpos2.z), 0.1f * (obj2->GetScale().z * 0.1f)));
+        XMStoreFloat(&Maxpos2.x, XMVectorScale(XMLoadFloat(&Maxpos2.x), 0.1f * (gimic_obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Maxpos2.y, XMVectorScale(XMLoadFloat(&Maxpos2.y), 0.1f * (gimic_obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Maxpos2.z, XMVectorScale(XMLoadFloat(&Maxpos2.z), 0.1f * (gimic_obj->GetScale().z * 0.1f)));
 
-        XMStoreFloat(&Minpos2.x, XMVectorScale(XMLoadFloat(&Minpos2.x), 0.1f * (obj2->GetScale().x * 0.1f)));
-        XMStoreFloat(&Minpos2.y, XMVectorScale(XMLoadFloat(&Minpos2.y), 0.1f * (obj2->GetScale().y * 0.1f)));
-        XMStoreFloat(&Minpos2.z, XMVectorScale(XMLoadFloat(&Minpos2.z), 0.1f * (obj2->GetScale().z * 0.1f)));
+        XMStoreFloat(&Minpos2.x, XMVectorScale(XMLoadFloat(&Minpos2.x), 0.1f * (gimic_obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Minpos2.y, XMVectorScale(XMLoadFloat(&Minpos2.y), 0.1f * (gimic_obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Minpos2.z, XMVectorScale(XMLoadFloat(&Minpos2.z), 0.1f * (gimic_obj->GetScale().z * 0.1f)));
     }
 
 
-    DirectX::XMStoreFloat3(&thisobj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&thisobj->GetPosition())));
-    DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&thisobj->GetPosition())));
-    DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&obj2->GetPosition())));
-    DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&obj2->GetPosition())));
+    DirectX::XMStoreFloat3(&thisobj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
+    DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
     
     if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
         thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
@@ -323,17 +322,20 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2, 
     {
         if (UpcheckFlag)
         {
-            float t_pos = thisobj->GetPosition().y;
-            float o_pos2 = obj2->GetPosition().y +offset;
-            if (t_pos > o_pos2)
-            {
-               
-                thisobj->Set_isGimic_UpPosNow(true);
-            }
-            else thisobj->Set_isGimic_UpPosNow(false);
+            
+            
+                float t_pos = obj->GetPosition().y;
+                float o_pos2 = gimic_obj->GetPosition().y - offset;
+                if (t_pos > o_pos2)
+                {
+                    obj->Set_isGimic_UpPosNow(true);
+                }
+                else obj->Set_isGimic_UpPosNow(false);
+            
+            
         }
         return true;
     }
-    thisobj->Set_isGimic_UpPosNow(false);
+    obj->Set_isGimic_UpPosNow(false);
     return false;
 }

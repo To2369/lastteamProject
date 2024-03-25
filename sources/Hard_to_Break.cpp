@@ -18,14 +18,6 @@ Hard_to_Break::~Hard_to_Break()
 
 void Hard_to_Break::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);
@@ -52,14 +44,7 @@ Super_hard_to_Break::~Super_hard_to_Break()
 
 void Super_hard_to_Break::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
+   
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);

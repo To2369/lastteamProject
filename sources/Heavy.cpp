@@ -1,4 +1,5 @@
 #include"Heavy.h"
+#include <objectManajer.h>
 using namespace std;
 Heavy::Heavy(ID3D11Device* device)
 {
@@ -18,21 +19,31 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
+    Objectmanajer& ince = Objectmanajer::incetance();
+    int count = ince.Get_GameGimicCount();
+    for (int i = 0; i < count; i++)
     {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
+        Gimic* gimic = ince.Get_GameGimic(i);
+        if (ince.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+        {
+            if (Get_isGimic_UpPosNow())
+            {
+                Gimic_Type g = gimic->Get_GimicType();
+                Set_GimicType(g);
+                break;
+            }
+        }
+
     }
-    
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
+  /*  if (isGimic_UpPosNow)
+    {
+        Velocty.y = 0;
+    }*/
+    if (!Get_isGimic_UpPosNow())RayCastGround();
 
     ObjType_effect(elapsedTime);
     UpdateTransform();
@@ -41,6 +52,12 @@ void Heavy::Update(float elapsedTime)
 void Heavy::Render(RenderContext* rc)
 {
     model->render(rc->deviceContext, Transform, 0.0f, color);
+}
+
+bool Heavy::gimic_VS_Object()
+{
+
+    return false;
 }
 
 Super_Heavy::Super_Heavy(ID3D11Device* device)
@@ -60,20 +77,12 @@ Super_Heavy::~Super_Heavy()
 
 void Super_Heavy::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
+    
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
+   if (!Get_isGimic_UpPosNow())RayCastGround();
 
     ObjType_effect(elapsedTime);
     UpdateTransform();

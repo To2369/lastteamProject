@@ -3,7 +3,7 @@
 #include"model.h"
 #include"DirectXMath.h"
 #include"Graphics/RenderContext.h"
-using namespace DirectX;
+
 #include"variable_management_class_for_hit_test.h"
 #include"Graphics/RenderContext.h"
 #include"Collision.h"
@@ -31,7 +31,14 @@ enum class StageName
     stage1_1,
     null,
 };
-
+enum class Gimic_Type
+{
+    Switch,
+    Door,
+    Goal,
+    Drop_Road,
+    null
+};
 
 using ObjType = Obj_attribute;
 //ゲームで使う置物の基底クラス
@@ -46,92 +53,43 @@ public:
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(RenderContext* rc) = 0;
 public:
+    
+public:
     Model* GetModel()const { return this->model.get(); }
 
-    XMFLOAT4X4 GetTransform()const { return Transform; }
-    XMFLOAT3 GetPosition()const { return Position; }
-    XMFLOAT3 GetScale() const { return Scale; }
+    DirectX::XMFLOAT4X4 GetTransform()const { return Transform; }
+    DirectX::XMFLOAT3 GetPosition()const { return Position; }
+    DirectX::XMFLOAT3 GetScale() const { return Scale; }
     ObjType Get_Old_Objtype(int Number)const { return old_attribute_state[Number]; };//この関数がリアルタイムで更新されるType
     ObjType Get_Original_Objtype(int Number)const { return original_attribute_state[Number]; };//定数Type
     float GetReturnTimer(int i)const { return ReturnTimer[i]; }
     Intersection GetIntersection()const { return result_intersection; }
     bool GetDestroyObje()const { return DestroyObj; }
     StageName Get_MyStageName()const { return stage_name; }//今自分がどのステージに置かれてるか取得
-    XMFLOAT3 GetNormal()const { return Normal; }
+    DirectX::XMFLOAT3 GetNormal()const { return Normal; }
     bool Get_isGimic_UpPosNow()const { return isGimic_UpPosNow; }
-    XMFLOAT4 InitColor()const { return { 1.f,1.f,1.f,1.f }; }//orijinalcolor
+    //今自分が起動してるギミックを取得
+    Gimic_Type Get_BootGimicType()const { return GetBootGimicType_; }
+    DirectX::XMFLOAT4 InitColor()const { return { 1.f,1.f,1.f,1.f }; }//orijinalcolor
 public:
-    void SetVeloty(XMFLOAT3 sp) { Velocty = sp; }
+    void SetVeloty(DirectX::XMFLOAT3 sp) { Velocty = sp; }
     void SetReturnTimer(float timer1 = 0.f, int num=0) { ReturnTimer[num] =timer1; }
-    void SetColor(XMFLOAT4 color_) { color = color_; }
+    void SetColor(DirectX::XMFLOAT4 color_) { color = color_; }
     void SetPosition(XMFLOAT3 Pos) { Position = Pos; }
-    void SetScale(XMFLOAT3 scale) { Scale = scale; }
-    void SetAngle(XMFLOAT3 angle) { Angle = angle; }
-    void SetTransform(XMFLOAT4X4 t) { Transform = t; }
+    void SetScale(DirectX::XMFLOAT3 scale) { Scale = scale; }
+    void SetAngle(DirectX::XMFLOAT3 angle) { Angle = angle; }
+    void SetTransform(DirectX::XMFLOAT4X4 t) { Transform = t; }
     void Set_attribute(ObjType type,int Number) { 
         old_attribute_state[Number]=type;
     };
-    void Set_NotUpdateFlag(bool f) { NotUpdateFlag = f; }
     void Set_MystageName(StageName name) { stage_name = name; }
     void Destroy() { DestroyObj = true; }//オブジェクト破棄するための関数
-    void SetNormal(XMFLOAT3 normal) { Normal = normal; };
+    void SetNormal(DirectX::XMFLOAT3 normal) { Normal = normal; };
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
+    void Set_GimicType(Gimic_Type g) { GetBootGimicType_ = g; }
 protected:
+   
     void UpdateTransform();
-
-    //垂直速力更新処理
-    void UpdateVerticalVelocity(float elapsedFrame);
-
-    //垂直移動更新処理
-    void UpdateVerticalMove(float elapsedTime);
-
-    //水平速力更新処理
-    void UpdateHorizontalVelocity(float elapsedFrame);
-
-    //水平移動更新処理
-    void UpdateHorizontalMove(float elapsedTime);
-protected:
-    //移動処理
-    void Move(float vx, float vz, float speed);
-
-    //旋回処理
-    void Turn(float elapsedTime, float vx, float vz, float speed);
-
-    //ジャンプ処理
-    void Jump(float speed);
-
-    //速力処理更新
-    void UpdateVelocity(float elapsedTime);
-
-    //着地したときに呼ばれる
-    virtual void OnLanding() {}
-protected:
-    //重力
-    float gravity = -1.0f;
-    //地面に着地したか
-    bool isGround = false;
-    //摩擦
-    float friction = 0.5f;
-
-    //加速度
-    float acceleration = 1.0f;
-
-    //最大速度
-    float maxMoveSpeed = 5.0f;
-
-    //計算用
-    float moveVecX = 0.0f;
-    float moveVecZ = 0.0f;
-
-    //空中移動
-    float airControl = 0.3f;
-
-    //開始位置を上にするため
-    float stepOffset = 1.0f;
-
-    //斜めの時間制限
-    float slopeRate = 1.0f;
-protected:
     void box_Collition_obj();
     void RayCastGround();
     //性質の効果
@@ -146,22 +104,13 @@ protected:
         old_attribute_state.push_back(type1);
         old_attribute_state.push_back(type2);
     }
-    bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない
-    bool DestroyObj = false;
-    bool NotUpdateFlag = false;//gimic_VS_Object関数にしか使わない予定
-    float ReturnTimer[2]{};
-    StageName stage_name = StageName::null;
-   vector<ObjType> original_attribute_state;
-   vector<ObjType> old_attribute_state;
-    Intersection result_intersection{};
-
-    XMFLOAT3 Normal{ 0.f,0.f,0.f };//raycast用
-    XMFLOAT3 Position{ 0.f,0.f,0.f };
-    XMFLOAT3 Velocty{ 0.f,0.f,0.f };
-    XMFLOAT3 Angle{ 0.f,0.f,0.f };
-    XMFLOAT3 Scale{ 1.f,1.f,1.f };
-    XMFLOAT4 color{ 1.f,1.f,1.f,1.f };
-    XMFLOAT4X4 Transform
+    DirectX::XMFLOAT3 Normal{ 0.f,0.f,0.f };//raycast用
+    DirectX::XMFLOAT3 Position{ 0.f,0.f,0.f };
+    DirectX::XMFLOAT3 Velocty{ 0.f,0.f,0.f };
+    DirectX::XMFLOAT3 Angle{ 0.f,0.f,0.f };
+    DirectX::XMFLOAT3 Scale{ 1.f,1.f,1.f };
+    DirectX::XMFLOAT4 color{ 1.f,1.f,1.f,1.f };
+    DirectX::XMFLOAT4X4 Transform
     {
         1,0,0,0,
         0,1,0,0,
@@ -169,5 +118,18 @@ protected:
         0,0,0,1,
     };
     std::unique_ptr<Model> model;
+private:
+    Gimic_Type GetBootGimicType_ = Gimic_Type::null;
+    bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない
+    bool DestroyObj = false;
+    bool NotUpdateFlag = false;//gimic_VS_Object関数にしか使わない予定
+    float ReturnTimer[2]{};
+    StageName stage_name = StageName::null;
+    //ここをvectorにする必要がないので手が空き次第配列に書き換える
+   vector<ObjType> original_attribute_state;
+   vector<ObjType> old_attribute_state;
+    Intersection result_intersection{};
+
+ 
   
 };

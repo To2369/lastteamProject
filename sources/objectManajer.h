@@ -45,12 +45,12 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="thisobj">自分がオブジェクトの上に乗ってるかチェックを行うオブジェクト</param>
-    /// <param name="obj2"></param>
+    /// <param name="thisobj">自分がgimicの上に乗ってるかチェックを行うオブジェクト</param>
+    /// <param name="gimic"></param>
     /// <param name="UpcheckFlag"></param>
     /// <param name="offset"></param>
     /// <returns></returns>
-    bool Bounding_Box_vs_Bounding_Box(Object* thisobj, Object* obj2,bool UpcheckFlag=false, float offset=0.0f);
+    bool Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj,bool UpcheckFlag=false, float offset=0.0f);
    
     void Gui(ID3D11Device* device);
 private:

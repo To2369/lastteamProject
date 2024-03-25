@@ -19,20 +19,11 @@ Cution::~Cution()
 
 void Cution::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        return;
-    }
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
-
+    if (!Get_isGimic_UpPosNow())RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
@@ -63,21 +54,11 @@ Super_Cution::~Super_Cution()
 
 void Super_Cution::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
-
+    if (!Get_isGimic_UpPosNow())RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }

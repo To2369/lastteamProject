@@ -16,22 +16,13 @@ Fragile::~Fragile()
 
 void Fragile::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
+ 
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
-
+    if (!Get_isGimic_UpPosNow())RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
@@ -59,22 +50,13 @@ Super_fragile::~Super_fragile()
 
 void Super_fragile::Update(float elapsedTime)
 {
-    if (NotUpdateFlag)
-    {
-        Return_orijinal_ObjType(elapsedTime);
-        ObjType_effect(elapsedTime);
-        UpdateTransform();
-        Velocty.y = 0;
-        return;
-    }
+   
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     Velocty.y = -elapsedTime;
     //box_Collition_obj();
 
-    if (isGimic_UpPosNow)Velocty.y = 0.f;
-    else if (!isGimic_UpPosNow)RayCastGround();
-
+    if (!Get_isGimic_UpPosNow())RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }

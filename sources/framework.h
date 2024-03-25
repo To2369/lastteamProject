@@ -208,7 +208,7 @@ private:
 	}
 
 	BOOL fullscreen_mode{ FALSE };
-	BOOL vsync{ FALSE };
+	BOOL vsync{ TRUE };
 	BOOL tearing_supported{ FALSE };
 
 	RECT windowed_rect;
