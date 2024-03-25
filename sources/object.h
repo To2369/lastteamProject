@@ -5,9 +5,6 @@
 #include"Graphics/RenderContext.h"
 
 #include"variable_management_class_for_hit_test.h"
-#include"Graphics/RenderContext.h"
-#include"Collision.h"
-#include"Mathf.h"
 enum class Obj_attribute
 {
     cution,//åyÇ¢//çÏÇ¡ÇΩ
