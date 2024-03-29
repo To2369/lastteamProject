@@ -10,3 +10,9 @@ struct HitResult
     int materialIndex = -1;//衝突したポリゴンのマテリアル番号
     DirectX::XMFLOAT3 rotation = { 0,0,0 };//回転量
 };
+
+class Collision
+{
+public:
+    static bool intersectRayAndModel(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const std::unique_ptr<Model>& model, HitResult& result);
+};

@@ -44,6 +44,7 @@ public:
     void Render(RenderContext* rc);
     void Rigister(unique_ptr<Stage>stage) { Stages.push_back(move(stage)); }
     void Clear();
+    bool RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& Hit);
     void Result_Object_Info(Object&obj);
     void Result_Gimic_Info(Gimic&obj);
    

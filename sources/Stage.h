@@ -1,6 +1,6 @@
 #pragma once
 #include"object.h"
-
+#include"Collision.h"
 class Stage:public Object
 {
 public:
@@ -9,6 +9,7 @@ public:
  
     virtual void Update(float elapsedTime)=0;
     virtual void Render(RenderContext* rc)=0;
+    virtual bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit) = 0;
     //ステージに対してオブジェクトのレイキャスト処理
    // bool modelRay_VS_Stage(Intersection& inter, XMFLOAT3 FastPos, XMFLOAT3 normal/*レイの向き*/, float rayLength/*レイの長さ*/);
     void SetStage(StageName n) { s_name = n; }
@@ -30,7 +31,7 @@ public:
     ~Stage_1_1()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+    bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)override;
 private:
     const char* filename = ".\\resources\\ground.fbx";
-
 };

@@ -200,7 +200,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
     DirectX::XMFLOAT3 normal = { 0,1,0 };
 
     //落下中
-    /*
+    
     if (my < 0.0f)
     {
         //レイの開始位置は足元より少し上
@@ -210,7 +210,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
 
         //レイキャストによる地面判定
         HitResult hit;
-        if (StageManager::Instance().RayCast(start, end, hit))
+        if (StageManager::incetance().RayCast(start, end, hit))
         {
             //法線ベクトル取得
             normal = hit.normal;
@@ -247,7 +247,7 @@ void Character::UpdateVerticalMove(float elapsedTime)
         position.y += my;
         isGround = false;
     }
-    */
+    
     //地面の向きに添うようにXZ軸回転
     {
         //Y軸が法線ベクトル方向に向くオイラー角回転を算出する
@@ -263,7 +263,6 @@ void Character::UpdateVerticalMove(float elapsedTime)
 //水平移動更新
 void Character::UpdateHorizontalMove(float elapsedTime)
 {
-    /*
     //水平速力量計算
     float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     if (velocityLengthXZ > 0.0f)
@@ -278,7 +277,7 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 
         //レイキャストによる壁判定
         HitResult hit;
-        if (StageManager::Instance().RayCast(start, end, hit))
+        if (StageManager::incetance().RayCast(start, end, hit))
         {
             //壁までのベクトル
             DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
@@ -298,7 +297,7 @@ void Character::UpdateHorizontalMove(float elapsedTime)
 
             //壁ずり方向へレイキャスト
             HitResult hit2;
-            if (!StageManager::Instance().RayCast(hit.position, collectPosition, hit2))
+            if (!StageManager::incetance().RayCast(hit.position, collectPosition, hit2))
             {
                 //壁ずる方向で壁に当たらなかったら補正位置に移動
                 position.x = collectPosition.x;
@@ -317,5 +316,4 @@ void Character::UpdateHorizontalMove(float elapsedTime)
             position.z += mz;
         }
     }
-    */
 }

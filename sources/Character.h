@@ -84,9 +84,9 @@ protected:
     float moveVecX = 0.0f;                              //計算用
     float moveVecZ = 0.0f;                              //計算用
 
-    float airControl = 0.3f;                            //空中移動
+    float airControl = 0.3f;                            //空中制御(移動)
     
     float stepOffset = 1.0f;                            //開始位置を上にするため
 
-    float slopeRate = 1.0f;                              //斜めの時間制限
+    float slopeRate = 1.0f;                              //傾斜率
 };
