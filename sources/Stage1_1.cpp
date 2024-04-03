@@ -20,3 +20,8 @@ void Stage_1_1::Render(RenderContext* rc)
 {
     model->render(rc->deviceContext,Transform);
 }
+
+bool Stage_1_1::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& hit)
+{
+    return Collision::intersectRayAndModel(start, end, model, hit);
+}

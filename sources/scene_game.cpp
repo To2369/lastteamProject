@@ -58,10 +58,10 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 	GetAsyncKeyState(VK_RBUTTON);
 
 	////プレイヤー初期設定
-	//PlayerManager& playerManager = PlayerManager::Instance();
-	//unique_ptr<Player> player = make_unique<Player>(device);
-	//player->SetPosition({ 5,5,0 });
-	//PlayerManager::Instance().Register(std::move(player));
+	PlayerManager& playerManager = PlayerManager::Instance();
+	unique_ptr<Player> player = make_unique<Player>(device);
+	player->SetPosition({ 5,5,0 });
+	PlayerManager::Instance().Register(std::move(player));
 	{
 		//ステージのオブジェクト初期化
 		StageManager& ince = StageManager::incetance();
@@ -283,9 +283,9 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 
 	//GroundRayCamera(camera_position, { 1,1,1 },vel.y);
 	//プレイヤー更新処理
-	/*PlayerManager::Instance().Update(elapsed_time);
+	PlayerManager::Instance().Update(elapsed_time);
 	Player* player = PlayerManager::Instance().GetPlayer(0);
-	*/
+	
 
 #ifdef _DEBUG
 #if USE_IMGUI
@@ -309,7 +309,9 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
 		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;
 
-		camera_controller->SetEye(camera_position);
+		DirectX::XMFLOAT3 target = player->GetPosition();
+		target.y += 3;
+		camera_controller->SetEye(target);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);
 
@@ -385,7 +387,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 	}
 	{
 		//プレイヤー描画処理
-		//PlayerManager::Instance().Render(&rc);
+		PlayerManager::Instance().Render(&rc);
 		
 		
 		
@@ -501,7 +503,7 @@ void SceneGame::finalize()
 	Objectmanajer::incetance().Clear();
     Debug_ParameterObj = nullptr;
 	//プレイヤー終了化
-	//PlayerManager::Instance().Clear();
+	PlayerManager::Instance().Clear();
 	
 }
 

@@ -91,6 +91,28 @@ void StageManager::Clear()
     Stages.clear();
 }
 
+bool StageManager::RayCast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& Hit)
+{
+	bool result = false;
+	Hit.distance = FLT_MAX;
+	const int stage_count = Stages.size();
+	for (int i = 0; i < stage_count; i++)
+	{
+		HitResult hit;
+		if (Stages[i]->raycast(start, end, hit))
+		{
+			if (Hit.distance > hit.distance)
+			{
+				Hit = hit;
+				result = true;
+				return result;
+			}
+		}
+
+	}
+	return result;
+}
+
 void StageManager::Result_Object_Info(Object& obj)
 {
 	auto typeMap=[](ObjType type){
