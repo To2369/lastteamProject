@@ -8,7 +8,7 @@ public:
     ~Fragile()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-
+    void Gui()override;
   
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
@@ -23,6 +23,7 @@ public:
     ~Super_fragile()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+    void Gui()override;
 
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";

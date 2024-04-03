@@ -211,6 +211,9 @@
     <ClCompile Include="sources\DropBox_Road.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Goal_navi.cpp">
+      <Filter>Sources\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -362,6 +365,9 @@
     </ClInclude>
     <ClInclude Include="sources\Crack.h">
       <Filter>Headers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Goal_navi.h">
+      <Filter>Headers\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

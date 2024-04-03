@@ -1,5 +1,13 @@
 #include "StageManager.h"
 #include"variable_management_class_for_hit_test.h"
+
+#include "Cution.h"
+#include"Heavy.h"
+#include"Fragile.h"
+#include"Hard_to_Break.h"
+#include"Crack.h"
+#include"camera.h"
+
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
@@ -7,12 +15,6 @@
 #include "../imgui/imgui_impl_win32.h"
 #include"objectManajer.h"
 #endif
-#include "Cution.h"
-#include"Heavy.h"
-#include"Fragile.h"
-#include"Hard_to_Break.h"
-#include"Crack.h"
-#include"camera.h"
 void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 {
 	
@@ -24,12 +26,13 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 		break;
 	case StageName::stage1_1:
 		
-		obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 0.f,2.500659713871f,0.f });
-	//	obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-1.5f });
+		/*obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 0.f,2.500659713871f,0.f });
+		obj_Manager.Initialize_Obj(name,ObjType::cution, device, { 0.f,1.500659713871f,-1.5f });
 		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, { 0.f,1.000659713871f,0.f });
 		obj_Manager.Initialize_Gimic(name, Gimic_Type::Door, device, { 1.5f,1.000659713871f,-1.5f });
 	
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Drop_Road, device, { 1.f,1.f,0.5f });
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Drop_Road, device, { 1.f,1.f,0.5f });*/
+		obj_Manager.Initialize_Gimic(name, Gimic_Type::Goal, device, { 3.f,1.5f,1.f });
 		{
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
@@ -49,7 +52,7 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 }
 void StageManager::Update(float elapsedTime)
 {
-    const int stage_count = Stages.size();
+    const int stage_count = static_cast<int>(Stages.size());
     for (int i = 0; i < stage_count; i++)
     {
         Stages[i]->Update(elapsedTime);
@@ -58,7 +61,7 @@ void StageManager::Update(float elapsedTime)
 
 void StageManager::Render(RenderContext* rc)
 {
-    const int stage_count = Stages.size();
+    const int stage_count = static_cast<int>(Stages.size());
     for (int i = 0; i < stage_count; i++)
     {
         Stages[i]->Render(rc);
@@ -69,7 +72,7 @@ void StageManager::Clear()
 {
 	{
 		Objectmanajer& ince = Objectmanajer::incetance();
-		int count = ince.Get_GameObjCount();
+		int count = static_cast<int>(ince.Get_GameObjCount());
 		for (int i = 0; i < count; i++)
 		{
 			Object* obj = ince.Get_GameObject(i);
@@ -124,6 +127,7 @@ void StageManager::Result_Object_Info(Object& obj)
 			break;
 
 		}
+		return "";
 	};
 	
 	string s = typeMap(obj.Get_Old_Objtype(0));
@@ -167,6 +171,7 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 		default:
 			break;
 		}
+		return "";
 		};
 
 	string s = typeMap(obj.Get_GimicType());
@@ -236,6 +241,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
                 break;
           
             }
+			return "";
         };
 	auto o = [](ObjType type) {
 
@@ -274,6 +280,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 			break;
 		
 		}
+		return "";
 		};
 	auto g = [](Gimic_Type type) {
 
@@ -297,7 +304,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		default:
 			break;
 		}
-
+		return"";
 		};
     ImGui::Text("Debug_Mode : %s", m(Getmode()));
     if (ImGui::CollapsingHeader("SelectMode", ImGuiTreeNodeFlags_DefaultOpen))
@@ -372,7 +379,11 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		}
 		else
 		{
-			if (ImGui::Button("Cancel"))o_or_g = debugType_obj_or_gimic::null;
+			if (ImGui::Button("Cancel"))
+			{
+				CreateObjeType = ObjType::null;
+				o_or_g = debugType_obj_or_gimic::null;
+			}
 		}
 		if (o_or_g == debugType_obj_or_gimic::obj)
 		{
@@ -429,6 +440,9 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		if (CreateGimicType != Gimic_Type::null)
 		{
 			if (ImGui::Button("NULL")) CreateGimicType = Gimic_Type::null;
+			// テキスト入力フィールドを表示
+			const int Buffer = 256;
+			ImGui::InputText("Input Text", const_cast<char*>(ID.c_str()),Buffer);
 			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
 
 			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
@@ -525,7 +539,7 @@ void StageManager::CreateObject(ObjType type, ID3D11Device* device, Intersection
     
 }
 
-void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in)
+void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in,std::string id)
 {
 	Objectmanajer& ince = Objectmanajer::incetance();
 
@@ -535,21 +549,25 @@ void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersecti
 	case Gimic_Type::Switch:
 		obj = make_unique<Switch>(device);
 		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
 		break;
 	case Gimic_Type::Door:
 		obj = make_unique<Door>(device);
 		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
 		break;
 	case Gimic_Type::Goal:
 		obj = make_unique<Goal>(device);
 		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
 		break;
 	case Gimic_Type::Drop_Road:
 		obj = make_unique<DropBox_Road>(device);
 		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
 		break;
 	case Gimic_Type::null:
@@ -602,8 +620,6 @@ void StageManager::Object_Info()
 			for (int i = 0; i < gameobject_count; i++)
 			{
 				Objectmanajer& ince_obj = Objectmanajer::incetance();
-				StageManager& ince = StageManager::incetance();
-				Object* stage_ = ince.GetStages(StageName::stage1_1);
 				Object* obj = ince_obj.Get_GameObject(i);
 
 				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
@@ -628,7 +644,7 @@ void StageManager::Object_Info()
 				};
 			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
 			{
-				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 1.3f, 5.f);
+				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 0.3f, 5.f);
 				const int ii = 2;
 				for (int i = 0; i < ii; i++)
 				{
@@ -638,32 +654,7 @@ void StageManager::Object_Info()
 
 					ImGui::InputFloat(s("returnTimer", i).c_str(), &t);
 				}
-				XMFLOAT3 pos{ Debug_ParameterObj->GetPosition() };
-				if (ImGui::CollapsingHeader("Object_Position", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("Position.x:", &pos.x, 0.f, 5.f);
-					ImGui::SliderFloat("Position.y:", &pos.y, 0.f, 5.f);
-					ImGui::SliderFloat("Position.z:", &pos.z, 0.f, 5.f);
-					Debug_ParameterObj->SetPosition(pos);
-				}
-				XMFLOAT3 Scale{ Debug_ParameterObj->GetScale() };
-				if (ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("objectScaleX:", &Scale.x, 0.f, 100.f);
-					ImGui::SliderFloat("objectScaleY:", &Scale.y, 0.f, 100.f);
-					ImGui::SliderFloat("objectScaleZ:", &Scale.z, 0.f, 100.f);
-					Debug_ParameterObj->SetScale(Scale);
-
-				}
-				XMFLOAT3 normal{ Debug_ParameterObj->GetNormal() };
-				if (ImGui::CollapsingHeader("Normal", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("objectNormalX:", &normal.x, -1.f, 1.f);
-					ImGui::SliderFloat("objectNormalY:", &normal.y, -1.f, 1.f);
-					ImGui::SliderFloat("objectNormalZ:", &normal.z, -1.f, 1.f);
-					Debug_ParameterObj->SetNormal(normal);
-				}
-
+				Debug_ParameterObj->Gui();
 				if (ImGui::CollapsingHeader("Change_ObjectType", ImGuiTreeNodeFlags_DefaultOpen))
 				{
 					enum class Num
@@ -694,6 +685,7 @@ void StageManager::Object_Info()
 							num = Num::null;
 						}
 					}
+				
 				}
 
 			}
@@ -709,8 +701,6 @@ void StageManager::Object_Info()
 			for (int i = 0; i < gamegimic_count; i++)
 			{
 				Objectmanajer& ince_obj = Objectmanajer::incetance();
-				StageManager& ince = StageManager::incetance();
-				Object* stage_ = ince.GetStages(StageName::stage1_1);
 				Gimic* obj = ince_obj.Get_GameGimic(i);
 
 				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
@@ -745,34 +735,7 @@ void StageManager::Object_Info()
 
 					ImGui::InputFloat(s("returnTimer", i).c_str(), &t);
 				}
-				XMFLOAT3 pos{ Debug_ParameterObj->GetPosition() };
-				if (ImGui::CollapsingHeader("Object_Position", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("Position.x:", &pos.x, 0.f, 5.f);
-					ImGui::SliderFloat("Position.y:", &pos.y, 0.f, 5.f);
-					ImGui::SliderFloat("Position.z:", &pos.z, 0.f, 5.f);
-					Debug_ParameterObj->SetPosition(pos);
-				}
-				XMFLOAT3 Scale{ Debug_ParameterObj->GetScale() };
-				if (ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("objectScaleX:", &Scale.x, 0.f, 100.f);
-					ImGui::SliderFloat("objectScaleY:", &Scale.y, 0.f, 100.f);
-					ImGui::SliderFloat("objectScaleZ:", &Scale.z, 0.f, 100.f);
-					Debug_ParameterObj->SetScale(Scale);
-
-				}
-				XMFLOAT3 normal{ Debug_ParameterObj->GetNormal() };
-				if (ImGui::CollapsingHeader("Normal", ImGuiTreeNodeFlags_DefaultOpen))
-				{
-					ImGui::SliderFloat("objectNormalX:", &normal.x, -1.f, 1.f);
-					ImGui::SliderFloat("objectNormalY:", &normal.y, -1.f, 1.f);
-					ImGui::SliderFloat("objectNormalZ:", &normal.z, -1.f, 1.f);
-					Debug_ParameterObj->SetNormal(normal);
-				}
-
-				
-
+				Debug_ParameterObj->Gui();
 			}
 		}
 		break;	
@@ -897,12 +860,12 @@ void StageManager::Create_Object(ID3D11Device* device)
 	VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
 	
 	result_intersection = {};
-	int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
-	int gamegimic_count = Objectmanajer::incetance().Get_GameGimicCount();
+	int stage_count = Stages.size();
+	
 	switch (o_or_g)
 	{
 	case debugType_obj_or_gimic::obj:
-		for (int i = 0; i < gameobject_count; i++)
+		for (int i = 0; i < stage_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
@@ -932,7 +895,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 		break;
 	case debugType_obj_or_gimic::gimic:
 
-		for (int i = 0; i < gameobject_count; i++)
+		for (int i = 0; i < stage_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
@@ -947,8 +910,10 @@ void StageManager::Create_Object(ID3D11Device* device)
 					if (ince.GetCreateGimicType() != Gimic_Type::null && Object_CreateFlag)
 					{
 						result_intersection.intersection_position.y = 0.750f;
-						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection);
+						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection,ID.c_str());
 						ince.DeleteThred();
+						ID = "null";
+
 						break;
 					}
 

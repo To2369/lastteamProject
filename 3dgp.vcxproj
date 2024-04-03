@@ -200,6 +200,7 @@
     <ClCompile Include="sources\Door_Gimic.cpp" />
     <ClCompile Include="sources\DropBox_Road.cpp" />
     <ClCompile Include="sources\Goal.cpp" />
+    <ClCompile Include="sources\Goal_navi.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
     <ClCompile Include="sources\Switch_Gimic.cpp" />
     <ClCompile Include="sources\camera.cpp" />
@@ -255,6 +256,7 @@
     <ClInclude Include="sources\Cution.h" />
     <ClInclude Include="sources\Fragile.h" />
     <ClInclude Include="sources\Gimic.h" />
+    <ClInclude Include="sources\Goal_navi.h" />
     <ClInclude Include="sources\Graphics\DebugRenderer.h" />
     <ClInclude Include="sources\Hard_to_Break.h" />
     <ClInclude Include="sources\Heavy.h" />

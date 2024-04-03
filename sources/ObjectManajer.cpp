@@ -8,6 +8,7 @@
 #include <Fragile.h>
 #include <Hard_to_Break.h>
 #include"Crack.h"
+#include"Goal_navi.h"
 using namespace std;
 using namespace DirectX;
 void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11Device* device,XMFLOAT3 pos)
@@ -79,7 +80,7 @@ void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11De
    
 }
 
-void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos)
+void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos,std::string id)
 {
     unique_ptr<Gimic>gimic;
     switch (type_name)
@@ -88,24 +89,28 @@ void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID
         gimic = make_unique<Switch>(device);
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::Door:
         gimic = make_unique<Door>(device);
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::Goal:
         gimic = make_unique<Goal>(device);
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::Drop_Road:
         gimic = make_unique<DropBox_Road>(device);
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::null:
@@ -114,6 +119,7 @@ void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID
         break;
     }
 }
+
 
 void Objectmanajer::Update(float elapsedTime)
 {
@@ -315,27 +321,86 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj,
     DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
     DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
     DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
-    
-    if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
-        thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
-        thisobj_min.z <= obj2_max.z && thisobj_max.z >= obj2_min.z)
+    if (UpcheckFlag)
     {
-        if (UpcheckFlag)
+        if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
+            thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
+            thisobj_min.z <= obj2_max.z && thisobj_max.z >= obj2_min.z)
         {
-            
-            
-                float t_pos = obj->GetPosition().y;
-                float o_pos2 = gimic_obj->GetPosition().y - offset;
-                if (t_pos > o_pos2)
-                {
-                    obj->Set_isGimic_UpPosNow(true);
-                }
-                else obj->Set_isGimic_UpPosNow(false);
-            
-            
+
+
+
+            float t_pos = obj->GetPosition().y;
+            float o_pos2 = gimic_obj->GetPosition().y - offset;
+            if (t_pos > o_pos2)
+            {
+                obj->Set_isGimic_UpPosNow(true);
+            }
+            else obj->Set_isGimic_UpPosNow(false);
+
+
+
+            return true;
         }
-        return true;
+        obj->Set_isGimic_UpPosNow(false);
+        return false;
     }
-    obj->Set_isGimic_UpPosNow(false);
+    else
+    {
+        if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
+            thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
+            thisobj_min.z <= obj2_max.z && thisobj_max.z >= obj2_min.z)
+        {
+
+            return true;
+        }
+        obj->Set_isGimic_UpPosNow(false);
+        return false;
+    }
+}
+
+bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj, DirectX::XMFLOAT3 vel)
+{
+    enum
+    {
+        max,
+        min,
+    };
+
+    XMFLOAT3 thisobj_min{};
+    XMFLOAT3 thisobj_max{};
+    XMFLOAT3 obj2_min{};
+    XMFLOAT3 obj2_max{};
+
+    XMFLOAT3 Maxpos1 = obj->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos1 = obj->GetModel()->bounding_box[max];
+    {
+        XMStoreFloat(&Maxpos1.x, XMVectorScale(XMLoadFloat(&Maxpos1.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Maxpos1.y, XMVectorScale(XMLoadFloat(&Maxpos1.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Maxpos1.z, XMVectorScale(XMLoadFloat(&Maxpos1.z), 0.1f * (obj->GetScale().z * 0.1f)));
+
+        XMStoreFloat(&Minpos1.x, XMVectorScale(XMLoadFloat(&Minpos1.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Minpos1.y, XMVectorScale(XMLoadFloat(&Minpos1.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Minpos1.z, XMVectorScale(XMLoadFloat(&Minpos1.z), 0.1f * (obj->GetScale().z * 0.1f)));
+    }
+
+    XMFLOAT3 Maxpos2 = gimic_obj->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos2 = gimic_obj->GetModel()->bounding_box[max];
+    {
+        XMStoreFloat(&Maxpos2.x, XMVectorScale(XMLoadFloat(&Maxpos2.x), 0.1f * (gimic_obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Maxpos2.y, XMVectorScale(XMLoadFloat(&Maxpos2.y), 0.1f * (gimic_obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Maxpos2.z, XMVectorScale(XMLoadFloat(&Maxpos2.z), 0.1f * (gimic_obj->GetScale().z * 0.1f)));
+
+        XMStoreFloat(&Minpos2.x, XMVectorScale(XMLoadFloat(&Minpos2.x), 0.1f * (gimic_obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Minpos2.y, XMVectorScale(XMLoadFloat(&Minpos2.y), 0.1f * (gimic_obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Minpos2.z, XMVectorScale(XMLoadFloat(&Minpos2.z), 0.1f * (gimic_obj->GetScale().z * 0.1f)));
+    }
+
+
+    DirectX::XMStoreFloat3(&thisobj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
+    DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
+
     return false;
 }

@@ -2,39 +2,42 @@
 #include"object.h"
 #include"Graphics/RenderContext.h"
 
-
 class Gimic :public Object
 {
 public:
     Gimic() {};
     virtual ~Gimic() {};
 
-    virtual void Update(float elapsedTime) {};
-    virtual void Render(RenderContext* rc) {};
-   
-   
-public:
-    void SetBootFlag(bool f) { bootFlag.push_back(f);}
-    void SetSwitchFlag(bool f) { switchFlag = f; }
-public:
-    ObjType GetMyObjeFlagType()const { return MyObjeFlagType; }
+    virtual void Update(float elapsedTime) =0;
+    virtual void Render(RenderContext* rc) =0;
+    
     //自分のタイプを取得
     Gimic_Type Get_GimicType()const { return Gimic_type; }
-   
-    //ObjType Get_GameObj() { return get_gameobj; }//今自分に乗ってるオブジェクト取得
-    bool Get_SwitchFlag()const { return switchFlag; }
-public://gimicに対して動作するgimic
-    Gimic_Type GetMyGimicFlagType()const { return MyGimicFlagType; }
-    bool GetBootFlag()const { return bootFlag[0]; }
-    bool GetBootFlag(int i)const { return bootFlag[i]; }
-    virtual bool gimic_VS_Object() { return false; };
-    
-    virtual void Gimic_VS_GimicFlagBoot() {};
-    virtual collision_mesh* GetHitBoxMesh() { return nullptr; }
-    virtual bool GetPlayerStopFlag() { return false; };
-    virtual XMFLOAT4X4 GetBoxTransForm() { return XMFLOAT4X4(); }
+public:
+    virtual bool gimic_VS_Object() { return false; };//今のところswitchクラスに対してしか使っていない
+    void SetSwitchFlag(bool f) { switchFlag = f; }//今のところswitchクラスに対してしか使っていない
+    bool Get_SwitchFlag()const { return switchFlag; }//今のところswitchクラスに対してしか使っていない
+public:
+    ObjType GetMyObjeFlagType()const { return MyObjeFlagType; }
+    Gimic_Type GetMyGimicFlagType() { return MyGimicFlagType; }
+    void SetGimicID(string id) { ID = id; }//例：複数のスイッチが出てきた時にこれがないと、一つのスイッチでスイッチで起動するすべてのギミックが起動してしまう
+    string GetGimicID() { return ID;}//この関数を使って自分(ギミック)がどのギミックに対して起動するかを識別する
+public:
+  
+ 
+    virtual collision_mesh* GetHitBoxMesh() { return nullptr; }//今のところDropBoxクラスに対してしか使っていない
+    virtual bool GetPlayerStopFlag(){ return false; };//今のところDropBoxクラスに対してしか使っていない
+    virtual XMFLOAT4X4 GetBoxTransForm() { return XMFLOAT4X4(); }//今のところDropBoxクラスに対してしか使っていない
+public:
+    virtual void Gimic_VS_GimicFlagBoot() {};//今のところDoorクラスに対してしか使っていない
+    bool GetBootFlag()const { return bootFlag[0]; }//今のところDoorクラスに対してしか使っていない
+    bool GetBootFlag(int i)const { return bootFlag[i]; }//今のところDoorクラスに対してしか使っていない
+    void SetBootFlag(bool f) { bootFlag.push_back(f); }//今のところDoorクラスに対してしか使っていない
+public:
+  
+
 protected:
-    
+    string ID;
     vector<bool> bootFlag;
     bool switchFlag=false;
     void Gimic_effect(Gimic_Type type);
@@ -56,7 +59,7 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     bool gimic_VS_Object()override;
-
+    void Gui()override;
   
 
 private:
@@ -72,12 +75,14 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gimic_VS_GimicFlagBoot()override;
+    void Gui()override;
 
 
 public:
 
 
 private:
+    Switch* switch_ = nullptr;
     const char* filename = ".\\resources\\ground.fbx";
 };
 
@@ -88,6 +93,8 @@ public:
     ~Goal()override {}
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+    void Gui()override;
+
     bool GoalInPosition();
 public:
     bool Get_GoalFlag()const { return Goal_Flag; }
@@ -96,6 +103,7 @@ private:
     float radius = 0.2f;
     bool Goal_Flag = false;
     const char*filename= ".\\resources\\ground.fbx";
+    ID3D11Device* device;
 };
 
 class DropBox_Road :public Gimic
@@ -108,15 +116,20 @@ public:
 public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+    void Gui()override;
     void HitBox_TransformUpdate();
+public://set
     void SetHitBox_Position(XMFLOAT3 Pos) { HitBox_Position = Pos; }
     void SetHitBox_Scale(XMFLOAT3 scale) { HitBox_Scale = scale; }
-    void SetRadius(float radius);
+public://get
+    DirectX::XMFLOAT3 GetHitBox_Position() { return HitBox_Position ; }
+    DirectX::XMFLOAT3 GetHitBox_Scale() { return HitBox_Scale; }
     collision_mesh* GetHitBoxMesh()override { return HitBox->Get_RaycastCollition(); };
     XMFLOAT4X4 GetBoxTransForm()override { return HitBox_Transform; }
-    bool isPlayerInRangeOf_Box();
+    bool GetPlayerStopFlag() override { return playerStopFlag; }
+  
 public:
-    bool GetPlayerStopFlag() override{ return playerStopFlag; }
+    bool isPlayerInRangeOf_Box();
     struct dropboxNow
     {
         XMFLOAT3 oppnentPos{};//落ちてきた位置保持
@@ -127,7 +140,7 @@ public:
     dropboxNow GetDropBoxNow() { return dropbox; }
 private:
     dropboxNow dropbox;
-    bool playerStopFlag;
+    bool playerStopFlag{};
     XMFLOAT3 HitBox_Position{ 0.f,0.5f,0.5f };
     XMFLOAT3 HitBox_Velocty{ 0.f,0.f,0.f };
     XMFLOAT3 HitBox_Angle{ 0.f,0.f,0.f };

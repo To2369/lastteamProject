@@ -11,6 +11,7 @@
 #include"Graphics/sprite.h"
 #include"Stage.h"
 #include "StageManager.h"
+#include"Goal_navi.h"
 class SceneGame : public Scene
 {
 public:
@@ -66,6 +67,7 @@ private:
 	 Gimic*Debug_ParameterObj=nullptr;
 	Object* Debug_ParameterPlayer = nullptr;
 	unique_ptr<collision_mesh> debug_collition;
+	unique_ptr<Goal_navigation_Arrow>Goal_navi;
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
 	//Player* player = nullptr;

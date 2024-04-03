@@ -8,6 +8,7 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     bool gimic_VS_Object();
+    void Gui()override;
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 
@@ -19,7 +20,7 @@ public:
     ~Super_Heavy()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-
+    void Gui()override;
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 

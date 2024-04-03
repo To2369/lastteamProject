@@ -9,7 +9,7 @@ public:
     ~Hard_to_Break()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-
+    void Gui()override;
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 
@@ -23,7 +23,7 @@ public:
     ~Super_hard_to_Break()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-
+    void Gui()override;
 private:
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 

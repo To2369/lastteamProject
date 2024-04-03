@@ -31,7 +31,13 @@ class StageManager
 {
 public:
     StageManager() {};
-    ~StageManager() {};
+    ~StageManager() 
+    {
+        if (Debug_ParameterObj)
+        {
+            Debug_ParameterObj = nullptr;
+        }
+    };
     
 
     static StageManager& incetance()
@@ -52,7 +58,13 @@ public:
     /// </summary>
     /// <param name="name">StageManagerの中にある GetNowStage()を引数に使ってください</param>
     /// <returns></returns>
-    Stage* GetStages(StageName name) {   for (const auto& stage : Stages) if (stage->GetNowStage() == name)return stage.get();}
+    Stage* GetStages(StageName name) { 
+        for (const auto& stage : Stages) if (stage->GetNowStage() == name)
+        {
+            return stage.get();
+        }
+        return nullptr;
+    }
    
     void Gui(ID3D11Device*device,RenderContext*rc);
     //ステージ選択したときにセットする
@@ -61,9 +73,9 @@ public:
     void Set_CreateObject_Thred(ObjType t,ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
     { newObject_Thread.push_back(new thread(CreateObject,t,device,in));}
   
-    void Set_CreateGimic_Thred(Gimic_Type t, ID3D11Device* device, Intersection in)
+    void Set_CreateGimic_Thred(Gimic_Type t, ID3D11Device* device, Intersection in,std::string id)
     {
-        newObject_Thread.push_back(new thread(CreateGimic,t, device, in));
+        newObject_Thread.push_back(new thread(CreateGimic,t, device, in,id));
     }
 
 
@@ -98,6 +110,7 @@ private://debugでしか使わない変数達
     Object* Debug_ParameterObj = nullptr;
     bool Object_CreateFlag = false;
     float objLength = 1.3f;//objectを持った際のobject位置の距離倍率
+    std::string ID = "null";
 public:
     DebugMode Getmode() { return mode; }
     ObjType GetCreateObjeType() { return CreateObjeType; }
@@ -107,7 +120,7 @@ public:
     void SetMode(DebugMode m) { mode = m; }
     void SetCreateObjeFlag(ObjType t) { CreateObjeType = t; }
     static void CreateObject(ObjType type,ID3D11Device*device, Intersection in);
-    static void CreateGimic(Gimic_Type type,ID3D11Device*device, Intersection in);
+    static void CreateGimic(Gimic_Type type,ID3D11Device*device, Intersection in,std::string id="");
     void DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device);//この関数はマウス以外でのデバッグを想定してない
     string GetObjectType_S(ObjType type)
     {
