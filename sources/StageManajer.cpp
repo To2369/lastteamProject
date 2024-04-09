@@ -442,7 +442,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 			if (ImGui::Button("NULL")) CreateGimicType = Gimic_Type::null;
 			// テキスト入力フィールドを表示
 			const int Buffer = 256;
-			ImGui::InputText("Input Text", const_cast<char*>(ID.c_str()),Buffer);
+			ImGui::InputText("CreateID", const_cast<char*>(ID.c_str()),Buffer);
 			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
 
 			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
