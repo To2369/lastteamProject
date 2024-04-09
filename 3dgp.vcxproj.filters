@@ -56,12 +56,6 @@
     <Filter Include="Graphics\Headers\stages">
       <UniqueIdentifier>{66a3aea4-0527-4377-9772-127fb0967206}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Graphics\Headers\Character">
-      <UniqueIdentifier>{a26dc5a0-c46e-4485-b477-c708f9b6025a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Graphics\Headers\Character\Player">
-      <UniqueIdentifier>{2be775fd-5eea-4398-9d30-2ec1576ee73e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Sources\Character">
       <UniqueIdentifier>{9e94c70e-2392-47d1-bf2e-4b1468840d54}</UniqueIdentifier>
     </Filter>
@@ -220,6 +214,9 @@
     <ClCompile Include="sources\PlayerManager.cpp">
       <Filter>Sources\Character\Player</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Goal_navi.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -339,12 +336,6 @@
     <ClInclude Include="sources\variable_management_class_for_hit_test.h">
       <Filter>Graphics\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Player.h">
-      <Filter>Graphics\Headers\Character\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\PlayerManager.h">
-      <Filter>Graphics\Headers\Character\Player</Filter>
-    </ClInclude>
     <ClInclude Include="sources\StageManager.h">
       <Filter>Graphics\Headers\stages</Filter>
     </ClInclude>
@@ -372,8 +363,17 @@
     <ClInclude Include="sources\Crack.h">
       <Filter>Graphics\Headers\objects</Filter>
     </ClInclude>
+    <ClInclude Include="sources\Goal_navi.h">
+      <Filter>Graphics\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Player.h">
+      <Filter>Sources\Character\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\PlayerManager.h">
+      <Filter>Sources\Character\Player</Filter>
+    </ClInclude>
     <ClInclude Include="sources\Character.h">
-      <Filter>Graphics\Headers\Character</Filter>
+      <Filter>Sources\Character</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
