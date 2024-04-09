@@ -4,16 +4,7 @@
 #include"DirectXMath.h"
 #include"Graphics/RenderContext.h"
 
-
 #include"variable_management_class_for_hit_test.h"
-#include"Graphics/RenderContext.h"
-#include"Collision.h"
-#include"Mathf.h"
-enum class UI_attribute
-{
-    Goal_Arrow,
-
-};
 enum class Obj_attribute
 {
     cution,//軽い//作った
@@ -45,14 +36,8 @@ enum class Gimic_Type
     Drop_Road,
     null
 };
-//Guiをマジックナンバーを使用して操作しないよう
-struct Gui_parameter_Valu
-{
-   const DirectX::XMFLOAT3 Max{0.5f,0.5f,0.5f};
-   const DirectX::XMFLOAT3 Min{-0.5f,-0.5f,-0.5f};
-};
+
 using ObjType = Obj_attribute;
-using UIType = UI_attribute;
 //ゲームで使う置物の基底クラス
 class Object
 {
@@ -65,7 +50,7 @@ public:
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(RenderContext* rc) = 0;
 public:
-    virtual void Gui() {};
+    
 public:
     Model* GetModel()const { return this->model.get(); }
 
@@ -80,8 +65,8 @@ public:
     StageName Get_MyStageName()const { return stage_name; }//今自分がどのステージに置かれてるか取得
     DirectX::XMFLOAT3 GetNormal()const { return Normal; }
     bool Get_isGimic_UpPosNow()const { return isGimic_UpPosNow; }
-    //今自分が起動してるIDを取得
-   std::string Get_BootGimicType()const { return GetBootGimicType_ID; }
+    //今自分が起動してるギミックを取得
+    Gimic_Type Get_BootGimicType()const { return GetBootGimicType_; }
     DirectX::XMFLOAT4 InitColor()const { return { 1.f,1.f,1.f,1.f }; }//orijinalcolor
 public:
     void SetVeloty(DirectX::XMFLOAT3 sp) { Velocty = sp; }
@@ -98,10 +83,10 @@ public:
     void Destroy() { DestroyObj = true; }//オブジェクト破棄するための関数
     void SetNormal(DirectX::XMFLOAT3 normal) { Normal = normal; };
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
-    void Set_GimicType(string g) { GetBootGimicType_ID = g; }
+    void Set_GimicType(Gimic_Type g) { GetBootGimicType_ = g; }
 protected:
-    
-   virtual void UpdateTransform();
+   
+    void UpdateTransform();
     void box_Collition_obj();
     void RayCastGround();
     //性質の効果
@@ -131,17 +116,17 @@ protected:
     };
     std::unique_ptr<Model> model;
 private:
-    std::string GetBootGimicType_ID = "null";
+    Gimic_Type GetBootGimicType_ = Gimic_Type::null;
     bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない
     bool DestroyObj = false;
     bool NotUpdateFlag = false;//gimic_VS_Object関数にしか使わない予定
     float ReturnTimer[2]{};
     StageName stage_name = StageName::null;
-    //todo:ここをvectorにする必要がないので手が空き次第配列に書き換える
+    //ここをvectorにする必要がないので手が空き次第配列に書き換える
    vector<ObjType> original_attribute_state;
    vector<ObjType> old_attribute_state;
     Intersection result_intersection{};
-protected://gui
+
  
-    Gui_parameter_Valu parameter_valu{};
+  
 };
