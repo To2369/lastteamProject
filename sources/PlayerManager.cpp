@@ -56,8 +56,8 @@ void PlayerManager::DrawDebugGui()
         DirectX::XMFLOAT3 plScale = *players[i]->GetScale();
         ImGui::InputFloat3("Scale", &plScale.x);
 
-        /*DirectX::XMFLOAT3 plvel = *players[i]->GetVelocity();
-        ImGui::InputFloat3("Vel", &plvel.x);*/
+        DirectX::XMFLOAT3 plvel = *players[i]->getVelocity();
+        ImGui::InputFloat3("Vel", &plvel.x);
     }
     ImGui::End();
 }

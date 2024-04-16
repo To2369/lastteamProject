@@ -39,7 +39,7 @@ private:
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     //ジャンプ力
-    float jumpSpeed = 20.0f;
+    float jumpSpeed = 1.0f;
 
     //ジャンプ回数
     int jumpCount = 0;

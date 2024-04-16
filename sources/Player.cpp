@@ -58,8 +58,8 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 {
     //“ü—Íî•ñ‚ğæ“¾
     gamepad& gamePad = gamepad::Instance();
-    float ax = gamePad.thumb_state_lx();//->getAxisLX();
-    float ay = gamePad.thumb_state_ly();//->getAxisLY();
+    float ax = gamePad.thumb_state_rx();//->getAxisLX();
+    float ay = gamePad.thumb_state_ry();//->getAxisLY();
 
     //ƒJƒƒ‰•ûŒü‚ğæ“¾
     Camera& camera = Camera::instance();
@@ -105,7 +105,6 @@ void Player::inputJump()
     gamepad& gamePad = gamepad::Instance();
     if (GetKeyState('Z') & 1)
     {
-        a++;
         //ƒWƒƒƒ“ƒv‰ñ”§ŒÀ
         if (jumpCount < jumpLimit)
         {

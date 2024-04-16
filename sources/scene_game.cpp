@@ -102,8 +102,6 @@ float d_dot_;
 void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y)
 
 {
-
-    
 	gamepad& pad = gamepad::Instance();
 	VMCFHT ince_ray = VMCFHT::instance();
 	Objectmanajer& ince_o = Objectmanajer::incetance();
@@ -118,11 +116,11 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		}
 	}
 	
-	XMFLOAT3 pos = camera_position;
-	XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+	//XMFLOAT3 pos = camera_position;
+	//XMFLOAT3 camerafront{ Camera::instance().GetFront() };
 
 	rayflag = false;
-	auto Ray_vs_kabe = [](VMCFHT& ince_ray, Gimic* obj, XMFLOAT3 &camerapos_,XMFLOAT3 normal,XMFLOAT3 vel)
+	/*auto Ray_vs_kabe = [](VMCFHT& ince_ray, Gimic* obj, XMFLOAT3 &camerapos_,XMFLOAT3 normal,XMFLOAT3 vel)
 
 		{
 			Camera& camera = Camera::instance();
@@ -147,7 +145,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 
 				XMVECTOR End = XMLoadFloat3(&end);
 				XMVECTOR Vec = XMVectorSubtract(Start, End);
-				//objnormal
+				objnormal
 				XMVECTOR Normal = XMLoadFloat3(&result.intersection_normal);
 
 				XMVECTOR Dot = DirectX::XMVector3Dot(Normal,Vec);
@@ -166,102 +164,102 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 
 			}
 			return false;
-		};
+		};*/
 	//DropBox_Road* obj = Debug_ParameterObj.get();
 	    DirectX::XMFLOAT3 moveVec = {};
-	//1人称移動
-	{
-		Camera& camera = Camera::instance();
+	////1人称移動
+	//{
+	//	Camera& camera = Camera::instance();
 
-		DirectX::XMFLOAT3 front = camera.GetFront();
-		
-		//スティックの動き取得
-		float thumb_rx = pad.thumb_state_rx();
-		float thumb_ry = pad.thumb_state_ry();
-		
-		
-		moveVec.x = front.x * thumb_ry;
-		moveVec.y = 0.0f;
-		moveVec.z = front.z * thumb_ry;
-		
-	
-		//前方向正規化
-		float frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
-		if (frontLength > 0.0f)
-		{
-			moveVec.x /= frontLength;
-			moveVec.z /= frontLength;
-		}
-		XMFLOAT3 vec = moveVec;
-		
-		if (thumb_ry != 0.0f)
-		{
-			moveVec.x *= moveSpeed*elapsed_time;
-			moveVec.z *= moveSpeed*elapsed_time;
-			camera_position.x += moveVec.x;
-			camera_position.z += moveVec.z;
-			/*if (Debug_ParameterObj->GetPlayerStopFlag())
-			{
-				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position,vec,moveVec))
-				{
-					int a = 0;
-				}
-				else
-				{
-					camera_position.x += moveVec.x;
-					camera_position.z += moveVec.z;
-				}
-			}
-			else
-			{
-		       camera_position.x += moveVec.x;
-			   camera_position.z += moveVec.z;
-			}*/
-		}
-		
-		
-		DirectX::XMFLOAT3 right = camera.GetRight();
+	//	DirectX::XMFLOAT3 front = camera.GetFront();
+	//	
+	//	//スティックの動き取得
+	//	float thumb_rx = pad.thumb_state_rx();
+	//	float thumb_ry = pad.thumb_state_ry();
+	//	
+	//	
+	//	moveVec.x = front.x * thumb_ry;
+	//	moveVec.y = 0.0f;
+	//	moveVec.z = front.z * thumb_ry;
+	//	
+	//
+	//	//前方向正規化
+	//	float frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
+	//	if (frontLength > 0.0f)
+	//	{
+	//		moveVec.x /= frontLength;
+	//		moveVec.z /= frontLength;
+	//	}
+	//	XMFLOAT3 vec = moveVec;
+	//	
+	//	if (thumb_ry != 0.0f)
+	//	{
+	//		moveVec.x *= moveSpeed*elapsed_time;
+	//		moveVec.z *= moveSpeed*elapsed_time;
+	//		camera_position.x += moveVec.x;
+	//		camera_position.z += moveVec.z;
+	//		/*if (Debug_ParameterObj->GetPlayerStopFlag())
+	//		{
+	//			if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position,vec,moveVec))
+	//			{
+	//				int a = 0;
+	//			}
+	//			else
+	//			{
+	//				camera_position.x += moveVec.x;
+	//				camera_position.z += moveVec.z;
+	//			}
+	//		}
+	//		else
+	//		{
+	//	       camera_position.x += moveVec.x;
+	//		   camera_position.z += moveVec.z;
+	//		}*/
+	//	}
+	//	
+	//	
+	//	DirectX::XMFLOAT3 right = camera.GetRight();
 
-		moveVec.x = right.x * thumb_rx;
-		moveVec.y = 0.0f;
-		moveVec.z = right.z * thumb_rx;
-		
-		//前方向正規化
-		frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
-		if (frontLength > 0.0f)
-		{
-			moveVec.x /= frontLength;
-			moveVec.z /= frontLength;
-		}
-		vec = moveVec;
-	   
-		if (thumb_rx != 0.0f)
-		{
-			moveVec.x *= moveSpeed * elapsed_time;
-			moveVec.z *= moveSpeed * elapsed_time;
-			camera_position.x += moveVec.x;
-			camera_position.z += moveVec.z;
-			/*if (Debug_ParameterObj->GetPlayerStopFlag())
-			{
-				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position, vec, moveVec))
-				{
-					
-				}
-				else
-				{
-					camera_position.x += moveVec.x;
-					camera_position.z += moveVec.z;
-				}
-			}
-			else
-			{
-				camera_position.x += moveVec.x;
-				camera_position.z += moveVec.z;
-			}*/
-			
-			
-		}
-	}
+	//	moveVec.x = right.x * thumb_rx;
+	//	moveVec.y = 0.0f;
+	//	moveVec.z = right.z * thumb_rx;
+	//	
+	//	//前方向正規化
+	//	frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
+	//	if (frontLength > 0.0f)
+	//	{
+	//		moveVec.x /= frontLength;
+	//		moveVec.z /= frontLength;
+	//	}
+	//	vec = moveVec;
+	//   
+	//	if (thumb_rx != 0.0f)
+	//	{
+	//		moveVec.x *= moveSpeed * elapsed_time;
+	//		moveVec.z *= moveSpeed * elapsed_time;
+	//		camera_position.x += moveVec.x;
+	//		camera_position.z += moveVec.z;
+	//		/*if (Debug_ParameterObj->GetPlayerStopFlag())
+	//		{
+	//			if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position, vec, moveVec))
+	//			{
+	//				
+	//			}
+	//			else
+	//			{
+	//				camera_position.x += moveVec.x;
+	//				camera_position.z += moveVec.z;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			camera_position.x += moveVec.x;
+	//			camera_position.z += moveVec.z;
+	//		}*/
+	//		
+	//		
+	//	}
+	//}
 
 	{
 		{
@@ -315,7 +313,10 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
 		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;
 
-		camera_controller->SetEye(camera_position);
+		Player* pl = PlayerManager::Instance().GetPlayer(0);
+		DirectX::XMFLOAT3 target = pl->GetPosition();
+		target.y += 0.5f;
+		camera_controller->SetEye(target);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);
 
@@ -323,7 +324,6 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		float maxAngle = XMConvertToDegrees(camera_controller->GetMaxAngle());
 		if (camera_angle.x < minAngle)camera_angle.x = minAngle;
 		if (camera_angle.x > maxAngle)camera_angle.x = maxAngle;
-
 		camera_controller->Update(elapsed_time);
 
 	}
@@ -513,6 +513,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		ImGui::End();
 		StageManager::incetance().Gui(device_.Get(),&rc);
 		Objectmanajer::incetance().Gui(device_.Get());
+		plm.DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
 		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG

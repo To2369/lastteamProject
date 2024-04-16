@@ -60,12 +60,13 @@ public:
     
     //半径の取得
     float getRadius()const { return radius; }
-    float geta()const { return a; }
+
+    //速度取得
+    const DirectX::XMFLOAT3* getVelocity()const { return &velocity; }
     //着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
     DirectX::XMFLOAT3 GetPosition() { return position; }
 protected:
-    float a = 0;
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
@@ -87,10 +88,10 @@ protected:
 
     bool groundedFlag = false;
 
-    float friction = 0.5f;                          //摩擦力
+    float friction = 0.07f;                          //摩擦力
 
-    float acceleration = 1.0f;                      //加速度
-    float maxMoveSpeed = 5.0f;                      //最大速度
+    float acceleration = 0.1f;                      //加速度
+    float maxMoveSpeed = 0.3f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
     float airControl = 0.3f;                        //空中制御用係数
 };
