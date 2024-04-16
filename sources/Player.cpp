@@ -2,6 +2,7 @@
 #include"camera.h"
 #include"GamePad.h"
 #include"Input/gamepad.h"
+
 #include"StageManager.h"
 //コンストラクタ
 Player::Player(ID3D11Device* device)
@@ -103,7 +104,7 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 void Player::inputJump()
 {
     gamepad& gamePad = gamepad::Instance();
-    if (GetKeyState('Z') & 1)
+    if (gamePad.button_state(gamepad::button::a))
     {
         //ジャンプ回数制限
         if (jumpCount < jumpLimit)
