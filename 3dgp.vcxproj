@@ -196,7 +196,6 @@
     <ClCompile Include="imgui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="sources\Character.cpp" />
-    <ClCompile Include="sources\Collision.cpp" />
     <ClCompile Include="sources\Crack.cpp" />
     <ClCompile Include="sources\Door_Gimic.cpp" />
     <ClCompile Include="sources\DropBox_Road.cpp" />
@@ -250,7 +249,6 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="sources\Character.h" />
-    <ClInclude Include="sources\Collision.h" />
     <ClInclude Include="sources\collision_mesh.h" />
     <ClInclude Include="sources\Crack.h" />
     <ClInclude Include="sources\Cution.h" />

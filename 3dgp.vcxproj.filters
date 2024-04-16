@@ -199,9 +199,6 @@
     <ClCompile Include="sources\Mathf.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Collision.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Crack.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
@@ -353,9 +350,6 @@
     </ClInclude>
     <ClInclude Include="sources\Gimic.h">
       <Filter>Headers\objects\gimik</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\Collision.h">
-      <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="sources\Mathf.h">
       <Filter>Headers</Filter>
