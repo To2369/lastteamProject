@@ -125,7 +125,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		{
 			Camera& camera = Camera::instance();
 			XMFLOAT3 front = camera.GetFront();
-			front.y = 0;
+			front.y = 
 			XMFLOAT3 pos = camerapos_;
 			pos.x += vel.x;
 			pos.z += vel.z;

@@ -33,6 +33,13 @@ void Player::update(float elapsedTime)
 
     //ワールド行列の更新
     UpdateTransform();
+
+    gamepad& gamePad = gamepad::Instance();
+    if (gamePad.button_state(gamepad::button::b))
+    {
+        velocity.y = 0;
+        position.y = 30;
+    }
 }
 
 //描画処理
@@ -67,17 +74,6 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
     const DirectX::XMFLOAT3 cameraFront = camera.GetFront();//camera->getFront();
     const DirectX::XMFLOAT3 cameraRight = camera.GetRight();
 
-    //カメラ前方向ベクトルをXZ単位ベクトルに変換
-    float cameraFrontX = cameraFront.x;
-    float cameraFrontZ = cameraFront.z;
-
-    //カメラ前方向ベクトルを単位ベクトル化
-    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
-    if (cameraFrontLength > 0.0f)
-    {
-        cameraFrontX = cameraFrontX / cameraFrontLength;
-        cameraFrontZ = cameraFrontZ / cameraFrontLength;
-    }
 
     //カメラ右方向ベクトルをXZ単位ベクトルに変換
     float cameraRightX = cameraRight.x;
@@ -86,7 +82,19 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
     if (cameraRightLength > 0.0f)
     {
         cameraRightX = cameraRightX / cameraRightLength;
-        cameraRightZ = cameraRightZ / cameraFrontLength;
+        cameraRightZ = cameraRightZ / cameraRightLength;
+    }
+
+    //カメラ前方向ベクトルをXZ単位ベクトルに変換
+    float cameraFrontX = cameraFront.x;
+    float cameraFrontZ = cameraFront.z;
+
+    //カメラ前方向ベクトルを単位ベクトル化
+    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
+    if (cameraFrontLength < 0.0f)
+    {
+        cameraFrontX = cameraFrontX / cameraFrontLength;
+        cameraFrontZ = cameraFrontZ / cameraFrontLength;
     }
 
     //垂直入力値をカメラ前方向に反映し、水平方向をカメラ右方向に反映し進行ベクトルを計算する

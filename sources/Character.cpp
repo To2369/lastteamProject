@@ -1,5 +1,4 @@
 #include"Character.h"
-#include"StageManager.h"
 #include"Mathf.h"
 
 //行列更新処理
@@ -169,10 +168,11 @@ void Character::updateHorizontalVelocity(float elapsedTime)
 {
     // 速度に力が加わっていたら（0 じゃなかったら）減速処理を行う
     float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+
     if (length > 0.0f)
     {
         // 摩擦力（フレーム単位で計算）
-        float friction = this->friction * elapsedTime * 60.0f;
+        float friction = this->friction * elapsedTime;
 
         //空中にいるときは摩擦力を減少
         if (!groundedFlag)
@@ -206,7 +206,7 @@ void Character::updateHorizontalVelocity(float elapsedTime)
         if (directionLength > 0.0f)
         {
             //加速度(フレーム単位で計算)
-            float acceleration = this->acceleration * elapsedTime * 60.0f;
+            float acceleration = this->acceleration * elapsedTime;
 
             //空中にいるときは加速度を減少
             if (!groundedFlag)
@@ -245,49 +245,145 @@ void Character::updateHorizontalMove(float elapsedTime)
         //計算用の移動後の速度
         float moveX = velocity.x * elapsedTime;
         float moveZ = velocity.z * elapsedTime;
-        //レイの始点位置と終点設定
-       /* DirectX::XMFLOAT3 start = { position.x,position.y,position.z };
-        DirectX::XMFLOAT3 end = { position.x + moveX,position.y,position.z + moveZ };*/
+        ////レイの始点位置と終点設定
+        //DirectX::XMFLOAT3 start = { position.x,position.y,position.z };
+        //DirectX::XMFLOAT3 end = { position.x + moveX,position.y,position.z + moveZ };
+        //DirectX::XMVECTOR Start = XMLoadFloat3(&start);
+        //XMVECTOR End = XMLoadFloat3(&end);
+        //XMVECTOR Vec = XMVectorSubtract(End, Start);
+       /* XMFLOAT3 v;
+        XMStoreFloat3(&v, Vec);*/
 
         DirectX::XMFLOAT3 front = { 0,0,1 };
-        DirectX::XMFLOAT3 vel = {0,0,0};
-        StageManager& ince_st = StageManager::incetance();
-        VMCFHT& ince_ray = VMCFHT::instance();
-        XMFLOAT3 pos = position;
+        DirectX::XMFLOAT3 vel = { 0,0,0 };
 
+        StageManager& ins_st = StageManager::incetance();
+        Objectmanajer& objMgr = Objectmanajer::incetance();
+        VMCFHT& ray = VMCFHT::instance();
+        XMFLOAT3 pos = position;
         pos.x += vel.x;
         pos.z += vel.z;
-        ince_ray.update(pos, front);
-        Object* st = ince_st.GetStages(ince_st.GetNowStage());
-        collision_mesh& mesh = *st->GetModel()->Get_RaycastCollition();
+
         Intersection inter{};
-        if (ince_ray.raycast(mesh, st->GetTransform(), inter, 1.0f))
-        {
+        //StageRayVsCharacterRay(ray, pos, front, ins_st, moveX, moveZ, inter);
+        RayVsCharacter(moveX, moveZ);
+     
+
+
+        //if(gimicRayVscharacterRayFlag||stageRayVscharacterRayFlag)
         //{
+        //    //壁に当たっていない場合は通常の移動
+        //    position.x += moveX;
+        //    position.z += moveZ;
+        //}
+    }
+    
+}
+
+void Character::RayVsCharacter(float moveX,float moveZ)
+{
+
+    DirectX::XMFLOAT3 front = { 0,0,1 };
+    XMFLOAT3 pos = position;
+    pos.x += moveX;
+    pos.z += moveZ;
+
+    Intersection inter{};
+
+    VMCFHT& Stageray = VMCFHT::instance();
+    Stageray.update(pos, front);
+    StageManager& ins_st = StageManager::incetance();               //ステージのインスタンス
+    Object* st = ins_st.GetStages(ins_st.GetNowStage());            //現在のステージ取得
+    collision_mesh& mesh = *st->GetModel()->Get_RaycastCollition(); //ステージメッシュの取得
+
+    Objectmanajer& objMgr = Objectmanajer::incetance();             //オブジェクトのインスタンス
+    for (int i = 0; i < objMgr.Get_GameGimicCount(); i++)
+    {
+        Object* obj = objMgr.Get_GameGimic(i);                      //ギミックの取得
+        XMFLOAT3 objpos = obj->GetPosition();                       //ギミック位置取得
+        VMCFHT& Gimicray = VMCFHT::instance();
+        Gimicray.update(pos, front);
+        collision_mesh& collition = *obj->GetModel()->Get_RaycastCollition();
+
+        if (Gimicray.raycast(collition, obj->GetTransform(), inter, 100.f))
+        {
+            moveX = 0;
+            moveZ = 0;
             DirectX::XMVECTOR Start = { position.x,position.y,position.z };
             XMFLOAT3 end{ inter.intersection_position.x + moveX,
                           inter.intersection_position.y,
                           inter.intersection_position.z + moveZ };
 
-        //    XMVECTOR End = XMLoadFloat3(&end);
-        //    XMVECTOR Vec = XMVectorSubtract(Start, End);
+            /*  XMVECTOR End = XMLoadFloat3(&end);
+              XMVECTOR Vec = XMVectorSubtract(Start, End);
 
-        //    XMVECTOR Normal = XMLoadFloat3(&inter.intersection_normal);
+              XMVECTOR Normal = XMLoadFloat3(&inter.intersection_normal);
 
-        //    XMVECTOR Dot = DirectX::XMVector3Dot(Normal, Vec);
-        //    float dot = 0;
-        //    XMStoreFloat(&dot, Dot);
-        //    //d_dot_ = dot;
-        //    XMVECTOR S = DirectX::XMVectorScale(Normal, dot * 1.1f);
-        //    XMFLOAT3 p;
-        //    XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+              XMVECTOR Dot = DirectX::XMVector3Dot(Normal, Vec);
+              float dot = 0;
+              XMStoreFloat(&dot, Dot);
+              d_dot_ = dot;
+              XMVECTOR S = DirectX::XMVectorScale(Normal, dot * 1.1f);
+              XMFLOAT3 p;
+              XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
 
-        //    position.x = p.x;
-        //    position.z = p.z;
-           /* DirectX::XMFLOAT3 a =
-            {inter.intersection_position.x+vel.x,
-            inter.intersection_position.y,
-            inter.intersection_position.z + vel.z};*/
+              position.x = p.x;
+              position.z = p.z;*/
+              /* DirectX::XMFLOAT3 a =
+               {inter.intersection_position.x+vel.x,
+               inter.intersection_position.y,
+               inter.intersection_position.z + vel.z};*/
+
+            //DirectX::XMVECTOR startVec = DirectX::XMLoadFloat3(&inter.intersection_position);
+            //DirectX::XMVECTOR endVec = DirectX::XMLoadFloat3(&end);
+            //DirectX::XMVECTOR vec = DirectX::XMVectorSubtract(endVec, startVec);
+
+            ////壁の法線ベクトル
+            //DirectX::XMVECTOR normalVec = DirectX::XMLoadFloat3(&inter.intersection_normal);
+
+            ////入射ベクトルを逆ベクトルに変換
+            //vec = DirectX::XMVectorNegate(vec);
+
+            ////入射ベクトルを法線で射影
+            //DirectX::XMVECTOR lengthVec = DirectX::XMVector3Dot(vec, normalVec);
+            //float length;
+            //DirectX::XMStoreFloat(&length, lengthVec);
+
+            ////補正位置へのベクトルを計算
+            //DirectX::XMVECTOR correctVec = DirectX::XMVectorScale(normalVec, length * 1.1f);
+
+            ////最終的な補正位置ベクトルを計算
+            //DirectX::CXMVECTOR correctPosVec = DirectX::XMVectorAdd(endVec, correctVec);
+            //DirectX::XMFLOAT3 correctPos;
+            //DirectX::XMStoreFloat3(&correctPos, correctVec);
+        }
+        //壁との判定
+        else if (Stageray.raycast(mesh, st->GetTransform(), inter, 100.f))
+        {
+            DirectX::XMVECTOR Start = { position.x,position.y,position.z };
+            XMFLOAT3 end{ inter.intersection_position.x + moveX,
+                          inter.intersection_position.y,
+                          inter.intersection_position.z + moveZ };
+
+            //XMVECTOR End = XMLoadFloat3(&end);
+            //XMVECTOR Vec = XMVectorSubtract(Start, End);
+
+            //XMVECTOR Normal = XMLoadFloat3(&inter.intersection_normal);
+
+            //XMVECTOR Dot = DirectX::XMVector3Dot(Normal, Vec);
+            //float dot = 0;
+            //XMStoreFloat(&dot, Dot);
+            ////d_dot_ = dot;
+            //XMVECTOR S = DirectX::XMVectorScale(Normal, dot * 1.1f);
+            //XMFLOAT3 p;
+            //XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+
+            //position.x = p.x;
+            //position.z = p.z;
+            ///* DirectX::XMFLOAT3 a =
+             /*{inter.intersection_position.x+vel.x,
+             inter.intersection_position.y,
+             inter.intersection_position.z + vel.z};*/
 
             DirectX::XMVECTOR startVec = DirectX::XMLoadFloat3(&inter.intersection_position);
             DirectX::XMVECTOR endVec = DirectX::XMLoadFloat3(&end);
@@ -311,6 +407,7 @@ void Character::updateHorizontalMove(float elapsedTime)
             DirectX::CXMVECTOR correctPosVec = DirectX::XMVectorAdd(endVec, correctVec);
             DirectX::XMFLOAT3 correctPos;
             DirectX::XMStoreFloat3(&correctPos, correctVec);
+            break;
         }
         else
         {

@@ -58,6 +58,9 @@ void PlayerManager::DrawDebugGui()
 
         DirectX::XMFLOAT3 plvel = *players[i]->getVelocity();
         ImGui::InputFloat3("Vel", &plvel.x);
+
+        DirectX::XMFLOAT3 pla = *players[i]->geta();
+        ImGui::InputFloat3("a", &pla.x);
     }
     ImGui::End();
 }

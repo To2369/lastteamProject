@@ -1,6 +1,9 @@
 #pragma once
 #include"model.h"
+#include"StageManager.h"
+#include"objectManajer.h"
 #include"DirectXMath.h"
+#include"variable_management_class_for_hit_test.h"
 
 //キャラクター
 class Character
@@ -24,6 +27,10 @@ private:
 
     //水平移動更新処理
     void updateHorizontalMove(float elapsedTime);
+
+    //レイとキャラ判定
+    void RayVsCharacter(float moveX, float moveZ);
+
 protected:
     //移動処理
     void move(float vx, float vz, float speed);
@@ -63,6 +70,7 @@ public:
 
     //速度取得
     const DirectX::XMFLOAT3* getVelocity()const { return &velocity; }
+    const DirectX::XMFLOAT3* geta()const { return &a; }
     //着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
     DirectX::XMFLOAT3 GetPosition() { return position; }
@@ -88,12 +96,14 @@ protected:
 
     bool groundedFlag = false;
 
-    float friction = 0.07f;                          //摩擦力
+    float friction = 0.5f;                          //摩擦力
 
-    float acceleration = 0.1f;                      //加速度
-    float maxMoveSpeed = 0.3f;                      //最大速度
+    float acceleration = 1.0f;                      //加速度
+    float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.3f;                        //空中制御用係数
+    float airControl = 0.1f;                        //空中制御用係数
+    float PushObject = 0.12f;
+    DirectX::XMFLOAT3 a;
 };
 ////キャラクター
 //class Character
