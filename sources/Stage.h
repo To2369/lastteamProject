@@ -1,16 +1,14 @@
 #pragma once
 #include"object.h"
-
-class Stage:public Object
+class Stage :public Object
 {
 public:
     Stage() {};
-    virtual ~Stage(){};
- 
-    virtual void Update(float elapsedTime)=0;
-    virtual void Render(RenderContext* rc)=0;
+    virtual ~Stage() {};
+
+    virtual void Update(float elapsedTime) = 0;
+    virtual void Render(RenderContext* rc) = 0;
     //ステージに対してオブジェクトのレイキャスト処理
-   // bool modelRay_VS_Stage(Intersection& inter, XMFLOAT3 FastPos, XMFLOAT3 normal/*レイの向き*/, float rayLength/*レイの長さ*/);
     void SetStage(StageName n) { s_name = n; }
     StageName GetNowStage() { return s_name; }
 public:
@@ -20,17 +18,76 @@ public:
     XMFLOAT4 GetColor() { return color; }
 private:
     ObjType get_gameobj = ObjType::null;
-    StageName s_name = StageName::stage1_1;
+    StageName s_name = StageName::null;
 };
 
 class Stage_1_1 :public Stage
 {
 public:
-    Stage_1_1(ID3D11Device*device);
+    Stage_1_1(ID3D11Device* device);
     ~Stage_1_1()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
 private:
     const char* filename = ".\\resources\\stage1\\stage_1.fbx";
+};
 
+class stage_Yuka :public Stage
+{
+public:
+    stage_Yuka(ID3D11Device* device);
+    ~stage_Yuka()override {};
+    void Update(float elapsedTime)override;
+    void Render(RenderContext* rc)override;
+    void Gui()override;
+private:
+    const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
+
+};
+
+
+
+enum class Static_Object_name
+{
+    Static_Object,
+    Invisible_Wall,
+    null
+};
+using Static_ObjType = Static_Object_name;
+//静的オブジェクトのクラス
+class Static_Object :public Object
+{
+public:
+    Static_Object() {};
+    virtual ~Static_Object()override {};
+    void Update(float elapsedtime)override {};
+    void Render(RenderContext* rc)override {};
+    void Gui()override {};
+    Static_ObjType GetStatic_ObjType() { return type; }
+    DirectX::XMFLOAT3 GetNormal()const { return Normal; }
+
+protected:
+    Static_ObjType type = Static_ObjType::null;
+    DirectX::XMFLOAT3 Normal{};
+};
+
+
+
+class stage_OBJ :public Static_Object
+{
+public:
+    stage_OBJ(ID3D11Device* device);
+    stage_OBJ(ID3D11Device* device, const char* filename_);
+    ~stage_OBJ()override {};
+    void Update(float elapsedTime)override;
+    void Render(RenderContext* rc)override;
+    void Gui()override;
+private:
+    DirectX::XMFLOAT4X4 boxTransform{
+         1,0,0,0
+        ,0,1,0,0
+        ,0,0,1,0,
+         0,0,0,1 };
+    unique_ptr<Model>model_box;
+    const char* filename = ".\\resources\\stage1\\tana.fbx";
 };

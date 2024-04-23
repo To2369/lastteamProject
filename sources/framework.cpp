@@ -31,10 +31,10 @@ void acquire_high_performance_adapter(IDXGIFactory6* dxgi_factory6, IDXGIAdapter
 	*dxgi_adapter3 = enumerated_adapter.Detach();
 }
 
-framework::framework(HWND hwnd,BOOL fullscreen) 
+framework::framework(HWND hwnd, BOOL fullscreen)
 	: hwnd(hwnd)
-	,fullscreen_mode(fullscreen)
-	,windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
+	, fullscreen_mode(fullscreen)
+	, windowed_style(static_cast<DWORD>(GetWindowLongPtrW(hwnd, GWL_STYLE)))
 {
 	if (fullscreen_mode)
 	{
@@ -68,7 +68,7 @@ framework::framework(HWND hwnd,BOOL fullscreen)
 	//デバイス作成
 	hr = D3D11CreateDevice(adapter3.Get(), D3D_DRIVER_TYPE_UNKNOWN, 0, create_device_flags, &feature_levels, 1, D3D11_SDK_VERSION, &device, NULL, &immediate_context);
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-	
+
 	//スワップチェイン作成
 	create_swap_chain(dxgi_factory6.Get());
 	//ステート作成
@@ -467,7 +467,7 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	ScreenToClient(hwnd, &cursor_pos);
 	SceneManagement::instance().SetCursorPos({ static_cast<float>(cursor_pos.x),static_cast<float>(cursor_pos.y) });
 
-//	D3D11_VIEWPORT viewport = VMCFHT::instance().getdcviewport();
+	//	D3D11_VIEWPORT viewport = VMCFHT::instance().getdcviewport();
 
 #ifdef USE_IMGUI
 	ImGui::Begin("framework");
@@ -518,12 +518,10 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	immediate_context->RSGetViewports(&num_viewports, &viewport);
 
 	//レンダーコンテキストを作成
-	RenderContext rc;
+	RenderContext& rc = RenderContext::incetance();
 	rc.deviceContext = immediate_context.Get();
-	rc.rasterizers[static_cast<int>(rasterizerMode::Sorid_uramen_off)] = rasterizer_states[0];
-	rc.rasterizers[static_cast<int>(rasterizerMode::Wireframe_uramen_off)] = rasterizer_states[1];
-	rc.rasterizers[static_cast<int>(rasterizerMode::Sorid_ryoumen_on)] = rasterizer_states[2];
-	rc.rasterizers[static_cast<int>(rasterizerMode::Wirefream_ryoumen_on)] = rasterizer_states[3];
+
+	rc.device = device.Get();
 	framebuffers[0]->clear(immediate_context.Get(), color);
 	framebuffers[0]->activate(immediate_context.Get());
 
@@ -545,7 +543,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	bit_block_transfer->blit(immediate_context.Get(), framebuffers[0]->shader_resource_views[0].GetAddressOf(),
 		0, 1, pixel_shaders[0].Get());
 	framebuffers[1]->deactivate(immediate_context.Get());
-	
+
 	ID3D11ShaderResourceView* shader_resource_views[2]
 	{ framebuffers[0]->shader_resource_views[0].Get(), framebuffers[1]->shader_resource_views[0].Get() };
 	bit_block_transfer->blit(immediate_context.Get(), shader_resource_views, 0, 2, pixel_shaders[1].Get());

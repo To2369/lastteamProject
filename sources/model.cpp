@@ -127,6 +127,7 @@ void Model::fetch_scene(const char* fbx_filename, bool triangulate, float sampli
 		node.attribute = fbx_node->GetNodeAttribute() ? fbx_node->GetNodeAttribute()->GetAttributeType() : FbxNodeAttribute::EType::eUnknown;
 		node.name = fbx_node->GetName();
 		node.unique_id = fbx_node->GetUniqueID();
+
 		node.parent_index = scene_view.indexof(fbx_node->GetParent() ? fbx_node->GetParent()->GetUniqueID() : 0);
 #endif
 		for (int child_index = 0; child_index < fbx_node->GetChildCount(); ++child_index)
@@ -175,7 +176,7 @@ Model::Model(ID3D11Device* device, const char* fbx_filename, bool triangulate, f
 	}
 	// UNIT.18
 	create_com_objects(device, fbx_filename);
-	thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename,triangulate);
+	thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename, triangulate);
 	compute_bounding_box();
 }
 Model::Model(ID3D11Device* device, const char* fbx_filename, std::vector<std::string>& animation_filenames, bool triangulate, float sampling_rate)
@@ -394,6 +395,7 @@ void Model::fetch_meshes(FbxScene* fbx_scene, std::vector<mesh>& meshes)
 			mesh.bounding_box[1].z = std::max<float>(mesh.bounding_box[1].z, v.position.z);
 		}
 	}
+
 }
 void Model::create_com_objects(ID3D11Device* device, const char* fbx_filename)
 {
@@ -421,7 +423,7 @@ void Model::create_com_objects(ID3D11Device* device, const char* fbx_filename)
 		subresource_data.pSysMem = mesh.indices.data();
 		hr = device->CreateBuffer(&buffer_desc, &subresource_data, mesh.index_buffer.ReleaseAndGetAddressOf());
 		_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-#if 1
+#if 0
 		mesh.vertices.clear();
 		mesh.indices.clear();
 #endif
@@ -603,7 +605,7 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 			immediate_context->UpdateSubresource(constant_buffer.Get(), 0, 0, &data, 0, 0);
 			// 定数(コンスタント)バッファオブジェクトの設定
 			immediate_context->VSSetConstantBuffers(0, 1, constant_buffer.GetAddressOf());
-		
+
 		}
 	}
 }

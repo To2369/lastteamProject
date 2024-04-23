@@ -1,9 +1,6 @@
 #pragma once
 #include"model.h"
-#include"StageManager.h"
-#include"objectManajer.h"
 #include"DirectXMath.h"
-#include"variable_management_class_for_hit_test.h"
 
 //キャラクター
 class Character
@@ -27,10 +24,6 @@ private:
 
     //水平移動更新処理
     void updateHorizontalMove(float elapsedTime);
-
-    //レイとキャラ判定
-    void RayVsCharacter(float moveX, float moveZ);
-
 protected:
     //移動処理
     void move(float vx, float vz, float speed);
@@ -45,36 +38,36 @@ protected:
     void updateVelocity(float elapsedTime);
 
     //着地したときに呼ばれる
-    virtual void OnLanding(){}
+    virtual void OnLanding() {}
 public:
     //位置取得
-    const DirectX::XMFLOAT3* GetPosition()const { return &position; };
+    const DirectX::XMFLOAT3 GetPosition()const { return position; };
 
     //位置設定
     void SetPosition(const DirectX::XMFLOAT3& position) { this->position = position; };
 
     //回転取得
-    const DirectX::XMFLOAT3* GetAngle()const { return &angle; };
+    const DirectX::XMFLOAT3 GetAngle()const { return angle; };
 
     //回転設定
     void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; };
 
     //スケール取得
-    const DirectX::XMFLOAT3* GetScale()const { return &scale; };
+    const DirectX::XMFLOAT3 GetScale()const { return scale; };
 
     //スケール取得
     void  SetScale(const DirectX::XMFLOAT3& scale) { this->scale = scale; };
-    
+    //速度取得
+    DirectX::XMFLOAT3 GetVelocity() { return velocity; };
+    void SetVelocity(XMFLOAT3 vel) { velocity = vel; }
     //半径の取得
     float getRadius()const { return radius; }
-
-    //速度取得
-    const DirectX::XMFLOAT3* getVelocity()const { return &velocity; }
-    const DirectX::XMFLOAT3* geta()const { return &a; }
+    float geta()const { return a; }
     //着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
     DirectX::XMFLOAT3 GetPosition() { return position; }
 protected:
+    float a = 0;
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
@@ -99,11 +92,9 @@ protected:
     float friction = 0.5f;                          //摩擦力
 
     float acceleration = 1.0f;                      //加速度
-    float maxMoveSpeed = 5.0f;                      //最大速度
+    float maxMoveSpeed = 0.5f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.1f;                        //空中制御用係数
-    float PushObject = 0.12f;
-    DirectX::XMFLOAT3 a;
+    float airControl = 0.3f;                        //空中制御用係数
 };
 ////キャラクター
 //class Character

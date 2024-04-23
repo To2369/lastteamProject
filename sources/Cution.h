@@ -10,8 +10,8 @@ public:
     void Render(RenderContext* rc)override;
     void Gui()override;
 
-    
-   
+
+
 private:
     const char* filename = ".\\resources\\stage1\\ball.fbx";
 

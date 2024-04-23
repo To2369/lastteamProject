@@ -2,53 +2,47 @@
 #include"StageManager.h"
 #include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
+
+#ifdef USE_IMGUI
+#include "../imgui/imgui.h"
+#include "../imgui/imgui_internal.h"
+#include "../imgui/imgui_impl_dx11.h"
+#include "../imgui/imgui_impl_win32.h"
+#endif
+#include"Graphics/DebugRenderer.h"
 using namespace DirectX;
 
-void Object::box_Collition_obj()
-{
-
-    Objectmanajer& ince = Objectmanajer::incetance();
-    int count = ince.Get_GameGimicCount();
-    for (int i = 0; i < count; i++)
-    {
-        Object* obj = ince.Get_GameGimic(i);
-
-        if (obj == this)continue;
-        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, false, 0.045f))
-        {
-            break;
-        }
-    }
-}
 
 void Object::RayCastGround()
 {
- 
-    
+
+
     StageManager& ince_st = StageManager::incetance();
     VMCFHT& ince_vf = VMCFHT::instance();
-    XMFLOAT3 normal = GetNormal();;
+    XMFLOAT3 normal = { 0.f,-1.f,0.f };
     float legth = 5.0f;
     XMFLOAT3 pos = Position;
-    float start_point = Scale.y*0.005f;
+    float start_point = Scale.y * 0.005f;
     if (start_point < 0.1f) start_point = 0.1f;
     else if (start_point > 0.5f)start_point = 0.5f;
     pos.y += -start_point;
     ince_vf.update(pos, normal);
-    collision_mesh* mesh = ince_st.GetStages(ince_st.GetNowStage())->GetModel()->Get_RaycastCollition();
-    if (ince_vf.raycast(*mesh, ince_st.GetStages(ince_st.GetNowStage())->GetTransform(), result_intersection, legth))
+    int stagecount = ince_st.GetStageCount();
+    for (int i = 0; i < stagecount; i++)
     {
-        Velocty.y =0.0f;
+        collision_mesh* mesh = ince_st.GetStages(i)->GetModel()->Get_RaycastCollition();
+        if (ince_vf.raycast(*mesh, ince_st.GetStages(i)->GetTransform(), result_intersection, legth))
+        {
+            Velocty.y = 0.0f;
+            break;
+        }
     }
-    else
-    {
-        Position.y += Velocty.y;
-    }
+    Position.y += Velocty.y;
 }
 
 void Object::ObjType_effect(float elapsedTime)
 {
-    
+
     enum class Num
     {
         attribute1 = 0,
@@ -59,7 +53,7 @@ void Object::ObjType_effect(float elapsedTime)
         {
         case ObjType::cution:
 
-          
+
             break;
         case ObjType::Super_cution:
 
@@ -82,10 +76,10 @@ void Object::ObjType_effect(float elapsedTime)
             if (this->Get_Original_Objtype(0) == ObjType::Crack)this->Destroy();
             break;
         case ObjType::Super_fragile:
-            this->SetColor({0.f,0.f,0.f,0.f});
+            this->SetColor({ 0.f,0.f,0.f,0.f });
             break;
         case ObjType::Crack:
-            
+
             break;
         case ObjType::null:
 
@@ -112,7 +106,7 @@ void Object::ObjType_effect(float elapsedTime)
         case ObjType::Super_hard_to_Break:
 
             break;
-     
+
         case ObjType::Fragile:
 
             break;
@@ -152,6 +146,176 @@ void Object::Return_orijinal_ObjType(float elapsedTime)
 }
 
 
+
+
+void Object::BaseGui()
+{
+
+    if (ImGui::CollapsingHeader("Paramerter", ImGuiTreeNodeFlags_DefaultOpen))
+    {
+        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGui::TreeNode("position"))
+            {
+
+                XMFLOAT3 pos{ GetPosition() };
+                ImGui::InputFloat("Position.x:", &pos.x);
+                ImGui::InputFloat("Position.y:", &pos.y);
+                ImGui::InputFloat("Position.z:", &pos.z);
+
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("scale"))
+            {
+                XMFLOAT3 scale{ GetScale() };
+                ImGui::InputFloat("scale.x:", &scale.x);
+                ImGui::InputFloat("scale.y:", &scale.y);
+                ImGui::InputFloat("scale.z:", &scale.z);
+
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("normal"))
+            {
+                XMFLOAT3 normal{ Normal };
+                ImGui::InputFloat("normal.x:", &normal.x);
+                ImGui::InputFloat("normal.y:", &normal.y);
+                ImGui::InputFloat("normal.z:", &normal.z);
+
+                ImGui::TreePop();
+            }
+        }
+
+        if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (ImGui::TreeNode("move_position"))
+            {
+                Gui_parameter_Valu valu = parameter_valu;
+                XMFLOAT3 pos{};
+                ImGui::SliderFloat("move_Position.x:", &pos.x, valu.Min.x, valu.Max.x);
+                ImGui::SliderFloat("move_Position.y:", &pos.y, valu.Min.y, valu.Max.y);
+                ImGui::SliderFloat("move_Position.z:", &pos.z, valu.Min.z, valu.Max.z);
+                Position.x += pos.x;
+                Position.y += pos.y;
+                Position.z += pos.z;
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("move_scale"))
+            {
+                Gui_parameter_Valu valu = parameter_valu;
+                XMFLOAT3 scale{};
+                ImGui::SliderFloat("move_scale.x:", &scale.x, valu.Min.x, valu.Max.x);
+                ImGui::SliderFloat("move_scale.y:", &scale.y, valu.Min.y, valu.Max.y);
+                ImGui::SliderFloat("move_scale.z:", &scale.z, valu.Min.z, valu.Max.z);
+                Scale.x += scale.x;
+                Scale.y += scale.y;
+                Scale.z += scale.z;
+                ImGui::TreePop();
+            }
+            if (ImGui::TreeNode("move_normal"))
+            {
+                Gui_parameter_Valu valu = parameter_valu;
+                XMFLOAT3 normal{ Normal };
+                ImGui::SliderFloat("move_normal.x:", &normal.x, valu.Min.x, valu.Max.x);
+                ImGui::SliderFloat("move_normal.y:", &normal.y, valu.Min.y, valu.Max.y);
+                ImGui::SliderFloat("move_normal.z:", &normal.z, valu.Min.z, valu.Max.z);
+
+                ImGui::TreePop();
+            }
+        }
+    }
+    if (ImGui::TreeNode("SpherePos"))
+    {
+        ImGui::SliderFloat("SpherePos", &Mysphere.sphereLength, 0.f, 1.f);
+        /*const char* r = u8"赤は右";
+        const char* g = u8"緑は左";
+        const char* b = u8"青は前";
+        const char* i = u8"黄色は後ろ";*/
+        if (resultsphere_GUI.type == SphereAttribute::Right)
+        {
+            ImGui::TextUnformatted("red_hit");
+        }
+        else if (resultsphere_GUI.type == SphereAttribute::Left)
+        {
+            ImGui::TextUnformatted("green_left");
+        }
+        else if (resultsphere_GUI.type == SphereAttribute::Front)
+        {
+            ImGui::TextUnformatted("blue_front");
+        }
+        else if (resultsphere_GUI.type == SphereAttribute::Backfront)
+        {
+            ImGui::TextUnformatted("yellow_back");
+        }
+        ImGui::TreePop();
+    }
+}
+
+
+void Object::HitSphere()
+{
+    Objectmanajer& ince = Objectmanajer::incetance();
+    //自分がオブジェクトに接触していたら動けないようにする
+    int count = ince.Get_GameObjCount();
+    for (int i = 0; i < count; i++)
+    {
+        Object* obj = ince.Get_GameObject(i);
+        if (obj == this)continue;
+        ResultSphereQuadPlacement resultSphere{};
+        if (QuadPlacement_vs_ThisSphere(obj->GetMySphere(), Position, resultSphere))
+        {
+            resultsphere_GUI = resultSphere;
+            SetResultSphere(resultSphere);
+            break;
+        }
+        else
+        {
+            resultsphere_GUI = resultSphere;
+            SetResultSphere(resultSphere);
+        }
+
+    }
+}
+
+void Object::CreateQuadPlacement(SphereQuadPlacement& sphere)
+{
+    RenderContext& rc = RenderContext::incetance();
+
+    sphere.pos[0].Spherepos.x += sphere.sphereLength * sphere.sphereLength;//right
+    sphere.pos[1].Spherepos.x -= sphere.sphereLength * sphere.sphereLength;//left
+    sphere.pos[2].Spherepos.z += sphere.sphereLength * sphere.sphereLength;//front
+    sphere.pos[3].Spherepos.z -= sphere.sphereLength * sphere.sphereLength;//back
+    DebugRenderer& ince = DebugRenderer::incetance(rc.device);
+    ince.DrawSphere(sphere.pos[0].Spherepos, sphere.SphereRadius, { 1, 0, 0, 1 });
+    ince.DrawSphere(sphere.pos[1].Spherepos, sphere.SphereRadius, { 0, 1, 0, 1 });
+    ince.DrawSphere(sphere.pos[2].Spherepos, sphere.SphereRadius, { 0, 0, 1, 1 });
+    ince.DrawSphere(sphere.pos[3].Spherepos, sphere.SphereRadius, { 1, 1, 0, 1 });
+    SetMySphere(sphere);
+}
+
+bool Object::QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position, ResultSphereQuadPlacement& outsphere)
+{
+    using namespace DirectX;
+
+    XMVECTOR ThisPos{ XMLoadFloat3(&Position) };
+    const int SphereCount = sphere.size;
+    SphereQuadPlacement param{};
+    for (int i = 0; i < SphereCount; i++)
+    {
+        XMVECTOR QuadSpherePos{ XMLoadFloat3(&sphere.pos[i].Spherepos) };
+        XMVECTOR Vec = XMVector3LengthSq(XMVectorSubtract(QuadSpherePos, ThisPos));
+
+        float dist = XMVectorGetX(Vec);
+        float rad = radius + sphere.SphereRadius;
+        if (dist < rad * rad)
+        {
+            XMStoreFloat3(&outsphere.Spherepos, QuadSpherePos);
+            outsphere.type = sphere.pos[i].Type;
+            return true;
+        }
+    }
+    return false;
+}
+
 void Object::UpdateTransform()
 {
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
@@ -178,298 +342,3 @@ void Object::UpdateTransform()
     DirectX::XMStoreFloat4x4(&Transform, W);
 
 }
-
-////移動処理
-//void Object::Move(float vx, float vz, float speed)
-//{
-//    //移動方向ベクトルを設定
-//    moveVecX = vx;
-//    moveVecZ = vz;
-//
-//    //最大速度設定
-//    maxMoveSpeed = speed;
-//}
-//
-////旋回処理
-//void Object::Turn(float elapsedTime, float vx, float vz, float speed)
-//{
-//    speed *= elapsedTime;
-//    float length = sqrtf(vx * vx + vz * vz);
-//    //進行ベクトルがゼロベクトルの場合は処理する必要なし
-//    if (length < 0.001f)
-//    {
-//        return;
-//    }
-//
-//    //進行ベクトルを単位化
-//    vx /= length;
-//    vz /= length;
-//
-//    //自身の回転値から前方向を求める
-//    float frontX = sinf(Angle.y);//PLAYER
-//    float frontZ = cosf(Angle.y);//PLAYER
-//    //回転角を求めるために２つの単位ベクトルの外積を計算する
-//    float dot = (frontX * vx) + (frontZ * vz);
-//    float rot = 1.0f - dot;
-//
-//    if (rot > speed)
-//    {
-//        rot = speed;
-//    }
-//    //左右判定を行うために２つの単位ベクトルの外積を計算する
-//    float croos = (frontZ * vx) - (frontX * vz);
-//
-//    //２Dの外積判定が正の場合か負の場合によって左右判定が行える
-//    //左右判定を行う事によって左右判定を選択する
-//    if (croos < 0.0f)
-//    {
-//        Angle.y += -rot;
-//    }
-//    else
-//    {
-//        Angle.y += rot;
-//    }
-//}
-//
-////ジャンプ処理
-//void Object::Jump(float speed)
-//{
-//    //上方向の力を設定  
-//    Velocty.y = speed;
-//}
-//
-////速力処理更新
-//void Object::UpdateVelocity(float elapsedTime)
-//{
-//    //経過フレーム
-//    float elapsedFrame = 60.0f * elapsedTime;
-//
-//    //垂直速力更新処理
-//    UpdateVerticalVelocity(elapsedFrame);
-//
-//    //水平速力更新処理
-//    UpdateHorizontalVelocity(elapsedFrame);
-//
-//    //垂直移動更新処理
-//    UpdateVerticalMove(elapsedTime);
-//
-//    //水平移動更新処理
-//    UpdateHorizontalMove(elapsedTime);
-//}
-//
-////垂直速力更新処理
-//void Object::UpdateVerticalVelocity(float elapsedFrame)
-//{
-//    //重力処理
-//    Velocty.y += gravity * elapsedFrame;
-//}
-//
-////水平速力更新処理
-//void Object::UpdateHorizontalVelocity(float elapsedFrame)
-//{
-//    //XZ平面の速力を減速する
-//    float length = sqrtf(Velocty.x * Velocty.x + Velocty.z * Velocty.z);//DirectX::XMVectorGetX(DirectX::XMVector2LengthSq(velVel));
-//    if (length > 0.0f)
-//    {
-//        //摩擦力
-//        float friction = this->friction * elapsedFrame;
-//
-//        //空中にいるときは摩擦力を減らす
-//        if (!isGround)friction *= airControl;
-//
-//        //摩擦による横方向の減速処理
-//        if (length > friction)
-//        {
-//            float vx = Velocty.x / length;
-//            float vz = Velocty.z / length;
-//
-//            Velocty.x -= vx * friction;
-//            Velocty.z -= vz * friction;
-//        }
-//        else
-//            //横方向の速力が摩擦力以下になったので速力無効化
-//        {
-//            //速度ベクトルを０にする
-//            Velocty.x = 0.0f;
-//            Velocty.z = 0.0f;
-//        }
-//    }
-//
-//    //XZ平面の速力を加速する
-//    if (length <= maxMoveSpeed)
-//    {
-//        //移動ベクトルがゼロベクトルでないなら加速する
-//        float moveVecLength = sqrtf(moveVecX * moveVecX + moveVecZ * moveVecZ);
-//        if (moveVecLength > 0.0f)
-//        {
-//            //加速力
-//            float acceleration = this->acceleration * elapsedFrame;
-//
-//            //空中にいるときは加速力を減らす
-//            if (!isGround)acceleration *= airControl;
-//
-//            //移動ベクトルによる加速処理
-//            Velocty.x += moveVecX * acceleration;
-//            Velocty.z += moveVecZ * acceleration;
-//
-//            //最大速度制限
-//            float length = sqrtf(Velocty.x * Velocty.x + Velocty.z * Velocty.z);
-//            if (length > maxMoveSpeed)
-//            {
-//                float vx = Velocty.x / length;
-//                float vz = Velocty.z / length;
-//                Velocty.x = vx * maxMoveSpeed;
-//                Velocty.z = vz * maxMoveSpeed;
-//            }
-//
-//            //下り坂でがたがたしないようにする
-//            if (isGround && slopeRate > 0.0f)
-//            {
-//                //斜面での落下速度-横移動の長さ*経過フレーム
-//                Velocty.y -= length * slopeRate * elapsedFrame;
-//            }
-//        }
-//    }
-//    //移動ベクトルをリセット
-//    moveVecX = 0.0f;
-//    moveVecZ = 0.0f;
-//}
-//
-////垂直移動更新処理
-//void Object::UpdateVerticalMove(float elapsedTime)
-//{
-//    //垂直方向の移動量
-//    float my = Velocty.y * elapsedTime;
-//
-//    slopeRate = 0.0f;
-//
-//    //キャラクターのY軸方向となる法線ベクトル
-//    DirectX::XMFLOAT3 normal = { 0,1,0 };
-//
-//    //落下中
-//    if (my < 0.0f)
-//    {
-//        //レイの開始位置は足元より少し上
-//        DirectX::XMFLOAT3 start = { Position.x,Position.y + stepOffset,Position.z };
-//        //レイの終点位置は移動後の位置
-//        DirectX::XMFLOAT3 end = { Position.x,Position.y + my,Position.z };
-//
-//        //レイキャストによる地面判定
-//        HitResult hit;
-//        //ステージ完成までコメント
-//        //if (StageManager::Instance().RayCast(start, end, hit))
-//        //{
-//        //    //法線ベクトル取得
-//        //    normal = hit.normal;
-//
-//        //    //地面に接他している
-//        //    position = hit.position;
-//
-//
-//        //    //回転
-//        //    angle.y -= hit.rotation.y;
-//
-//        //    //着地した
-//        //    if (!isGround)
-//        //    {
-//        //        OnLanding();
-//        //    }
-//        //    isGround = true;
-//        //    velocity.y = 0.0f;
-//
-//        //    //傾斜率の計算
-//        //    float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
-//        //    slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
-//        //}
-//        //else
-//        //{
-//        //    //空中に浮いている
-//        //    position.y += my;
-//        //    isGround = false;
-//        //}
-//    }
-//    //上昇中
-//    else if (my > 0.0f)
-//    {
-//        Position.y += my;
-//        isGround = false;
-//    }
-//
-//    //地面の向きに添うようにXZ軸回転
-//    {
-//        //Y軸が法線ベクトル方向に向くオイラー角回転を算出する
-//        //angle.x =  atan2f(normal.z, normal.y);//normal.z / normal.y;
-//        //angle.z = -atan2f(normal.x,normal.y);//normal.x / normal.y;
-//
-//        float x = atan2f(normal.z, normal.y);//normal.z / normal.y;
-//        float z = -atan2f(normal.x, normal.y);//normal.x / normal.y;
-//
-//        //線形補完で滑らかにする
-//        Angle.x = Mathf::Leap(Angle.x, x, 0.1f);
-//        Angle.z = Mathf::Leap(Angle.z, z, 0.1f);
-//    }
-//}
-//
-////水平移動更新処理
-//void Object::UpdateHorizontalMove(float elapsedTime)
-//{
-//    //水平速力量計算
-//    float velocityLengthXZ = sqrtf(Velocty.x * Velocty.x + Velocty.z * Velocty.z);
-//    if (velocityLengthXZ > 0.0f)
-//    {
-//        //水平移動値
-//        float mx = Velocty.x * elapsedTime;
-//        float mz = Velocty.z * elapsedTime;
-//
-//        //レイの開始位置と終点位置
-//        DirectX::XMFLOAT3 start = { Position.x,Position.y + stepOffset,Position.z };
-//        DirectX::XMFLOAT3 end = { Position.x + mx,Position.y + stepOffset,Position.z + mz };
-//
-//        //レイキャストによる壁判定
-//        HitResult hit;
-//        //if (StageManager::instance().RayCast(start, end, hit))
-//        //{
-//        //    //壁までのベクトル
-//        //    DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
-//        //    DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
-//        //    DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
-//
-//        //    //壁の法線
-//        //    DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
-//
-//        //    //入射ベクトルを法線に射影
-//        //    DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal);
-//
-//        //    //補正位置の計算
-//        //    DirectX::XMVECTOR CollectPosition/*S*/ = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
-//        //    DirectX::XMFLOAT3 collectPosition;//p
-//        //    DirectX::XMStoreFloat3(&collectPosition, CollectPosition);
-//
-//        //    //反射ベクトル
-//        //    //DirectX::XMVECTOR CollectPosition/*S*/ = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
-//        //    //DirectX::XMFLOAT3 collectPosition;//p
-//        //    //DirectX::XMStoreFloat3(&collectPosition, DirectX::XMVectorAdd(End, CollectPosition));
-//        //    //DirectX::XMVECTOR reflect = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&collectPosition), DirectX::XMLoadFloat3(&hit.position));
-//
-//        //    //壁ずり方向へレイキャスト
-//        //    HitResult hit2;
-//        //    if (!StageManager::Instance().RayCast(hit.position, collectPosition, hit2))
-//        //    {
-//        //        //壁ずる方向で壁に当たらなかったら補正位置に移動
-//        //        position.x = collectPosition.x;
-//        //        position.z = collectPosition.z;
-//        //    }
-//        //    else
-//        //    {
-//        //        position.x = hit2.position.x;
-//        //        position.z = hit2.position.z;
-//        //    }
-//        //}
-//        //else
-//        //{
-//        //    //移動
-//        //    position.x += mx;
-//        //    position.z += mz;
-//        //}
-//    }
-//}

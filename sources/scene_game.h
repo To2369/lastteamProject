@@ -16,20 +16,20 @@ class SceneGame : public Scene
 {
 public:
 	SceneGame() {}
-	~SceneGame() 
+	~SceneGame()
 	{
-		
+
 	}
 
 	//開始処理
-	void initialize(ID3D11Device* device,float x = 1280,float y = 720)override;
+	void initialize(ID3D11Device* device, float x = 1280, float y = 720)override;
 	//更新処理
-	void update(float elapsed_time,ID3D11Device* device,float x,float y)override;
+	void update(float elapsed_time, ID3D11Device* device, float x, float y)override;
 	//描画処理
 	void render(float elapsed_time, RenderContext& rc)override;
 	//終了処理
 	void finalize()override;
-	 
+
 	//void DebugMode_MouseRayCast(DebugMode mode,ID3D11Device* device);
 	//定数 
 	struct parametric_constants
@@ -58,13 +58,13 @@ private:
 	DirectX::XMFLOAT2 currentCursorPos = {};
 	float sensi = 0.1f;
 	bool mouseMove = true;
-	
+
 	DirectX::XMFLOAT3 camera_position{ 0.0f,24.0f, 0.0f };
 private:
 	std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};
 	//unique_ptr<DropBox_Road> Debug_ParameterObj=nullptr;
-	 Gimic*Debug_ParameterObj=nullptr;
+	std::unique_ptr<Stage>Debug_ParameterObj;
 	Object* Debug_ParameterPlayer = nullptr;
 	unique_ptr<collision_mesh> debug_collition;
 	unique_ptr<Goal_navigation_Arrow>Goal_navi;

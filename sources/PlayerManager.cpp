@@ -43,29 +43,28 @@ void PlayerManager::DrawDebugGui()
     int count = players.size();
     for (int i = 0; i < count; i++)
     {
+        using namespace DirectX;
         //ˆÊ’u
         DirectX::XMFLOAT3 plPos = players[i]->GetPosition();
         ImGui::InputFloat3("position", &plPos.x);
         //‰ñ“]
-        DirectX::XMFLOAT3 plAngle = *players[i]->GetAngle();
+        DirectX::XMFLOAT3 plAngle = players[i]->GetAngle();
         DirectX::XMFLOAT3 a{ DirectX::XMConvertToDegrees(plAngle.x), DirectX::XMConvertToDegrees(plAngle.y) , DirectX::XMConvertToDegrees(plAngle.z) };
         ImGui::InputFloat3("Angle", &a.x);
         plAngle = { DirectX::XMConvertToRadians(a.x),DirectX::XMConvertToRadians(a.y), DirectX::XMConvertToRadians(a.z) };
 
         //Šg‘åk¬
-        DirectX::XMFLOAT3 plScale = *players[i]->GetScale();
+        DirectX::XMFLOAT3 plScale = players[i]->GetScale();
         ImGui::InputFloat3("Scale", &plScale.x);
 
-        DirectX::XMFLOAT3 plvel = *players[i]->getVelocity();
-        ImGui::InputFloat3("Vel", &plvel.x);
 
-        DirectX::XMFLOAT3 pla = *players[i]->geta();
-        ImGui::InputFloat3("a", &pla.x);
+        /*DirectX::XMFLOAT3 plvel = *players[i]->GetVelocity();
+        ImGui::InputFloat3("Vel", &plvel.x);*/
     }
     ImGui::End();
 }
 
-void PlayerManager::drawDrawPrimitive(ID3D11Device*device)
+void PlayerManager::drawDrawPrimitive(ID3D11Device* device)
 {
     DebugRenderer debugRenderer = DebugRenderer::incetance(device);
 

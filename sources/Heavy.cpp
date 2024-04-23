@@ -6,9 +6,8 @@
 #include "../imgui/imgui_internal.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
-#include"objectManajer.h"
 #endif
-
+#include"Graphics/DebugRenderer.h"
 using namespace std;
 Heavy::Heavy(ID3D11Device* device)
 {
@@ -17,8 +16,7 @@ Heavy::Heavy(ID3D11Device* device)
 
     //Position = { 0,0,0 };
     Scale.x = Scale.y = Scale.z = 1.f;
-    Normal = { 0.f,-1.f,0.f };
-
+    moveobjectFlag = true;
 }
 
 Heavy::~Heavy()
@@ -28,129 +26,50 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
-    Velocty.y = -elapsedTime*2;
+    Return_orijinal_ObjType(elapsedTime);
+    {
+        SphereQuadPlacement spheres(Position);
+        spheres.sphereLength = 0.367f;
+        CreateQuadPlacement(spheres);
+
+    }
+    Velocty.y = -elapsedTime * 2;
     Objectmanajer& ince = Objectmanajer::incetance();
     int count = ince.Get_GameGimicCount();
-    for (int i = 0; i < count; i++)
     {
-        Gimic* gimic = ince.Get_GameGimic(i);
-        if (ince.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+        //ƒMƒ~ƒbƒN‚É‘Î‚µ‚Ä‰½‚©‚·‚éfor•¶
+        for (int i = 0; i < count; i++)
         {
-            if (Get_isGimic_UpPosNow())
+            Gimic* gimic = ince.Get_GameGimic(i);
+            if (ince.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
             {
-                string g = gimic->GetGimicID();
-                Set_GimicType(g);
-                Velocty.y=0;
-                break;
+                if (Get_isGimic_UpPosNow())
+                {
+                    string g = gimic->GetGimicID();
+                    Set_GimicType(g);
+                    Velocty.y = 0;
+                    break;
+                }
             }
-
         }
-
-    }
-    Return_orijinal_ObjType(elapsedTime);
-
-    count= ince.Get_GameObjCount();
-    for (int i = 0; i < count; i++)
-    {
-        Object* obj = ince.Get_GameObject(i);
-        if (obj == this)continue;
-        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, false, 0.045f))
-        {
-            int a = 0;
-            break;
-        }
+        HitSphere();
     }
     RayCastGround();
-    
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
 
 void Heavy::Render(RenderContext* rc)
 {
+    DebugRenderer& ince = DebugRenderer::incetance(rc->device);
+    ince.DrawSphere(Position, radius, { 1,1,1,1 });
     model->render(rc->deviceContext, Transform, 0.0f, color);
-}
-
-bool Heavy::gimic_VS_Object()
-{
-
-    return false;
 }
 
 void Heavy::Gui()
 {
-    if (ImGui::CollapsingHeader("Paramerter", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::TreeNode("position"))
-            {
-             
-                XMFLOAT3 pos{GetPosition()};
-                ImGui::InputFloat("Position.x:", &pos.x);
-                ImGui::InputFloat("Position.y:", &pos.y);
-                ImGui::InputFloat("Position.z:", &pos.z);
-            
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("scale"))
-            {
-                XMFLOAT3 scale{GetScale()};
-                ImGui::InputFloat("scale.x:", &scale.x);
-                ImGui::InputFloat("scale.y:", &scale.y);
-                ImGui::InputFloat("scale.z:", &scale.z);
-             
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("normal"))
-            {
-                XMFLOAT3 normal{ Normal};
-                ImGui::InputFloat("normal.x:", &normal.x);
-                ImGui::InputFloat("normal.y:", &normal.y);
-                ImGui::InputFloat("normal.z:", &normal.z);
-
-                ImGui::TreePop();
-            }
-        }
-
-        if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::TreeNode("move_position"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 pos{};
-                ImGui::SliderFloat("move_Position.x:", &pos.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("move_Position.y:", &pos.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("move_Position.z:", &pos.z, valu.Min.z, valu.Max.z);
-                Position.x += pos.x;
-                Position.y += pos.y;
-                Position.z += pos.z;
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("move_scale"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 scale{};
-                ImGui::SliderFloat("move_scale.x:", &scale.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("move_scale.y:", &scale.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("move_scale.z:", &scale.z, valu.Min.z, valu.Max.z);
-                Scale.x += scale.x;
-                Scale.y += scale.y;
-                Scale.z += scale.z;
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("move_normal"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 normal{ Normal };
-                ImGui::SliderFloat("move_normal.x:", &normal.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("move_normal.y:", &normal.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("move_normal.z:", &normal.z, valu.Min.z, valu.Max.z);
-
-                ImGui::TreePop();
-            }
-        }
-    }
+    BaseGui();
+    ImGui::SliderFloat("radius", &radius, 0.f, 1.f);
 }
 
 Super_Heavy::Super_Heavy(ID3D11Device* device)
@@ -160,8 +79,7 @@ Super_Heavy::Super_Heavy(ID3D11Device* device)
 
     //Position = { 0,0,0 };
     Scale.x = Scale.y = Scale.z = 10.f;
-    Normal = { 0.f,-1.f,0.f };
-
+    moveobjectFlag = true;
 }
 
 Super_Heavy::~Super_Heavy()
@@ -170,13 +88,18 @@ Super_Heavy::~Super_Heavy()
 
 void Super_Heavy::Update(float elapsedTime)
 {
-    
     Return_orijinal_ObjType(elapsedTime);
-    Velocty.y = -elapsedTime;
-    //box_Collition_obj();
+    {
+        SphereQuadPlacement spheres(Position);
+        spheres.sphereLength = 0.367f;
+        CreateQuadPlacement(spheres);
 
-   if (!Get_isGimic_UpPosNow())RayCastGround();
-
+    }
+    Velocty.y = -elapsedTime * 4;
+    Objectmanajer& ince = Objectmanajer::incetance();
+    int count = ince.Get_GameGimicCount();
+    HitSphere();
+    RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
@@ -188,80 +111,7 @@ void Super_Heavy::Render(RenderContext* rc)
 
 void Super_Heavy::Gui()
 {
-    if (ImGui::CollapsingHeader("Paramerter", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::TreeNode("position"))
-            {
 
-                XMFLOAT3 pos{ GetPosition() };
-                ImGui::InputFloat("Position.x:", &pos.x);
-                ImGui::InputFloat("Position.y:", &pos.y);
-                ImGui::InputFloat("Position.z:", &pos.z);
-
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("scale"))
-            {
-                XMFLOAT3 scale{ GetScale() };
-                ImGui::InputFloat("scale.x:", &scale.x);
-                ImGui::InputFloat("scale.y:", &scale.y);
-                ImGui::InputFloat("scale.z:", &scale.z);
-
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("normal"))
-            {
-                XMFLOAT3 normal{ Normal };
-                ImGui::InputFloat("normal.x:", &normal.x);
-                ImGui::InputFloat("normal.y:", &normal.y);
-                ImGui::InputFloat("normal.z:", &normal.z);
-
-                ImGui::TreePop();
-            }
-        }
-
-        if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                if (ImGui::TreeNode("move_position"))
-                {
-                    Gui_parameter_Valu valu = parameter_valu;
-                    XMFLOAT3 pos{};
-                    ImGui::SliderFloat("move_Position.x:", &pos.x, valu.Min.x, valu.Max.x);
-                    ImGui::SliderFloat("move_Position.y:", &pos.y, valu.Min.y, valu.Max.y);
-                    ImGui::SliderFloat("move_Position.z:", &pos.z, valu.Min.z, valu.Max.z);
-                    Position.x += pos.x;
-                    Position.y += pos.y;
-                    Position.z += pos.z;
-                    ImGui::TreePop();
-                }
-                if (ImGui::TreeNode("move_scale"))
-                {
-                    Gui_parameter_Valu valu = parameter_valu;
-                    XMFLOAT3 scale{};
-                    ImGui::SliderFloat("move_scale.x:", &scale.x, valu.Min.x, valu.Max.x);
-                    ImGui::SliderFloat("move_scale.y:", &scale.y, valu.Min.y, valu.Max.y);
-                    ImGui::SliderFloat("move_scale.z:", &scale.z, valu.Min.z, valu.Max.z);
-                    Scale.x += scale.x;
-                    Scale.y += scale.y;
-                    Scale.z += scale.z;
-                    ImGui::TreePop();
-                }
-                if (ImGui::TreeNode("move_normal"))
-                {
-                    Gui_parameter_Valu valu = parameter_valu;
-                    XMFLOAT3 normal{ Normal };
-                    ImGui::SliderFloat("move_normal.x:", &normal.x, valu.Min.x, valu.Max.x);
-                    ImGui::SliderFloat("move_normal.y:", &normal.y, valu.Min.y, valu.Max.y);
-                    ImGui::SliderFloat("move_normal.z:", &normal.z, valu.Min.z, valu.Max.z);
-
-                    ImGui::TreePop();
-                }
-            }
-
-        }
-    }
+    BaseGui();
+    ImGui::SliderFloat("radius", &radius, 0.f, 1.0f);
 }

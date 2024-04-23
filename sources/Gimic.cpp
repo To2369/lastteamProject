@@ -4,7 +4,7 @@
 
 void Gimic::Gimic_effect(Gimic_Type type)
 {
-  
+
 #if true
     switch (type)
     {
@@ -28,7 +28,7 @@ void Gimic::Gimic_effect(Gimic_Type type)
                 {
                     this->SetReturnTimer();
                 }
-               
+
             }
         }
         break;

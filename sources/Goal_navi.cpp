@@ -13,9 +13,9 @@ Goal_navigation_Arrow::Goal_navigation_Arrow(ID3D11Device* dc)
 {
     model = make_unique<Model>(dc, filename, true);
     Scale = { 0.1f,0.1f,0.1f };
-  //  Angle.x = Angle.y = Angle.z = 0.0f;
+    //  Angle.x = Angle.y = Angle.z = 0.0f;
     DirectX::XMFLOAT3 n(0, 1, 0);		//軸（正規化）
-  
+
     float angle = 0 * PIDIV180;	//角度（ラジアン）
 
     Quaternion = {
@@ -31,8 +31,8 @@ void Goal_navigation_Arrow::Update(float elapsedTime)
 
 
 
-   UpdateArrow_Front();
-   UpdateTransform();
+    UpdateArrow_Front();
+    UpdateTransform();
 }
 
 void Goal_navigation_Arrow::Render(RenderContext* rc)
@@ -48,20 +48,20 @@ void Goal_navigation_Arrow::UpdateArrow_Front()
 
     //playerの代わり
     XMFLOAT3 camerapos{ ince_c.GetEye() };
-   
+
 
     // ゴールの位置を取得
     XMFLOAT3 p = { 0.f,1.f,0.f }; // デフォルトのゴールの位置
     XMFLOAT3 goalpos = { ince_obj.Select_GetGimic(Gimic_Type::Goal) != nullptr ?
                             ince_obj.Select_GetGimic(Gimic_Type::Goal)->GetPosition() : p };
-    XMVECTOR QuaternionVec=XMLoadFloat4(&Quaternion);
+    XMVECTOR QuaternionVec = XMLoadFloat4(&Quaternion);
     if (boot)
     {
         QuaternionVec = D_X_Vec(QuaternionVec, camerapos, goalpos);
-        
+
     }
     XMStoreFloat4(&Quaternion, QuaternionVec);
-   
+
     Position.x = camerapos.x + ince_c.GetFront().x * 1.5f;
     Position.y = camerapos.y + ince_c.GetFront().y * 1.5f;
     Position.z = camerapos.z + ince_c.GetFront().z * 1.5f;
@@ -79,19 +79,19 @@ void Goal_navigation_Arrow::UpdateTransform()
     const float scale_factor = 0.01f;
     DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
 
-    DirectX::XMMATRIX M=DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2*ang);
+    DirectX::XMMATRIX M = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2 * ang);
     //スケール行列を作成
     XMMATRIX S = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
     //回転行列作成
-    XMStoreFloat4(&Quaternion,XMQuaternionNormalize(XMLoadFloat4(&Quaternion)));
+    XMStoreFloat4(&Quaternion, XMQuaternionNormalize(XMLoadFloat4(&Quaternion)));
     Quaternion.z;
     XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&Quaternion));
     //位置行列を作成
     XMMATRIX T = XMMatrixTranslation(Position.x, Position.y, Position.z);
     //4つの行列を組み合わせて、ワールド座標を作成
-    M*= C *S * R * T;
+    M *= C * S * R * T;
     //計算したワールド座標を取り出す
-    
+
     DirectX::XMStoreFloat4x4(&Transform, M);
 }
 void Goal_navigation_Arrow::Gui()
@@ -104,18 +104,18 @@ void Goal_navigation_Arrow::Gui()
         {
             boot = false;
         }
-        else if(!boot)
+        else if (!boot)
         {
             boot = true;
         }
-    } 
-    ImGui::SliderFloat("", &ang, 0.f, 10.f);
-    ImGui::SliderFloat("Quaternion.x", &Quaternion.x, -10.f, 10.f);
-    ImGui::SliderFloat("Quaternion.y", &Quaternion.y, -10.f, 10.f);
-    ImGui::SliderFloat("Quaternion.z", &Quaternion.z, -10.f, 10.f);
-    ImGui::SliderFloat("Quaternion.w", &Quaternion.w, -10.f, 10.f);
+    }
+    SliderFloat("", &ang, 0.f, 10.f);
+    SliderFloat("Quaternion.x", &Quaternion.x, -10.f, 10.f);
+    SliderFloat("Quaternion.y", &Quaternion.y, -10.f, 10.f);
+    SliderFloat("Quaternion.z", &Quaternion.z, -10.f, 10.f);
+    SliderFloat("Quaternion.w", &Quaternion.w, -10.f, 10.f);
     /*XMFLOAT4 Q=Quaternion;
-    
+
     DirectX::XMVECTOR forward, right, up;
     DirectX::XMVECTOR QuaternionVec = DirectX::XMLoadFloat4(&Quaternion);
 
@@ -174,7 +174,7 @@ void Goal_navigation_Arrow::Gui()
     //ang.y = XMConvertToRadians(ang.y);
     //ang.z = XMConvertToRadians(ang.z);
     //SetAngle(ang);
-    
+
 }
 
 
@@ -216,19 +216,19 @@ DirectX::XMVECTOR Goal_navigation_Arrow::D_X_Vec(DirectX::XMVECTOR orientationVe
 
         //④矢印の現在姿勢（orientationVec）に回転クオータニオン（q）を合成する
         //orientationVec = DirectX::XMQuaternionMultiply(orientationVec , q);
-        XMVECTOR Q= DirectX::XMQuaternionMultiply(orientationVec_, q);
+        XMVECTOR Q = DirectX::XMQuaternionMultiply(orientationVec_, q);
         XMFLOAT4 Qfloat4;
         XMFLOAT4 ofloat4;
-        XMStoreFloat4(&Qfloat4,Q);
-        XMStoreFloat4(&ofloat4,orientationVec_);
+        XMStoreFloat4(&Qfloat4, Q);
+        XMStoreFloat4(&ofloat4, orientationVec_);
 
         //⑤ ④をコメントアウトし、矢印を徐々に目標座標に向ける
         //※DirectX::XMQuaternionSlerp関数を使う（補間パラメータtは0.03とする）
-        return orientationVec_ = DirectX::XMQuaternionSlerp(orientationVec_,Q, 0.06f);
+        return orientationVec_ = DirectX::XMQuaternionSlerp(orientationVec_, Q, 0.06f);
     }
 
     return orientationVec_;
 #endif
 
-    
+
 }

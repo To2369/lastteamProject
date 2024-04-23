@@ -15,9 +15,9 @@
 #include "../imgui/imgui_impl_win32.h"
 #include"objectManajer.h"
 #endif
-void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
+void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 {
-	
+	using namespace std;
 	Objectmanajer& obj_Manager = Objectmanajer::incetance();
 	XMFLOAT3 pos{};
 	switch (name)
@@ -25,35 +25,49 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 	case StageName::Tutolial:
 		break;
 	case StageName::stage1_1:
-		
-		obj_Manager.Initialize_Obj(name,ObjType::heavy, device, { 
+
+		obj_Manager.Initialize(name, ObjType::heavy, device, {
 			 -1.037836f,
-			 22.747557f,
-			 -0.730794f
+			 23.747557f,
+			 -0.430794f
 			});
-		
-		
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Door, device, {
+
+
+		obj_Manager.Initialize(name, Gimic_Type::Door, device, {
 			 -1.515878f,
 			 23.275631f,
 			 -0.925332f
-			});
-	
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Switch, device, {
+			}, "kabe");
+
+		obj_Manager.Initialize(name, Gimic_Type::Switch, device, {
 			-2.010655f,
 			22.747557f,
 			-0.632938f
-			});
-		obj_Manager.Initialize_Gimic(name, Gimic_Type::Goal, device, {
+			}, "kabe");
+		obj_Manager.Initialize(name, Gimic_Type::Goal, device, {
 		-0.970918,
 		22.747557,
 		-1.307508
 			});
 		{
+			unique_ptr<Static_Object>obj = make_unique<stage_OBJ>(device);
+			obj_Manager.Initialize_Static_Object(move(obj));
+		}
+		{
+
+			obj_Manager.Initialize_InvisibleBarria(device, { 0.762f,23.473f,-0.290f });
+		}
+		{
+
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
-			SetStage(StageName::stage1_1);
+			stage->SetStage(StageName::stage1_1);
 			Rigister(move(stage));
+
+			unique_ptr<Stage>hokyou_yuka = make_unique<stage_Yuka>(device);
+			hokyou_yuka->SetStage(StageName::stage1_1);
+			Rigister(move(hokyou_yuka));
+			SetStage(StageName::stage1_1);
 		}
 		break;
 	case StageName::null:
@@ -61,27 +75,27 @@ void StageManager::Initialize_GameStage(StageName name,ID3D11Device*device)
 	default:
 		break;
 	}
-	
-	
+
+
 
 
 }
 void StageManager::Update(float elapsedTime)
 {
-    const int stage_count = static_cast<int>(Stages.size());
-    for (int i = 0; i < stage_count; i++)
-    {
-        Stages[i]->Update(elapsedTime);
-    }
+	const int stage_count = static_cast<int>(Stages.size());
+	for (int i = 0; i < stage_count; i++)
+	{
+		Stages[i]->Update(elapsedTime);
+	}
 }
 
 void StageManager::Render(RenderContext* rc)
 {
-    const int stage_count = static_cast<int>(Stages.size());
-    for (int i = 0; i < stage_count; i++)
-    {
-        Stages[i]->Render(rc);
-    }
+	const int stage_count = static_cast<int>(Stages.size());
+	for (int i = 0; i < stage_count; i++)
+	{
+		Stages[i]->Render(rc);
+	}
 }
 
 void StageManager::Clear()
@@ -89,27 +103,37 @@ void StageManager::Clear()
 	{
 		Objectmanajer& ince = Objectmanajer::incetance();
 		int count = static_cast<int>(ince.Get_GameObjCount());
+		OutputDebugStringA("/////////////OBJECT_INFO///////////////"); OutputDebugStringA("\n"); OutputDebugStringA("\n");
 		for (int i = 0; i < count; i++)
 		{
 			Object* obj = ince.Get_GameObject(i);
 			Result_Object_Info(*obj);
 		}
 		count = ince.Get_GameGimicCount();
+		OutputDebugStringA("/////////////GIMIC_INFO///////////////"); OutputDebugStringA("\n"); OutputDebugStringA("\n");
 		for (int i = 0; i < count; i++)
 		{
-			Gimic* gimic=ince.Get_GameGimic(i);
+			Gimic* gimic = ince.Get_GameGimic(i);
 			Result_Gimic_Info(*gimic);
+		}
+		OutputDebugStringA("/////////////STATIC_OBJECT_INFO///////////////"); OutputDebugStringA("\n"); OutputDebugStringA("\n");
+		count = ince.Get_GameStatic_ObjectCount();
+		for (int i = 0; i < count; i++)
+		{
+			Static_Object* obj = ince.Get_GameStatic_Object(i);
+			Result_Static_Object_Info(*obj);
 		}
 	}
 
 
 
-    Stages.clear();
+	Stages.clear();
 }
 
 void StageManager::Result_Object_Info(Object& obj)
 {
-	auto typeMap=[](ObjType type){
+
+	auto typeMap = [](ObjType type) {
 		switch (type)
 		{
 		case ObjType::cution:
@@ -144,28 +168,29 @@ void StageManager::Result_Object_Info(Object& obj)
 
 		}
 		return "";
-	};
-	
+		};
+
 	string s = typeMap(obj.Get_Old_Objtype(0));
 	string pos;
 	string scale;
 	OutputDebugStringA(s.c_str());
 	OutputDebugStringA("\n");
-	OutputDebugStringA("Position.x: "); OutputDebugStringA(to_string(obj.GetPosition().x).c_str()); OutputDebugStringA(",");OutputDebugStringA("\n");
-	OutputDebugStringA("Position.y: "); OutputDebugStringA(to_string(obj.GetPosition().y).c_str()); OutputDebugStringA(",");OutputDebugStringA("\n");
+	OutputDebugStringA("Position.x: "); OutputDebugStringA(to_string(obj.GetPosition().x).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
+	OutputDebugStringA("Position.y: "); OutputDebugStringA(to_string(obj.GetPosition().y).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
 	OutputDebugStringA("Position.z: "); OutputDebugStringA(to_string(obj.GetPosition().z).c_str()); OutputDebugStringA("\n");
 	OutputDebugStringA("\n");
 	OutputDebugStringA("Scale.x: "); OutputDebugStringA(to_string(obj.GetScale().x).c_str()); OutputDebugStringA("\n");
 	OutputDebugStringA("Scale.y: "); OutputDebugStringA(to_string(obj.GetScale().y).c_str()); OutputDebugStringA("\n");
 	OutputDebugStringA("Scale.z: "); OutputDebugStringA(to_string(obj.GetScale().z).c_str()); OutputDebugStringA("\n");
 
-		
+
 	OutputDebugStringA("\n");
-	
+
 }
 
 void StageManager::Result_Gimic_Info(Gimic& obj)
 {
+
 	auto typeMap = [](Gimic_Type type) {
 		switch (type)
 		{
@@ -207,7 +232,42 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 	OutputDebugStringA("\n");
 }
 
-void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
+void StageManager::Result_Static_Object_Info(Static_Object& obj)
+{
+
+
+	auto typeMap = [](Static_ObjType type) {
+
+		switch (type)
+		{
+		case Static_Object_name::Static_Object:
+			return "Static_Object";
+			break;
+		case Static_Object_name::Invisible_Wall:
+			return"Invisible_Wall";
+			break;
+		}
+		return "";
+		};
+
+	string s = typeMap(obj.GetStatic_ObjType());
+	string pos;
+	string scale;
+	OutputDebugStringA(s.c_str());
+	OutputDebugStringA("\n");
+	OutputDebugStringA("Position.x: "); OutputDebugStringA(to_string(obj.GetPosition().x).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
+	OutputDebugStringA("Position.y: "); OutputDebugStringA(to_string(obj.GetPosition().y).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
+	OutputDebugStringA("Position.z: "); OutputDebugStringA(to_string(obj.GetPosition().z).c_str()); OutputDebugStringA("\n");
+	OutputDebugStringA("\n");
+	OutputDebugStringA("Scale.x: "); OutputDebugStringA(to_string(obj.GetScale().x).c_str()); OutputDebugStringA("\n");
+	OutputDebugStringA("Scale.y: "); OutputDebugStringA(to_string(obj.GetScale().y).c_str()); OutputDebugStringA("\n");
+	OutputDebugStringA("Scale.z: "); OutputDebugStringA(to_string(obj.GetScale().z).c_str()); OutputDebugStringA("\n");
+
+
+	OutputDebugStringA("\n");
+}
+
+void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 {
 	{
 		rc->view = Camera::instance().GetView();
@@ -235,30 +295,30 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 	}
 
 #if USE_IMGUI
-    ImGui::Begin("Stage_SetUp");
-    auto m = [](DebugMode mode)
-        {
-            switch (mode)
-            {
-            case DebugMode::Object_Info:
-                return "Object_Info";
-                break;
-            case DebugMode::StageSetUp:
-                return "StageSetUp";
-                break;
-            case DebugMode::Create_Object:
-                return "Create_Object";
-                break;
-            case DebugMode::Delete_Object:
-                return "Delete_object";
-                break;
-            case DebugMode::null:
-                return "null";
-                break;
-          
-            }
+	ImGui::Begin("Stage_SetUp");
+	auto m = [](DebugMode mode)
+		{
+			switch (mode)
+			{
+			case DebugMode::Object_Info:
+				return "Object_Info";
+				break;
+			case DebugMode::StageSetUp:
+				return "StageSetUp";
+				break;
+			case DebugMode::Create_Object:
+				return "Create_Object";
+				break;
+			case DebugMode::Delete_Object:
+				return "Delete_object";
+				break;
+			case DebugMode::null:
+				return "null";
+				break;
+
+			}
 			return "";
-        };
+		};
 	auto o = [](ObjType type) {
 
 
@@ -294,7 +354,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		case ObjType::null:
 			return "null";
 			break;
-		
+
 		}
 		return "";
 		};
@@ -322,86 +382,105 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 		}
 		return"";
 		};
-    ImGui::Text("Debug_Mode : %s", m(Getmode()));
-    if (ImGui::CollapsingHeader("SelectMode", ImGuiTreeNodeFlags_DefaultOpen))
-    {
+	auto sc = [](Static_ObjType type)
+		{
+			switch (type)
+			{
+			case Static_ObjType::Static_Object:
+				return "Static_Object";
+				break;
+			case Static_ObjType::Invisible_Wall:
+				return "Invisible_Wall";
+				break;
+			}
+			return "";
+		};
+	ImGui::Text("Debug_Mode : %s", m(Getmode()));
+	if (ImGui::CollapsingHeader("SelectMode", ImGuiTreeNodeFlags_DefaultOpen))
+	{
 
-        if (ImGui::Button("Change_StageSetUp")) mode = DebugMode::StageSetUp;//stageのobjectをmouseのraycastを使用して位置を設定できるように切り替える
-        if (ImGui::Button("Change_Object_Info")) mode = DebugMode::Object_Info;//object情報をmouseのraycastで確認できる用に切り替える
-        if (ImGui::Button("Change_Create_Object")) mode = DebugMode::Create_Object;//objectを作る
-        if (ImGui::Button("Change_Delete_Object")) mode = DebugMode::Delete_Object;//objectをmouseで選択して消す
+		if (ImGui::Button("Change_StageSetUp")) mode = DebugMode::StageSetUp;//stageのobjectをmouseのraycastを使用して位置を設定できるように切り替える
+		if (ImGui::Button("Change_Object_Info")) mode = DebugMode::Object_Info;//object情報をmouseのraycastで確認できる用に切り替える
+		if (ImGui::Button("Change_Create_Object")) mode = DebugMode::Create_Object;//objectを作る
+		if (ImGui::Button("Change_Delete_Object")) mode = DebugMode::Delete_Object;//objectをmouseで選択して消す
 		if (oldMode != mode)
 		{
 			oldMode = mode;
-			o_or_g = debugType_obj_or_gimic::null;
+			o_or_g = debugType::null;
 		}
-    }
+	}
 	if (mode == DebugMode::Object_Info)
 	{
-		if (o_or_g == debugType_obj_or_gimic::null)
+		if (o_or_g == debugType::null)
 		{
-			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
-			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
+			if (ImGui::Button("Object"))o_or_g = debugType::obj;
+			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
+			if (ImGui::Button("Static_object"))o_or_g = debugType::static_obj;
 		}
 		else
 		{
 			if (ImGui::Button("Cancel"))
 			{
-				o_or_g = debugType_obj_or_gimic::null;
+				o_or_g = debugType::null;
 				Debug_ParameterObj = nullptr;
 			}
 		}
 		DebugMode_MouseRayCast(mode, device);
 	}
-    else if (mode == DebugMode::StageSetUp)
-    {
-		if (o_or_g == debugType_obj_or_gimic::null)
+	else if (mode == DebugMode::StageSetUp)
+	{
+		if (o_or_g == debugType::null)
 		{
-			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
-			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
+			if (ImGui::Button("Object"))o_or_g = debugType::obj;
+			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
 		}
 		else
 		{
-			if (ImGui::Button("Cancel"))o_or_g = debugType_obj_or_gimic::null;
+			if (ImGui::Button("Cancel"))o_or_g = debugType::null;
 		}
 		DebugMode_MouseRayCast(mode, device);
-    }
-    else if (mode == DebugMode::Create_Object)
-    {
-		auto p = [](debugType_obj_or_gimic type) {
+	}
+	else if (mode == DebugMode::Create_Object)
+	{
+		auto p = [](debugType type) {
 
 
 			switch (type)
 			{
-			case debugType_obj_or_gimic::obj:
+			case debugType::obj:
 				return"Obj";
 				break;
-			case debugType_obj_or_gimic::gimic:
+			case debugType::gimic:
 				return"Gimic";
 				break;
-			case debugType_obj_or_gimic::null:
+			case debugType::static_obj:
+				return"static_obj";
+				break;
+			case debugType::null:
 				return"null";
 				break;
 			default:
 				break;
 			}
+			return "";
 			};
 		ImGui::Text("Select_CreateObject:%s", p(o_or_g));
 
-		if (o_or_g == debugType_obj_or_gimic::null)
+		if (o_or_g == debugType::null)
 		{
-			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
-			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
+			if (ImGui::Button("Object"))o_or_g = debugType::obj;
+			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
+			if (ImGui::Button("static_object"))o_or_g = debugType::static_obj;
 		}
 		else
 		{
 			if (ImGui::Button("Cancel"))
 			{
 				CreateObjeType = ObjType::null;
-				o_or_g = debugType_obj_or_gimic::null;
+				o_or_g = debugType::null;
 			}
 		}
-		if (o_or_g == debugType_obj_or_gimic::obj)
+		if (o_or_g == debugType::obj)
 		{
 			if (ImGui::CollapsingHeader("SelectType", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -423,7 +502,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 				CreateObjeType = ObjType::null;
 			}
 		}
-		else if(o_or_g == debugType_obj_or_gimic::gimic)
+		else if (o_or_g == debugType::gimic)
 		{
 			if (ImGui::CollapsingHeader("SelectType", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -433,22 +512,37 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 					if (ImGui::Button("Door")) CreateGimicType = Gimic_Type::Door;
 					if (ImGui::Button("Goal")) CreateGimicType = Gimic_Type::Goal;
 					if (ImGui::Button("Drop_Load")) CreateGimicType = Gimic_Type::Drop_Road;
-					
+
 				}
 			}
-			if (CreateGimicType != Gimic_Type::null && CreateObjeType != ObjType::null)
+			if (CreateGimicType != Gimic_Type::null && CreateObjeType != ObjType::null && CreateStaticObjeType != Static_ObjType::null)
 			{
-				CreateObjeType = ObjType::null;
+				CreateGimicType = Gimic_Type::null;
 			}
+		}
+		else if (o_or_g == debugType::static_obj)
+		{
+			if (CreateStaticObjeType == Static_ObjType::null)
+			{
+				if (ImGui::Button("Static_Object")) CreateStaticObjeType = Static_ObjType::Static_Object;
+				if (ImGui::Button("Invisible_Wall")) CreateStaticObjeType = Static_ObjType::Invisible_Wall;
+
+
+			}
+			if (CreateGimicType != Gimic_Type::null && CreateObjeType != ObjType::null && CreateStaticObjeType != Static_ObjType::null)
+			{
+				CreateStaticObjeType = Static_ObjType::null;
+			}
+
 		}
 		if (CreateObjeType != ObjType::null)
 		{
-			if (ImGui::Button("NULL")) CreateObjeType= ObjType::null;
+			if (ImGui::Button("NULL")) CreateObjeType = ObjType::null;
 			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
-			
+
 			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::Text("CreateObjType:%s",o(CreateObjeType));
+				ImGui::Text("CreateObjType:%s", o(CreateObjeType));
 				DebugMode_MouseRayCast(mode, device);
 
 			}
@@ -458,7 +552,7 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 			if (ImGui::Button("NULL")) CreateGimicType = Gimic_Type::null;
 			// テキスト入力フィールドを表示
 			const int Buffer = 256;
-			ImGui::InputText("CreateID", const_cast<char*>(ID.c_str()),Buffer);
+			ImGui::InputText("CreateID", const_cast<char*>(ID.c_str()), Buffer);
 			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
 
 			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
@@ -469,21 +563,60 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 			}
 
 		}
-    }
+		if (CreateStaticObjeType != Static_ObjType::null)
+		{
+
+			if (ImGui::Button("NULL")) CreateStaticObjeType = Static_ObjType::null;
+			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
+			if (CreateStaticObjeType == Static_ObjType::Static_Object)
+			{
+				// テキスト入力フィールドを表示
+				const int Buffer = 256;
+				ImGui::InputInt("filenameIndex", &filenameIndex);
+				if (!filenames[filenameIndex])
+				{
+					auto num = [](int& n, const char* filename[])
+						{
+
+							while (!filename[n])
+							{
+								--n;
+							};
+						};
+					num(filenameIndex, filenames);
+				}
+				else if (filenameIndex < 0)
+				{
+					filenameIndex = 0;
+				}
+
+				static_objFilename = filenames[filenameIndex];
+				ImGui::InputText("CreateID", const_cast<char*>(static_objFilename.c_str()), Buffer);
+			}
+			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("CreateObjType:%s", sc(CreateStaticObjeType));
+				DebugMode_MouseRayCast(mode, device);
+
+			}
+
+		}
+	}
 	else if (mode == DebugMode::Delete_Object)
 	{
-		if (o_or_g == debugType_obj_or_gimic::null)
+		if (o_or_g == debugType::null)
 		{
-			if (ImGui::Button("Object"))o_or_g = debugType_obj_or_gimic::obj;
-			if (ImGui::Button("Gimic"))o_or_g = debugType_obj_or_gimic::gimic;
+			if (ImGui::Button("Object"))o_or_g = debugType::obj;
+			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
+			if (ImGui::Button("Static_Object"))o_or_g = debugType::static_obj;
 		}
 		else
 		{
-			if (ImGui::Button("Cancel"))o_or_g = debugType_obj_or_gimic::null;
+			if (ImGui::Button("Cancel"))o_or_g = debugType::null;
 		}
 		DebugMode_MouseRayCast(mode, device);
 	}
-    ImGui::End();
+	ImGui::End();
 
 #endif
 }
@@ -491,71 +624,71 @@ void StageManager::Gui(ID3D11Device* device,RenderContext*rc)
 
 void StageManager::CreateObject(ObjType type, ID3D11Device* device, Intersection in)
 {
-    Objectmanajer& ince = Objectmanajer::incetance();
-   
-        unique_ptr<Object>obj;
-        switch (type)
-        {
-        case ObjType::cution:
-            obj = make_unique<Cution>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
-            break;
-        case ObjType::Super_cution:
-            obj = make_unique<Super_Cution>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
-            break;
-        case ObjType::heavy:
-            obj = make_unique<Heavy>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
-            break;
-        case ObjType::Super_heavy:
-            obj = make_unique<Super_Heavy>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
+	Objectmanajer& ince = Objectmanajer::incetance();
 
-            break;
-        case ObjType::Fragile:
-            obj = make_unique<Fragile>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
+	unique_ptr<Object>obj;
+	switch (type)
+	{
+	case ObjType::cution:
+		obj = make_unique<Cution>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_cution:
+		obj = make_unique<Super_Cution>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::heavy:
+		obj = make_unique<Heavy>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_heavy:
+		obj = make_unique<Super_Heavy>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
 
-            break;
-        case ObjType::Super_fragile:
-            obj = make_unique<Super_fragile>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Fragile:
+		obj = make_unique<Fragile>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
 
-            break;
-        case ObjType::Hard_to_Break:
-            obj = make_unique<Hard_to_Break>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_fragile:
+		obj = make_unique<Super_fragile>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
 
-            break;
-        case ObjType::Super_hard_to_Break:
-            obj = make_unique<Super_hard_to_Break>(device);
-            obj->SetPosition(in.intersection_position);
-            ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Hard_to_Break:
+		obj = make_unique<Hard_to_Break>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
 
-            break;
-		case ObjType::Crack:
-			obj = make_unique<Crack>(device);
-			obj->SetPosition(in.intersection_position);
-			ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_hard_to_Break:
+		obj = make_unique<Super_hard_to_Break>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
 
-			break;
-        case ObjType::null:
-            break;
-        default:
-            break;
-        }
-    
+		break;
+	case ObjType::Crack:
+		obj = make_unique<Crack>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::null:
+		break;
+	default:
+		break;
+	}
+
 }
 
-void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in,std::string id)
+void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in, std::string id)
 {
 	Objectmanajer& ince = Objectmanajer::incetance();
 
@@ -593,6 +726,26 @@ void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersecti
 
 }
 
+void StageManager::CreateStaticObject(Static_ObjType type, ID3D11Device* device, Intersection in, const char* filename)
+{
+	Objectmanajer& ince = Objectmanajer::incetance();
+	unique_ptr<Static_Object>obj;
+	switch (type)
+	{
+	case Static_ObjType::Static_Object:
+		obj = make_unique<stage_OBJ>(device, filename);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_Static_Object(move(obj));
+		break;
+	case Static_ObjType::Invisible_Wall:
+		obj = make_unique<InvisibleBarrier>(device);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_Static_Object(move(obj));
+	case Static_ObjType::null:
+		break;
+	}
+}
+
 void StageManager::DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device)
 {
 
@@ -618,7 +771,7 @@ void StageManager::DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device)
 		//右クリック
 		Delete_Object();
 	}
-	
+
 }
 
 void StageManager::Object_Info()
@@ -626,7 +779,7 @@ void StageManager::Object_Info()
 
 	switch (o_or_g)
 	{
-	case debugType_obj_or_gimic::obj:
+	case debugType::obj:
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
@@ -649,10 +802,10 @@ void StageManager::Object_Info()
 
 				}
 			}
-			
+
 		}
 		{
-			
+
 			auto s = [](string s1, int s2, bool stringFlag = false)
 				{
 					if (stringFlag)return s1 += to_string(s2) += ":%s";
@@ -680,7 +833,7 @@ void StageManager::Object_Info()
 						null
 					};
 
-					static Num num=Num::null;
+					static Num num = Num::null;
 					if (ImGui::Button("heavy")) SetObjType = ObjType::heavy;
 					if (ImGui::Button("Super_heavy")) SetObjType = ObjType::Super_heavy;
 					if (ImGui::Button("Cution")) SetObjType = ObjType::cution;
@@ -694,20 +847,20 @@ void StageManager::Object_Info()
 					{
 						if (ImGui::Button("SetTypeNumber0"))num = Num::num0;
 						if (ImGui::Button("SetTypeNumber1"))num = Num::num1;
-						if (num !=Num::null)
+						if (num != Num::null)
 						{
 							Debug_ParameterObj->Set_attribute(SetObjType, static_cast<int>(num));
 							SetObjType = ObjType::null;
 							num = Num::null;
 						}
 					}
-				
+
 				}
 
 			}
 		}
 		break;
-	case debugType_obj_or_gimic::gimic:
+	case debugType::gimic:
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
@@ -733,7 +886,7 @@ void StageManager::Object_Info()
 		}
 
 		{
-			
+
 			auto s = [](string s1, int s2, bool stringFlag = false)
 				{
 					if (stringFlag)return s1 += to_string(s2) += ":%s";
@@ -754,138 +907,182 @@ void StageManager::Object_Info()
 				Debug_ParameterObj->Gui();
 			}
 		}
-		break;	
+		break;
+	case debugType::static_obj:
+		if (GetAsyncKeyState(VK_RBUTTON) & 1)
+		{
+			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
+
+			result_intersection = {};
+			int gamestaticobject_count = Objectmanajer::incetance().Get_GameStatic_ObjectCount();
+			for (int i = 0; i < gamestaticobject_count; i++)
+			{
+				Objectmanajer& ince_obj = Objectmanajer::incetance();
+				Static_Object* obj = ince_obj.Get_GameStatic_Object(i);
+
+				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+				{
+					Debug_ParameterObj = obj;
+					break;
+				}
+				else
+				{
+					Debug_ParameterObj = nullptr;
+
+				}
+			}
+		}
+
+		{
+
+
+			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
+			{
+				Debug_ParameterObj->Gui();
+			}
+		}
+
 	}
 
 
-	
+
 }
 
 void StageManager::StageSetup()
 {
 
 	VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
-	
+
 	result_intersection = {};
 	int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
 	int gamegimic_count = Objectmanajer::incetance().Get_GameGimicCount();
-	
+
 	switch (o_or_g)
 	{
 
-	case debugType_obj_or_gimic::obj:
+	case debugType::obj:
 		for (int i = 0; i < gameobject_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = StageManager::incetance();
-			Object* stage_ = ince.GetStages(StageName::stage1_1);
-			Object* obj = ince_obj.Get_GameObject(i);
-			if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+			int stageCount = ince.GetStageCount();
+			for (int j = 0; j < stageCount; j++)
 			{
-				if (GetAsyncKeyState(VK_RBUTTON) & 1)
+				Object* stage_ = ince.GetStages(j);
+				Object* obj = ince_obj.Get_GameObject(i);
+				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
 				{
-					Debug_ParameterObj = obj;
-				}
-				break;
-			}
-			else if (Debug_ParameterObj)
-			{
-				if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
-				{
-					result_intersection.intersection_position.y = 0.750f;
-					Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
 					if (GetAsyncKeyState(VK_RBUTTON) & 1)
 					{
-						Debug_ParameterObj = nullptr;
+						Debug_ParameterObj = obj;
 					}
+					break;
 				}
-				else
+				else if (Debug_ParameterObj)
 				{
-					XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
-					XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-					cameraeye.z += camerafront.z * objLength;
-					cameraeye.x += camerafront.x * objLength;
-					cameraeye.y += camerafront.y * objLength;
-
-					Debug_ParameterObj->SetPosition(cameraeye);
-					if (GetAsyncKeyState(VK_RBUTTON) & 1)
+					if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
 					{
-						Debug_ParameterObj = nullptr;
+						result_intersection.intersection_position.y = 0.750f;
+						Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
+						if (GetAsyncKeyState(VK_RBUTTON) & 1)
+						{
+							Debug_ParameterObj = nullptr;
+						}
 					}
+					else
+					{
+						XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+						XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+						cameraeye.z += camerafront.z * objLength;
+						cameraeye.x += camerafront.x * objLength;
+						cameraeye.y += camerafront.y * objLength;
+
+						Debug_ParameterObj->SetPosition(cameraeye);
+						if (GetAsyncKeyState(VK_RBUTTON) & 1)
+						{
+							Debug_ParameterObj = nullptr;
+						}
 
 
+					}
+					break;
 				}
-				break;
 			}
 		}
 		break;
-	case debugType_obj_or_gimic::gimic:
+	case debugType::gimic:
 		for (int i = 0; i < gamegimic_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = StageManager::incetance();
-			Object* stage_ = ince.GetStages(StageName::stage1_1);
 			Object* obj_gimic = ince_obj.Get_GameGimic(i);
+			int stageCount = ince.GetStageCount();
+			for (int j = 0; j < stageCount; j++)
+			{
+				Object* stage_ = ince.GetStages(j);
 
-			if (VMCFHT::instance().raycast(*obj_gimic->GetModel()->Get_RaycastCollition(), obj_gimic->GetTransform(), result_intersection)&&!Debug_ParameterObj)
-			{
-				if (GetAsyncKeyState(VK_RBUTTON) & 1)
+				if (VMCFHT::instance().raycast(*obj_gimic->GetModel()->Get_RaycastCollition(), obj_gimic->GetTransform(), result_intersection) && !Debug_ParameterObj)
 				{
-					Debug_ParameterObj = obj_gimic;
-				}
-				break;
-			}
-			else if (Debug_ParameterObj)
-			{
-				if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
-				{
-					result_intersection.intersection_position.y = 0.750f;
-					Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
 					if (GetAsyncKeyState(VK_RBUTTON) & 1)
 					{
-						Debug_ParameterObj = nullptr;
+						Debug_ParameterObj = obj_gimic;
 					}
+					break;
 				}
-				else
+				else if (Debug_ParameterObj)
 				{
-					XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
-					XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-					cameraeye.z += camerafront.z * objLength;
-					cameraeye.x += camerafront.x * objLength;
-					cameraeye.y += camerafront.y * objLength;
-
-					Debug_ParameterObj->SetPosition(cameraeye);
-					if (GetAsyncKeyState(VK_RBUTTON) & 1)
+					if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
 					{
-						Debug_ParameterObj = nullptr;
+						result_intersection.intersection_position.y = 0.750f;
+						Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
+						if (GetAsyncKeyState(VK_RBUTTON) & 1)
+						{
+							Debug_ParameterObj = nullptr;
+						}
 					}
+					else
+					{
+						XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+						XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+						cameraeye.z += camerafront.z * objLength;
+						cameraeye.x += camerafront.x * objLength;
+						cameraeye.y += camerafront.y * objLength;
+
+						Debug_ParameterObj->SetPosition(cameraeye);
+						if (GetAsyncKeyState(VK_RBUTTON) & 1)
+						{
+							Debug_ParameterObj = nullptr;
+						}
 
 
+					}
+					break;
 				}
-				break;
 			}
 		}
 		break;
-	case debugType_obj_or_gimic::null:
+	case debugType::null:
 		break;
-	}	
+	}
 }
 
 void StageManager::Create_Object(ID3D11Device* device)
 {
 	VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
-	
+
 	result_intersection = {};
 	int stage_count = Stages.size();
-	
+
 	switch (o_or_g)
 	{
-	case debugType_obj_or_gimic::obj:
+	case debugType::obj:
 		for (int i = 0; i < stage_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
-			Object* stage_ = ince.GetStages(StageName::stage1_1);
+			int stagecount = ince.GetStageCount();
+
+			Object* stage_ = ince.GetStages(i);
 
 			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
 			{
@@ -895,7 +1092,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 					if (ince.GetCreateObjeType() != ObjType::null && Object_CreateFlag)
 					{
-						result_intersection.intersection_position.y +=0.1f ;
+						result_intersection.intersection_position.y += 0.3f;
 						ince.Set_CreateObject_Thred(ince.GetCreateObjeType(), device, result_intersection);
 						ince.DeleteThred();
 						break;
@@ -907,15 +1104,16 @@ void StageManager::Create_Object(ID3D11Device* device)
 			{
 				Debug_ParameterObj = nullptr;
 			}
+
 		}
 		break;
-	case debugType_obj_or_gimic::gimic:
+	case debugType::gimic:
 
 		for (int i = 0; i < stage_count; i++)
 		{
 			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
-			Object* stage_ = ince.GetStages(StageName::stage1_1);
+			Object* stage_ = ince.GetStages(i);
 
 			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
 			{
@@ -925,8 +1123,8 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 					if (ince.GetCreateGimicType() != Gimic_Type::null && Object_CreateFlag)
 					{
-						result_intersection.intersection_position.y += 0.1f;
-						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection,ID.c_str());
+						result_intersection.intersection_position.y += 0.3f;
+						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection, ID.c_str());
 						ince.DeleteThred();
 						ID = "null";
 
@@ -939,26 +1137,68 @@ void StageManager::Create_Object(ID3D11Device* device)
 			{
 				Debug_ParameterObj = nullptr;
 			}
+
 		}
 		break;
-	case debugType_obj_or_gimic::null:
+	case debugType::static_obj:
+		for (int i = 0; i < stage_count; i++)
+		{
+			Objectmanajer& ince_obj = Objectmanajer::incetance();
+
+			int stagecount = GetStageCount();
+
+			Object* stage_ = GetStages(i);
+
+			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
+			{
+
+				if (GetAsyncKeyState(VK_RBUTTON) & 1)
+				{
+
+					if (GetCreateStaticObjeType() != Static_ObjType::null && Object_CreateFlag)
+					{
+						result_intersection.intersection_position.y += 0.3f;
+						if (Static_ObjType::Static_Object == GetCreateStaticObjeType())
+						{
+
+							Set_CreateStaticObject_Thred(GetCreateStaticObjeType(), device, result_intersection, static_cast<const char*>(static_objFilename.c_str()));
+						}
+						else
+						{
+							Set_CreateStaticObject_Thred(GetCreateStaticObjeType(), device, result_intersection);
+						}
+						DeleteThred();
+						static_objFilename = "";
+						break;
+					}
+
+				}
+			}
+			else
+			{
+				Debug_ParameterObj = nullptr;
+			}
+
+		}
+		break;
+	case debugType::null:
 		break;
 	default:
 		break;
 	}
-	
-	
-	
+
+
+
 
 }
 
 void StageManager::Delete_Object()
 {
 	Objectmanajer& ince_obj = Objectmanajer::incetance();
-	
+
 	switch (o_or_g)
 	{
-	case debugType_obj_or_gimic::obj:
+	case debugType::obj:
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
@@ -967,7 +1207,7 @@ void StageManager::Delete_Object()
 			int gameobject_count = ince_obj.Get_GameObjCount();
 			for (int i = 0; i < gameobject_count; i++)
 			{
-				
+
 				Object* obj = ince_obj.Get_GameObject(i);
 				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
 				{
@@ -981,7 +1221,7 @@ void StageManager::Delete_Object()
 			}
 		}
 		break;
-	case debugType_obj_or_gimic::gimic:
+	case debugType::gimic:
 		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
 			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
@@ -1003,6 +1243,30 @@ void StageManager::Delete_Object()
 				}
 			}
 		}
-	break;
+		break;
+	case debugType::static_obj:
+		if (GetAsyncKeyState(VK_RBUTTON) & 1)
+		{
+			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
+
+			result_intersection = {};
+			int gamegimic_count = Objectmanajer::incetance().Get_GameStatic_ObjectCount();
+			for (int i = 0; i < gamegimic_count; i++)
+			{
+				Static_Object* obj = ince_obj.Get_GameStatic_Object(i);
+
+				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
+				{
+					obj->Destroy();
+					break;
+				}
+				else
+				{
+					Debug_ParameterObj = nullptr;
+				}
+			}
+		}
+
+		break;
 	}
 }

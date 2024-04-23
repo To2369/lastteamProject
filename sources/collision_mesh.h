@@ -31,6 +31,7 @@ struct Intersection
 class collision_mesh
 {
 public:
+
 	struct mesh
 	{
 		std::string name;

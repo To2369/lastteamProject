@@ -15,6 +15,8 @@ public:
     //描画処理
     void render(RenderContext* rc);
 
+    Model* GetModel() { return model.get(); }
+
 private:
     //操作移動
     void inputMove(float elapsedTime);
@@ -33,17 +35,19 @@ private:
     const char* filename = ".\\Resources\\3Dmodel\\Jammo\\Jammo.fbx";
 
     //移動スピード
-    float moveSpeed = 5.0f;
+    float moveSpeed = 0.5f;
 
     //旋回スピード
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     //ジャンプ力
-    float jumpSpeed = 1.0f;
+    float jumpSpeed = 20.0f;
 
     //ジャンプ回数
     int jumpCount = 0;
-    
+
     //ジャンプ制限
     int jumpLimit = 2;
+
+
 };

@@ -13,7 +13,7 @@
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern ImWchar glyphRangesJapanese[];
 #endif
-XMFLOAT3 vel{};
+
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -72,8 +72,9 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 	Debug_ParameterObj->SetPosition({1.f, 0.8f, 0.5f});*/
 	Goal_navi = make_unique<Goal_navigation_Arrow>(device);
 	unique_ptr<Player>pl = make_unique<Player>(device);
-	pl->SetPosition({ 0,50,0 });
+	pl->SetPosition({ 0,30,0 });
 	plm.Register(move(pl));
+
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -96,41 +97,30 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 	return position;
 }
 //playerの実装ができたらけす
-bool rayflag=false;
-float offset = 1.0f;
-float d_dot_;
-void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y)
+
+void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float y)
 
 {
+
+
 	gamepad& pad = gamepad::Instance();
 	VMCFHT ince_ray = VMCFHT::instance();
 	Objectmanajer& ince_o = Objectmanajer::incetance();
-	for (int i = 0; i < ince_o.Get_GameGimicCount();i++)
-	{
-		Gimic* gimic = ince_o.Get_GameGimic(i);
-		if (gimic->Get_GimicType() == Gimic_Type::Drop_Road)
-		{
-			Debug_ParameterObj = gimic;
-			break;
-			
-		}
-	}
-	
-	//XMFLOAT3 pos = camera_position;
-	//XMFLOAT3 camerafront{ Camera::instance().GetFront() };
 
-	rayflag = false;
-	/*auto Ray_vs_kabe = [](VMCFHT& ince_ray, Gimic* obj, XMFLOAT3 &camerapos_,XMFLOAT3 normal,XMFLOAT3 vel)
+	XMFLOAT3 pos = camera_position;
+	XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+
+	auto Ray_vs_kabe = [](VMCFHT& ince_ray, Gimic* obj, XMFLOAT3& camerapos_, XMFLOAT3 normal, XMFLOAT3 vel)
 
 		{
 			Camera& camera = Camera::instance();
 			XMFLOAT3 front = camera.GetFront();
-			front.y = 
+			front.y = 0;
 			XMFLOAT3 pos = camerapos_;
 			pos.x += vel.x;
 			pos.z += vel.z;
-			ince_ray.update(pos,vel);
-			
+			ince_ray.update(pos, vel);
+
 			collision_mesh& mesh = *obj->GetHitBoxMesh();
 			XMFLOAT4X4 boxtransform = obj->GetBoxTransForm();
 			float rayLength = 1.2f;
@@ -139,127 +129,125 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 			{
 
 				XMVECTOR Start = { camerapos_.x,camerapos_.y,camerapos_.z };
-				XMFLOAT3 end{ result.intersection_position.x+vel.x,
-					          result.intersection_position.y,
-					          result.intersection_position.z+vel.z};
+				XMFLOAT3 end{ result.intersection_position.x + vel.x,
+							  result.intersection_position.y,
+							  result.intersection_position.z + vel.z };
 
 				XMVECTOR End = XMLoadFloat3(&end);
 				XMVECTOR Vec = XMVectorSubtract(Start, End);
-				objnormal
+				//objnormal
 				XMVECTOR Normal = XMLoadFloat3(&result.intersection_normal);
 
-				XMVECTOR Dot = DirectX::XMVector3Dot(Normal,Vec);
+				XMVECTOR Dot = DirectX::XMVector3Dot(Normal, Vec);
 				float dot = 0;
 				XMStoreFloat(&dot, Dot);
-				d_dot_ = dot;
-				XMVECTOR S = DirectX::XMVectorScale(Normal, dot*offset);
+				XMVECTOR S = DirectX::XMVectorScale(Normal, dot);
 				XMFLOAT3 p;
 				XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
 
 				camerapos_.x = p.x;
 				camerapos_.z = p.z;
-				rayflag = true;
 				return true;
-			
+
 
 			}
 			return false;
-		};*/
+		};
 	//DropBox_Road* obj = Debug_ParameterObj.get();
-	    DirectX::XMFLOAT3 moveVec = {};
-	////1人称移動
-	//{
-	//	Camera& camera = Camera::instance();
+	DirectX::XMFLOAT3 moveVec = {};
+	//1人称移動
+	{
+		Camera& camera = Camera::instance();
 
-	//	DirectX::XMFLOAT3 front = camera.GetFront();
-	//	
-	//	//スティックの動き取得
-	//	float thumb_rx = pad.thumb_state_rx();
-	//	float thumb_ry = pad.thumb_state_ry();
-	//	
-	//	
-	//	moveVec.x = front.x * thumb_ry;
-	//	moveVec.y = 0.0f;
-	//	moveVec.z = front.z * thumb_ry;
-	//	
-	//
-	//	//前方向正規化
-	//	float frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
-	//	if (frontLength > 0.0f)
-	//	{
-	//		moveVec.x /= frontLength;
-	//		moveVec.z /= frontLength;
-	//	}
-	//	XMFLOAT3 vec = moveVec;
-	//	
-	//	if (thumb_ry != 0.0f)
-	//	{
-	//		moveVec.x *= moveSpeed*elapsed_time;
-	//		moveVec.z *= moveSpeed*elapsed_time;
-	//		camera_position.x += moveVec.x;
-	//		camera_position.z += moveVec.z;
-	//		/*if (Debug_ParameterObj->GetPlayerStopFlag())
-	//		{
-	//			if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position,vec,moveVec))
-	//			{
-	//				int a = 0;
-	//			}
-	//			else
-	//			{
-	//				camera_position.x += moveVec.x;
-	//				camera_position.z += moveVec.z;
-	//			}
-	//		}
-	//		else
-	//		{
-	//	       camera_position.x += moveVec.x;
-	//		   camera_position.z += moveVec.z;
-	//		}*/
-	//	}
-	//	
-	//	
-	//	DirectX::XMFLOAT3 right = camera.GetRight();
+		DirectX::XMFLOAT3 front = camera.GetFront();
 
-	//	moveVec.x = right.x * thumb_rx;
-	//	moveVec.y = 0.0f;
-	//	moveVec.z = right.z * thumb_rx;
-	//	
-	//	//前方向正規化
-	//	frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
-	//	if (frontLength > 0.0f)
-	//	{
-	//		moveVec.x /= frontLength;
-	//		moveVec.z /= frontLength;
-	//	}
-	//	vec = moveVec;
-	//   
-	//	if (thumb_rx != 0.0f)
-	//	{
-	//		moveVec.x *= moveSpeed * elapsed_time;
-	//		moveVec.z *= moveSpeed * elapsed_time;
-	//		camera_position.x += moveVec.x;
-	//		camera_position.z += moveVec.z;
-	//		/*if (Debug_ParameterObj->GetPlayerStopFlag())
-	//		{
-	//			if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position, vec, moveVec))
-	//			{
-	//				
-	//			}
-	//			else
-	//			{
-	//				camera_position.x += moveVec.x;
-	//				camera_position.z += moveVec.z;
-	//			}
-	//		}
-	//		else
-	//		{
-	//			camera_position.x += moveVec.x;
-	//			camera_position.z += moveVec.z;
-	//		}*/
-	//		
-	//		
-	//	}
-	//}
+		//スティックの動き取得
+		float thumb_rx = pad.thumb_state_rx();
+		float thumb_ry = pad.thumb_state_ry();
+
+
+		moveVec.x = front.x * thumb_ry;
+		moveVec.y = 0.0f;
+		moveVec.z = front.z * thumb_ry;
+
+
+		//前方向正規化
+		float frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
+		if (frontLength > 0.0f)
+		{
+			moveVec.x /= frontLength;
+			moveVec.z /= frontLength;
+		}
+		XMFLOAT3 vec = moveVec;
+
+		if (thumb_ry != 0.0f)
+		{
+			moveVec.x *= moveSpeed * elapsed_time;
+			moveVec.z *= moveSpeed * elapsed_time;
+			camera_position.x += moveVec.x;
+			camera_position.z += moveVec.z;
+			/*if (Debug_ParameterObj->GetPlayerStopFlag())
+			{
+				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position,vec,moveVec))
+				{
+					int a = 0;
+				}
+				else
+				{
+					camera_position.x += moveVec.x;
+					camera_position.z += moveVec.z;
+				}
+			}
+			else
+			{
+			   camera_position.x += moveVec.x;
+			   camera_position.z += moveVec.z;
+			}*/
+		}
+
+
+		DirectX::XMFLOAT3 right = camera.GetRight();
+
+		moveVec.x = right.x * thumb_rx;
+		moveVec.y = 0.0f;
+		moveVec.z = right.z * thumb_rx;
+
+		//前方向正規化
+		frontLength = sqrtf(moveVec.x * moveVec.x + moveVec.z * moveVec.z);
+		if (frontLength > 0.0f)
+		{
+			moveVec.x /= frontLength;
+			moveVec.z /= frontLength;
+		}
+		vec = moveVec;
+
+		if (thumb_rx != 0.0f)
+		{
+			moveVec.x *= moveSpeed * elapsed_time;
+			moveVec.z *= moveSpeed * elapsed_time;
+			camera_position.x += moveVec.x;
+			camera_position.z += moveVec.z;
+			/*if (Debug_ParameterObj->GetPlayerStopFlag())
+			{
+				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position, vec, moveVec))
+				{
+
+				}
+				else
+				{
+					camera_position.x += moveVec.x;
+					camera_position.z += moveVec.z;
+				}
+			}
+			else
+			{
+				camera_position.x += moveVec.x;
+				camera_position.z += moveVec.z;
+			}*/
+
+
+		}
+	}
 
 	{
 		{
@@ -298,10 +286,13 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 #endif
 	plm.Update(elapsed_time);
 	StageManager::incetance().Update(elapsed_time);
+	if (Debug_ParameterObj)
+	{
+		Debug_ParameterObj->Update(elapsed_time);
+	}
 	Objectmanajer::incetance().Update(elapsed_time);
-	
-	//GroundRayCamera(camera_position, { 1,1,1 }, ms);
-	//Debug_ParameterObj->Update(elapsed_time);
+
+
 	//カメラ操作
 	{
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
@@ -313,10 +304,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
 		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;
 
-		Player* pl = PlayerManager::Instance().GetPlayer(0);
-		DirectX::XMFLOAT3 target = pl->GetPosition();
-		target.y += 0.5f;
-		camera_controller->SetEye(target);
+		camera_controller->SetEye(camera_position);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);
 
@@ -324,6 +312,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 		float maxAngle = XMConvertToDegrees(camera_controller->GetMaxAngle());
 		if (camera_angle.x < minAngle)camera_angle.x = minAngle;
 		if (camera_angle.x > maxAngle)camera_angle.x = maxAngle;
+
 		camera_controller->Update(elapsed_time);
 
 	}
@@ -347,11 +336,11 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x,float y
 			static_cast<int>(setCursorWindow.y)
 		);
 	}
-	
+
 
 }
 
-void SceneGame::render(float elapsed_time,RenderContext& rc)
+void SceneGame::render(float elapsed_time, RenderContext& rc)
 {
 	rc.view = Camera::instance().GetView();
 	rc.projection = Camera::instance().GetProjection();
@@ -359,7 +348,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 
 	DirectX::XMMATRIX VP = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&rc.view), DirectX::XMLoadFloat4x4(&rc.projection));
 	DirectX::XMStoreFloat4x4(&scene_data->data.view_projection, VP);
-	
+
 	Camera& camera = Camera::instance();
 	rc.lightDirection.x = light_direction.x;
 	rc.lightDirection.y = light_direction.y;
@@ -371,7 +360,7 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 	scene_data->data.light_direction.z = rc.lightDirection.z;
 
 	scene_data->data.light_direction.w = 0.0f;
-	
+
 	scene_data->data.camera_position.x = camera.GetEye().x;
 	scene_data->data.camera_position.y = camera.GetEye().y;
 	scene_data->data.camera_position.z = camera.GetEye().z;
@@ -393,9 +382,13 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		//プレイヤー描画処理
 		//PlayerManager::Instance().Render(&rc);
 		plm.Render(&rc);
-		
-		
+
+
 		StageManager::incetance().Render(&rc);
+		if (Debug_ParameterObj)
+		{
+			Debug_ParameterObj->Render(&rc);
+		}
 		//オブジェクト描画処理
 		Objectmanajer::incetance().render(&rc);
 		Goal_navi->Render(&rc);
@@ -426,31 +419,48 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		}
 		DirectX::XMFLOAT3 c_pos{};
 		DirectX::XMFLOAT3 p_pos{};
-		
-		ImGui::SliderFloat("input_camera_pos.x", &c_pos.x, -2.0f, +2.0f);
-		ImGui::SliderFloat("input_camera_pos.y", &c_pos.y, -2.0f, +2.0f);
-		ImGui::SliderFloat("input_camera_pos.z", &c_pos.z, -2.0f, +2.0f);
-		ImGui::InputFloat("camera_pos.x", &camera_position.x, -2.0f, +2.0f);
-		ImGui::InputFloat("camera_pos.y", &camera_position.y, -2.0f, +2.0f);
-		ImGui::InputFloat("camera_pos.z", &camera_position.z, -2.0f, +2.0f);
-		camera_position.x += c_pos.x;
-		camera_position.y += c_pos.y;
-		camera_position.z += c_pos.z;
-		Player* pl = plm.GetPlayer(0);
-		XMFLOAT3 plpos = pl->GetPosition();
-		ImGui::SliderFloat("input_plpos.x", &p_pos.x, -2.0f, +100.0f);
-		ImGui::SliderFloat("input_plpos.y", &p_pos.y, -2.0f, +100.0f);
-		ImGui::SliderFloat("input_plpos.z", &p_pos.z, -2.0f, +100.0f);
-		ImGui::InputFloat("plpos.x", &plpos.x, -2.0f, +2.0f);
-		ImGui::InputFloat("plpos.y", &plpos.y, -2.0f, +2.0f);
-		ImGui::InputFloat("plpos.z", &plpos.z, -2.0f, -2.0f);
-		plpos.x+=p_pos.x;
-		plpos.y+=p_pos.y;
-		plpos.z+=p_pos.z;
-		pl->SetPosition(plpos);
-		ImGui::InputFloat("vel",&vel.y);
-		ImGui::InputFloat("ms",&ms);
-		XMFLOAT3 front{ Camera::instance().GetFront() };
+
+		if (ImGui::TreeNode("camera"))
+		{
+			ImGui::SliderFloat("input_camera_pos.x", &c_pos.x, -2.0f, +2.0f);
+			ImGui::SliderFloat("input_camera_pos.y", &c_pos.y, -2.0f, +2.0f);
+			ImGui::SliderFloat("input_camera_pos.z", &c_pos.z, -2.0f, +2.0f);
+			ImGui::InputFloat("camera_pos.x", &camera_position.x, -2.0f, +2.0f);
+			ImGui::InputFloat("camera_pos.y", &camera_position.y, -2.0f, +2.0f);
+			ImGui::InputFloat("camera_pos.z", &camera_position.z, -2.0f, +2.0f);
+			camera_position.x += c_pos.x;
+			camera_position.y += c_pos.y;
+			camera_position.z += c_pos.z;
+			ImGui::TreePop();
+		}
+		if (Debug_ParameterObj)
+		{
+
+			Debug_ParameterObj->BaseGui();
+		}
+		if (ImGui::TreeNode("player"))
+		{
+
+			XMFLOAT3 front{ Camera::instance().GetFront() };
+			XMFLOAT3 plpos = plm.GetPlayer(0)->GetPosition();
+			ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
+			ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
+			ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
+			ImGui::InputFloat("plpos.x", &plpos.x, -1.0f, +1.0f);
+			ImGui::InputFloat("plpos.y", &plpos.y, -2.0f, +2.0f);
+			ImGui::InputFloat("plpos.z", &plpos.z, -1.0f, +1.0f);
+			plpos.x += p_pos.x;
+			plpos.y += p_pos.y;
+			plpos.z += p_pos.z;
+			plm.GetPlayer(0)->SetPosition(plpos);
+			XMFLOAT3 vel = plm.GetPlayer(0)->GetVelocity();
+			ImGui::InputFloat3("vel", &vel.x);
+			ImGui::SliderFloat("set_vel", &vel.y, -100, 100);
+			plm.GetPlayer(0)->SetVelocity(vel);
+			ImGui::InputFloat("ms", &ms);
+			ImGui::TreePop();
+		}
+
 		/*ImGui::SliderFloat("camera_front.x", &front.x, -100.0f, +100.0f);
 		ImGui::SliderFloat("camera_front.y", &front.y, -1.0f, +2.0f);
 		ImGui::SliderFloat("camera_front.z", &front.z, -100.0f, -1.0f);
@@ -459,7 +469,19 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 		ImGui::SliderFloat("light_direction.y", &light_direction.y, -10.0f, +10.0f);
 		ImGui::SliderFloat("light_direction.z", &light_direction.z, -10.0f, +10.0f);
 
-		Goal_navi->Gui();
+		//Goal_navi->Gui();
+		{
+			Objectmanajer& ince_o = Objectmanajer::incetance();
+			int count = ince_o.Get_GameStatic_ObjectCount();
+			for (int i = 0; i < count; i++)
+			{
+
+				Static_Object* obj = ince_o.Get_GameStatic_Object(i);
+				if (Static_Object_name::Invisible_Wall != obj->GetStatic_ObjType())continue;
+				obj->Gui();
+
+			}
+		}
 		auto p = [](ObjType type) {
 
 
@@ -496,24 +518,18 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 				break;
 			}
 			};
-		
-		
+
+
 		if (Debug_ParameterObj != nullptr)
 		{
-		
-			ImGui::SliderFloat("offset", &offset, 0.f, 2.f);
-			
-
-	
 
 		}
 
 
 
 		ImGui::End();
-		StageManager::incetance().Gui(device_.Get(),&rc);
+		StageManager::incetance().Gui(device_.Get(), &rc);
 		Objectmanajer::incetance().Gui(device_.Get());
-		plm.DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
 		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG
@@ -526,13 +542,13 @@ void SceneGame::render(float elapsed_time,RenderContext& rc)
 
 void SceneGame::finalize()
 {
-	
+
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
-    Debug_ParameterObj = nullptr;
+	Debug_ParameterObj = nullptr;
 	//プレイヤー終了化
 	//PlayerManager::Instance().Clear();
-	
+
 }
 
 

@@ -19,6 +19,7 @@
 #include <cereal/types/unordered_map.hpp>
 
 #include"collision_mesh.h"
+#include"Collision.h"
 using namespace std;
 namespace DirectX
 {

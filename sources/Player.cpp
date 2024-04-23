@@ -2,13 +2,44 @@
 #include"camera.h"
 #include"GamePad.h"
 #include"Input/gamepad.h"
-
 #include"StageManager.h"
+#include"objectManajer.h"
+#include"variable_management_class_for_hit_test.h"
+/// <summary>
+/// 
+/// </summary>
+/// <param name="sphere">objのsphere</param>
+/// <param name="Position">playerの位置</param>
+/// <param name="radius">playerの半径</param>
+/// <param name="outsphere">結果保存用</param>
+/// <returns></returns>
+bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position, float radius, Object::ResultSphereQuadPlacement& outsphere)
+{
+    using namespace DirectX;
+
+    XMVECTOR ThisPos{ XMLoadFloat3(&Position) };
+    const int SphereCount = sphere.size;
+    Object::SphereQuadPlacement param{};
+    for (int i = 0; i < SphereCount; i++)
+    {
+        XMVECTOR QuadSpherePos{ XMLoadFloat3(&sphere.pos[i].Spherepos) };
+        XMVECTOR Vec = XMVector3LengthSq(XMVectorSubtract(QuadSpherePos, ThisPos));
+
+        float dist = XMVectorGetX(Vec);
+        float rad = radius + sphere.SphereRadius;
+        if (dist < rad * rad)
+        {
+            XMStoreFloat3(&outsphere.Spherepos, QuadSpherePos);
+            outsphere.type = sphere.pos[i].Type;
+            return true;
+        }
+    }
+    return false;
+}
 //コンストラクタ
 Player::Player(ID3D11Device* device)
 {
     model = std::make_unique<Model>(device, filename, true);
-
     const float scale_fcator = 0.001f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
 }
@@ -22,30 +53,28 @@ Player::~Player()
 //更新処理
 void Player::update(float elapsedTime)
 {
-    //移動入力処理
-    inputMove(elapsedTime);
 
-    //ジャンプ入力処理
-    inputJump();
-
-    //速度処理更新
-    updateVelocity(elapsedTime);
-
-    //ワールド行列の更新
-    UpdateTransform();
-
-    gamepad& gamePad = gamepad::Instance();
-    if (gamePad.button_state(gamepad::button::b))
+    if (1)
     {
-        velocity.y = 0;
-        position.y = 30;
+        //////移動入力処理
+        inputMove(elapsedTime);
+
+        ////ジャンプ入力処理
+        inputJump();
+
+        ////速度処理更新
+        updateVelocity(elapsedTime);
     }
+
+    ////ワールド行列の更新
+    UpdateTransform();
+    //model->UpdateTransform(transform);
 }
 
 //描画処理
 void Player::render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, transform, 0.0f,{ 1.0f,1.0f,1.0f,1.0f });
+    model->render(rc->deviceContext, transform, 0.0f, { 1.0f,1.0f,1.0f,1.0f });
 }
 
 
@@ -66,14 +95,25 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 {
     //入力情報を取得
     gamepad& gamePad = gamepad::Instance();
-    float ax = gamePad.thumb_state_rx();//->getAxisLX();
-    float ay = gamePad.thumb_state_ry();//->getAxisLY();
+    float ax = gamePad.thumb_state_lx();//->getAxisLX();
+    float ay = gamePad.thumb_state_ly();//->getAxisLY();
 
     //カメラ方向を取得
     Camera& camera = Camera::instance();
     const DirectX::XMFLOAT3 cameraFront = camera.GetFront();//camera->getFront();
     const DirectX::XMFLOAT3 cameraRight = camera.GetRight();
 
+    //カメラ前方向ベクトルをXZ単位ベクトルに変換
+    float cameraFrontX = cameraFront.x;
+    float cameraFrontZ = cameraFront.z;
+
+    //カメラ前方向ベクトルを単位ベクトル化
+    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
+    if (cameraFrontLength > 0.0f)
+    {
+        cameraFrontX = cameraFrontX / cameraFrontLength;
+        cameraFrontZ = cameraFrontZ / cameraFrontLength;
+    }
 
     //カメラ右方向ベクトルをXZ単位ベクトルに変換
     float cameraRightX = cameraRight.x;
@@ -82,19 +122,7 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
     if (cameraRightLength > 0.0f)
     {
         cameraRightX = cameraRightX / cameraRightLength;
-        cameraRightZ = cameraRightZ / cameraRightLength;
-    }
-
-    //カメラ前方向ベクトルをXZ単位ベクトルに変換
-    float cameraFrontX = cameraFront.x;
-    float cameraFrontZ = cameraFront.z;
-
-    //カメラ前方向ベクトルを単位ベクトル化
-    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
-    if (cameraFrontLength < 0.0f)
-    {
-        cameraFrontX = cameraFrontX / cameraFrontLength;
-        cameraFrontZ = cameraFrontZ / cameraFrontLength;
+        cameraRightZ = cameraRightZ / cameraFrontLength;
     }
 
     //垂直入力値をカメラ前方向に反映し、水平方向をカメラ右方向に反映し進行ベクトルを計算する
@@ -112,8 +140,9 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 void Player::inputJump()
 {
     gamepad& gamePad = gamepad::Instance();
-    if (gamePad.button_state(gamepad::button::a))
+    if (GetKeyState('Z') & 1)
     {
+        a++;
         //ジャンプ回数制限
         if (jumpCount < jumpLimit)
         {

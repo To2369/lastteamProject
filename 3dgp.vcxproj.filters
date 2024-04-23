@@ -211,6 +211,9 @@
     <ClCompile Include="sources\Character.cpp">
       <Filter>Sources\Player</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Invisiblebarrier.cpp">
+      <Filter>Sources\objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -362,6 +365,12 @@
     </ClInclude>
     <ClInclude Include="sources\Character.h">
       <Filter>Headers\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Collision.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\InvisibleBarria.h">
+      <Filter>Headers\objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

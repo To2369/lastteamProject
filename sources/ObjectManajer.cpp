@@ -9,17 +9,19 @@
 #include <Hard_to_Break.h>
 #include"Crack.h"
 #include"Goal_navi.h"
+#include <Player.h>
+#include <algorithm>
 using namespace std;
 using namespace DirectX;
-void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11Device* device,XMFLOAT3 pos)
+void Objectmanajer::Initialize(StageName s_name_, ObjType type_name, ID3D11Device* device, XMFLOAT3 pos)
 {
     unique_ptr<Object> obj;
 
     switch (type_name)
     {
     case Obj_attribute::cution:
-        obj=make_unique<Cution>(device);
-        obj->SetPosition({pos});
+        obj = make_unique<Cution>(device);
+        obj->SetPosition({ pos });
         obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
@@ -31,7 +33,7 @@ void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11De
         break;
     case Obj_attribute::heavy:
         obj = make_unique<Heavy>(device);
-        obj->SetPosition({pos});
+        obj->SetPosition({ pos });
         obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
@@ -71,16 +73,16 @@ void Objectmanajer::Initialize_Obj(StageName s_name_,ObjType type_name, ID3D11De
         obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
-    case Obj_attribute::null:
-        break;
     default:
+        obj = make_unique<stage_OBJ>(device);
+        Rigister_obj(move(obj));
         break;
     }
-   
-   
+
+
 }
 
-void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos,std::string id)
+void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id)
 {
     unique_ptr<Gimic>gimic;
     switch (type_name)
@@ -120,19 +122,25 @@ void Objectmanajer::Initialize_Gimic(StageName s_name_, Gimic_Type type_name, ID
     }
 }
 
+void Objectmanajer::Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos)
+{
+    unique_ptr<Static_Object>obj = make_unique<InvisibleBarrier>(device);
+    obj->SetPosition(pos);
+    Rigister_Static_Object(move(obj));
+}
 
 void Objectmanajer::Update(float elapsedTime)
 {
     StageManager& ince = StageManager::incetance();
-  /* int count = game_objs.size();
-    for (int i=0;i<count;i++)
-    {
-        game_objs[i]->Update(elapsedTime);
-    }*/
+    /* int count = game_objs.size();
+      for (int i=0;i<count;i++)
+      {
+          game_objs[i]->Update(elapsedTime);
+      }*/
 
-    for (const auto& obj: game_objs)
+    for (const auto& obj : game_objs)
     {
-        obj->Update(elapsedTime);   
+        obj->Update(elapsedTime);
     }
     for (const auto& obj : game_objs)
     {
@@ -148,9 +156,18 @@ void Objectmanajer::Update(float elapsedTime)
         Set_eraceObgect(*gimic.get());
     }
 
+    for (const auto& static_object : game_static_objes)
+    {
+        static_object->Update(elapsedTime);
+    }
+    for (const auto& static_object : game_static_objes)
+    {
+        Set_eraceObgect(*static_object.get());
+    }
 
 
-  
+
+
 
 }
 
@@ -164,32 +181,37 @@ void Objectmanajer::render(RenderContext* rc)
     {
         gimic->Render(rc);
     }
+    for (const auto& static_object : game_static_objes)
+    {
+        static_object->Render(rc);
+    }
 }
 
 void Objectmanajer::Clear()
 {
     game_Gimics.clear();
     game_objs.clear();
+    game_static_objes.clear();
 }
 
 
 void Objectmanajer::Gui(ID3D11Device* device)
 {
 
-    DebugRenderer&ince_debug=DebugRenderer::incetance(device);
+    DebugRenderer& ince_debug = DebugRenderer::incetance(device);
     enum
     {
         max,
         min,
     };
-	ImGui::Begin("ObjectManager");
+    ImGui::Begin("ObjectManager");
     int size = game_objs.size();
     ImGui::InputInt("size", &size);
-    for (const auto& obj : game_objs)
+    for (const auto& obj : game_static_objes)
     {
         XMFLOAT3 leftup_mae{};
         XMFLOAT3 rightup_mae{};
-       
+
         XMFLOAT3 leftdown_mae{};
         XMFLOAT3 rightdown_mae{};
 
@@ -199,28 +221,17 @@ void Objectmanajer::Gui(ID3D11Device* device)
         XMFLOAT3 leftdown_back{};
         XMFLOAT3 rightdown_back{};
 
-       /* XMFLOAT3 LeftUp_Max{  0.05f,0.05f,0.05f };
-        XMFLOAT3 RightUp_Max{ -0.05f,0.05f,0.05f };
-
-        XMFLOAT3 LeftDown_Max{ 0.05,-0.05f,0.05f };
-        XMFLOAT3 RightDown_Max{ -0.05f,-0.05f,0.05f };
-
-        XMFLOAT3 LeftUp_Min{ 0.05f,0.05f,-0.05f };
-        XMFLOAT3 RightUp_Min{ -0.05f,0.05f,-0.05f };
-                          
-        XMFLOAT3 LeftDown_Min{ 0.05f,-0.05f,-0.05f };
-        XMFLOAT3 RightDown_Min{ -0.05f,-0.05f,-0.05f };*/
 
 
         XMFLOAT3 Maxpos = obj->GetModel()->bounding_box[max];
         XMFLOAT3 Minpos = obj->GetModel()->bounding_box[min];
-        XMStoreFloat(&Maxpos.x,XMVectorScale(XMLoadFloat(&Maxpos.x),0.1f*(obj->GetScale().x*0.1f)));
-        XMStoreFloat(&Maxpos.y,XMVectorScale(XMLoadFloat(&Maxpos.y),0.1f*(obj->GetScale().y*0.1f)));
-        XMStoreFloat(&Maxpos.z,XMVectorScale(XMLoadFloat(&Maxpos.z),0.1f*(obj->GetScale().z*0.1f)));
+        XMStoreFloat(&Maxpos.x, XMVectorScale(XMLoadFloat(&Maxpos.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Maxpos.y, XMVectorScale(XMLoadFloat(&Maxpos.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Maxpos.z, XMVectorScale(XMLoadFloat(&Maxpos.z), 0.1f * (obj->GetScale().z * 0.1f)));
 
-        XMStoreFloat(&Minpos.x,XMVectorScale(XMLoadFloat(&Minpos.x),0.1f*(obj->GetScale().x*0.1f)));
-        XMStoreFloat(&Minpos.y,XMVectorScale(XMLoadFloat(&Minpos.y),0.1f*(obj->GetScale().y*0.1f)));
-        XMStoreFloat(&Minpos.z,XMVectorScale(XMLoadFloat(&Minpos.z),0.1f*(obj->GetScale().z*0.1f)));
+        XMStoreFloat(&Minpos.x, XMVectorScale(XMLoadFloat(&Minpos.x), 0.1f * (obj->GetScale().x * 0.1f)));
+        XMStoreFloat(&Minpos.y, XMVectorScale(XMLoadFloat(&Minpos.y), 0.1f * (obj->GetScale().y * 0.1f)));
+        XMStoreFloat(&Minpos.z, XMVectorScale(XMLoadFloat(&Minpos.z), 0.1f * (obj->GetScale().z * 0.1f)));
         XMFLOAT3 LeftUp_Max{ Maxpos.x,Maxpos.y,Maxpos.z };
         XMFLOAT3 RightUp_Max{ -Maxpos.x,Maxpos.y,Maxpos.z };
 
@@ -234,88 +245,53 @@ void Objectmanajer::Gui(ID3D11Device* device)
         XMFLOAT3 RightDown_Min{ -Minpos.x,-Minpos.y,Minpos.z };
         {
             XMVECTOR POS = DirectX::XMLoadFloat3(&obj->GetPosition());
-            DirectX::XMStoreFloat3(&leftup_mae, DirectX::XMVectorAdd   (POS, DirectX::XMLoadFloat3(&LeftUp_Max)));
-            DirectX::XMStoreFloat3(&rightup_mae, DirectX::XMVectorAdd  (POS, DirectX::XMLoadFloat3(&RightUp_Max)));
-                                                                        
-            DirectX::XMStoreFloat3(&leftdown_mae, DirectX::XMVectorAdd (POS, DirectX::XMLoadFloat3(&LeftDown_Max)));
+            DirectX::XMStoreFloat3(&leftup_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftUp_Max)));
+            DirectX::XMStoreFloat3(&rightup_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightUp_Max)));
+
+            DirectX::XMStoreFloat3(&leftdown_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftDown_Max)));
             DirectX::XMStoreFloat3(&rightdown_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Max)));
-                                                                        
-            DirectX::XMStoreFloat3(&leftup_back, DirectX::XMVectorAdd  (POS, DirectX::XMLoadFloat3(&LeftUp_Min)));
-            DirectX::XMStoreFloat3(&rightup_back, DirectX::XMVectorAdd (POS, DirectX::XMLoadFloat3(&RightUp_Min)));
-                                                                        
+
+            DirectX::XMStoreFloat3(&leftup_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftUp_Min)));
+            DirectX::XMStoreFloat3(&rightup_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightUp_Min)));
+
             DirectX::XMStoreFloat3(&leftdown_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftDown_Min)));
-            DirectX::XMStoreFloat3(&rightdown_back,DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Min)));
+            DirectX::XMStoreFloat3(&rightdown_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Min)));
 
         }
-        if (obj->Get_Old_Objtype(0)==ObjType::heavy)
+        //if (obj->Get_Old_Objtype(0)==ObjType::heavy)
+        if (1)
         {
             XMFLOAT3 pos{ obj->GetPosition() };
             XMFLOAT4 color_{ 1,1,1,1 };
-            for (const auto& obj1 : game_objs)
-            {
-                if (obj1 == obj)continue;
-    
-              
-            }
+
             ince_debug.DrawSphere(leftup_mae, 0.01f, color_);
             ince_debug.DrawSphere(rightup_mae, 0.01f, color_);
-
             ince_debug.DrawSphere(leftdown_mae, 0.01f, color_);
             ince_debug.DrawSphere(rightdown_mae, 0.01f, color_);
-
             ince_debug.DrawSphere(leftup_back, 0.01f, color_);
             ince_debug.DrawSphere(rightup_back, 0.01f, color_);
-
             ince_debug.DrawSphere(leftdown_back, 0.01f, color_);
             ince_debug.DrawSphere(rightdown_back, 0.01f, color_);
             ImGui::InputFloat("PosX", &pos.x);
             ImGui::InputFloat("PosY", &pos.y);
             ImGui::InputFloat("PosZ", &pos.z);
-          
+
         }
     }
-	ImGui::End();
+    ImGui::End();
 
 }
+//
+//bool sort_( FaceBoundingBoxCollition& num,  FaceBoundingBoxCollition& num2)
+//{
+//  
+//    if (num.length < num2.length)
+//    {
+//        return true;
+//    }
+//    return false;
+//}
 
-bool IsCollision(const XMFLOAT3& minPos1, const XMFLOAT3& maxPos1, const XMFLOAT3& minPos2, const XMFLOAT3& maxPos2) {
-    if (minPos1.x <= maxPos2.x && maxPos1.x >= minPos2.x &&
-        minPos1.y <= maxPos2.y && maxPos1.y >= minPos2.y &&
-        minPos1.z <= maxPos2.z && maxPos1.z >= minPos2.z) {
-        return true; // 重なっている
-    }
-    return false; // 重なっていない
-}
-void CorrectPosition(XMFLOAT3& objectPosition1, const XMFLOAT3& minPos1, const XMFLOAT3& maxPos1, const XMFLOAT3& minPos2, const XMFLOAT3& maxPos2) {
-    // オブジェクト1とオブジェクト2の境界ボックスの重なりを解消するための補正ベクトルを計算する
-    float moveX = 0.0f, moveY = 0.0f, moveZ = 0.0f;
-
-    // X方向の重なりを解消するための補正ベクトルを計算する
-    if (minPos1.x <= maxPos2.x && maxPos1.x >= minPos2.x) {
-        float overlapX1 = maxPos2.x - minPos1.x;
-        float overlapX2 = maxPos1.x - minPos2.x;
-        moveX = (overlapX1 < overlapX2) ? -overlapX1 : overlapX2;
-    }
-
-    // Y方向の重なりを解消するための補正ベクトルを計算する
-    if (minPos1.y <= maxPos2.y && maxPos1.y >= minPos2.y) {
-        float overlapY1 = maxPos2.y - minPos1.y;
-        float overlapY2 = maxPos1.y - minPos2.y;
-        moveY = (overlapY1 < overlapY2) ? -overlapY1 : overlapY2;
-    }
-
-    // Z方向の重なりを解消するための補正ベクトルを計算する
-    if (minPos1.z <= maxPos2.z && maxPos1.z >= minPos2.z) {
-        float overlapZ1 = maxPos2.z - minPos1.z;
-        float overlapZ2 = maxPos1.z - minPos2.z;
-        moveZ = (overlapZ1 < overlapZ2) ? -overlapZ1 : overlapZ2;
-    }
-
-    // 補正ベクトルを使ってオブジェクト1を移動させる
-    objectPosition1.x += moveX;
-    objectPosition1.y += moveY;
-    objectPosition1.z += moveZ;
-}
 bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj, bool UpcheckFlag, float offset)
 {
     enum
@@ -323,11 +299,11 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj,
         max,
         min,
     };
-  
+
     XMFLOAT3 thisobj_min{};
     XMFLOAT3 thisobj_max{};
-    XMFLOAT3 obj2_min{};
-    XMFLOAT3 obj2_max{};
+    XMFLOAT3 obj_min{};
+    XMFLOAT3 obj_max{};
 
     XMFLOAT3 Maxpos1 = obj->GetModel()->bounding_box[min];
     XMFLOAT3 Minpos1 = obj->GetModel()->bounding_box[max];
@@ -356,20 +332,17 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj,
 
     DirectX::XMStoreFloat3(&thisobj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
     DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&obj->GetPosition())));
-    DirectX::XMStoreFloat3(&obj2_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
-    DirectX::XMStoreFloat3(&obj2_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
+    DirectX::XMStoreFloat3(&obj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&gimic_obj->GetPosition())));
     if (UpcheckFlag)
     {
-        if (thisobj_min.x <= obj2_max.x && thisobj_max.x >= obj2_min.x &&
-            thisobj_min.y <= obj2_max.y && thisobj_max.y >= obj2_min.y &&
-            thisobj_min.z <= obj2_max.z && thisobj_max.z >= obj2_min.z)
+        if (thisobj_min.x <= obj_max.x && thisobj_max.x >= obj_min.x &&
+            thisobj_min.y <= obj_max.y && thisobj_max.y >= obj_min.y &&
+            thisobj_min.z <= obj_max.z && thisobj_max.z >= obj_min.z)
         {
-
-
-
             float t_pos = obj->GetPosition().y;
-            float o_pos2 = gimic_obj->GetPosition().y - offset;
-            if (t_pos > o_pos2)
+            float o_pos2 = gimic_obj->GetPosition().y + offset;
+            if (t_pos >= o_pos2)
             {
                 obj->Set_isGimic_UpPosNow(true);
             }
@@ -384,39 +357,240 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Object* obj, Object* gimic_obj,
     }
     else
     {
-        if (IsCollision(thisobj_min, thisobj_max, obj2_min, obj2_max)) {
-            // オブジェクト1をオブジェクト2の境界ボックス内に移動させるための補正処理を行う
-            XMFLOAT3 pos = obj->GetPosition();
+        if (thisobj_min.x <= obj_max.x && thisobj_max.x >= obj_min.x &&
+            thisobj_min.y <= obj_max.y && thisobj_max.y >= obj_min.y &&
+            thisobj_min.z <= obj_max.z && thisobj_max.z >= obj_min.z)
+        {
 
-            CorrectPosition(pos, thisobj_min, thisobj_max, obj2_min, obj2_max);
-            obj->SetPosition(pos);
+
             return true;
         }
-        //{
-        //    using namespace DirectX;
 
-        //    XMVECTOR MinthisPos = XMLoadFloat3(&thisobj_min);
-        //    XMVECTOR MaxthisPos = XMLoadFloat3(&thisobj_max);
-        //    XMVECTOR Minobj2Pos = XMLoadFloat3(&obj2_min);
-        //    XMVECTOR Maxobj2Pos = XMLoadFloat3(&obj2_max);
-
-        //    XMVECTOR penetration = XMVectorZero();
-        //    penetration = XMVectorMax(penetration, XMVectorSubtract(Minobj2Pos, MaxthisPos));
-        //    penetration = XMVectorMax(penetration, XMVectorSubtract(MinthisPos, Maxobj2Pos));
-
-        //    XMFLOAT3 p = obj->GetPosition();
-        //    XMVECTOR pos = XMLoadFloat3(&p);
-        //    // 補正位置を計算
-        //    XMVECTOR correction = XMVectorMultiply(penetration, XMVectorReplicate(0.5f)); // めり込んだ量の半分を補正量とする
-        //    XMVECTOR correctedPosition = XMVectorAdd(pos, correction); // 現在の位置に補正量を加算して補正位置を計算
-        //    XMFLOAT3 correctedPositionFloat3;
-        //    XMStoreFloat3(&correctedPositionFloat3, correctedPosition); // XMVECTORをXMFLOAT3に変換    
-        //    obj->SetPosition(correctedPositionFloat3);
-
-        //    return true;
-        //}
-        obj->Set_isGimic_UpPosNow(false);
-        return false;
     }
+    obj->Set_isGimic_UpPosNow(false);
+    return false;
 }
 
+bool Objectmanajer::Bounding_Box_vs_Bounding_Box(DirectX::XMFLOAT3 PL_position, DirectX::XMFLOAT3 OB_position,
+    DirectX::XMFLOAT3 PL_scale, DirectX::XMFLOAT3 OB_scale,
+    DirectX::XMFLOAT3* Pl_boundingbox, DirectX::XMFLOAT3* OB_boundingbox)
+{
+    enum
+    {
+        min,
+        max,
+    };
+
+    XMFLOAT3 playerPos_min{};
+    XMFLOAT3 playerPos_max{};
+    XMFLOAT3 obj_min{};
+    XMFLOAT3 obj_max{};
+
+    XMFLOAT3 Maxpos1 = Pl_boundingbox[max];
+    XMFLOAT3 Minpos1 = Pl_boundingbox[min];
+    XMFLOAT3 plscale = PL_scale;
+    {
+        XMStoreFloat(&Maxpos1.x, XMVectorScale(XMLoadFloat(&Maxpos1.x), 0.1f * (plscale.x * 0.1f)));
+        XMStoreFloat(&Maxpos1.y, XMVectorScale(XMLoadFloat(&Maxpos1.y), 0.1f * (plscale.y * 0.1f)));
+        XMStoreFloat(&Maxpos1.z, XMVectorScale(XMLoadFloat(&Maxpos1.z), 0.1f * (plscale.z * 0.1f)));
+        XMStoreFloat(&Minpos1.x, XMVectorScale(XMLoadFloat(&Minpos1.x), 0.1f * (plscale.x * 0.1f)));
+        XMStoreFloat(&Minpos1.y, XMVectorScale(XMLoadFloat(&Minpos1.y), 0.1f * (plscale.y * 0.1f)));
+        XMStoreFloat(&Minpos1.z, XMVectorScale(XMLoadFloat(&Minpos1.z), 0.1f * (plscale.z * 0.1f)));
+    }
+
+    XMFLOAT3 Maxpos2 = OB_boundingbox[max];
+    XMFLOAT3 Minpos2 = OB_boundingbox[min];
+    XMFLOAT3 objscale = OB_scale;
+    {
+        XMStoreFloat(&Maxpos2.x, XMVectorScale(XMLoadFloat(&Maxpos2.x), 0.1f * (OB_scale.x * 0.1f)));
+        XMStoreFloat(&Maxpos2.y, XMVectorScale(XMLoadFloat(&Maxpos2.y), 0.1f * (OB_scale.y * 0.1f)));
+        XMStoreFloat(&Maxpos2.z, XMVectorScale(XMLoadFloat(&Maxpos2.z), 0.1f * (OB_scale.z * 0.1f)));
+        XMStoreFloat(&Minpos2.x, XMVectorScale(XMLoadFloat(&Minpos2.x), 0.1f * (OB_scale.x * 0.1f)));
+        XMStoreFloat(&Minpos2.y, XMVectorScale(XMLoadFloat(&Minpos2.y), 0.1f * (OB_scale.y * 0.1f)));
+        XMStoreFloat(&Minpos2.z, XMVectorScale(XMLoadFloat(&Minpos2.z), 0.1f * (OB_scale.z * 0.1f)));
+    }
+
+
+    DirectX::XMStoreFloat3(&playerPos_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&PL_position)));
+    DirectX::XMStoreFloat3(&playerPos_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&PL_position)));
+    DirectX::XMStoreFloat3(&obj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&OB_position)));
+    DirectX::XMStoreFloat3(&obj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&OB_position)));
+
+    if (playerPos_min.x <= obj_max.x && playerPos_max.x >= obj_min.x &&
+        playerPos_min.y <= obj_max.y && playerPos_max.y >= obj_min.y &&
+        playerPos_min.z <= obj_max.z && playerPos_max.z >= obj_min.z)
+    {
+        return true;
+    }
+    return false;
+}
+
+
+//bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Player* player, Static_Object* obj2, FaceBoundingBoxCollition::face& face_check)
+//
+bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Player* player, Static_Object* obj2)
+{
+#if 1
+    enum
+    {
+        max,
+        min,
+    };
+    XMFLOAT3 thisobj_min{};
+    XMFLOAT3 thisobj_max{};
+    XMFLOAT3 obj_min{};
+    XMFLOAT3 obj_max{};
+
+    XMFLOAT3 Maxpos1 = player->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos1 = player->GetModel()->bounding_box[max];
+    XMFLOAT3 plscale = player->GetScale();
+    {
+        XMStoreFloat(&Maxpos1.x, XMVectorScale(XMLoadFloat(&Maxpos1.x), 0.1f * (plscale.x * 0.1f)));
+        XMStoreFloat(&Maxpos1.y, XMVectorScale(XMLoadFloat(&Maxpos1.y), 0.1f * (plscale.y * 0.1f)));
+        XMStoreFloat(&Maxpos1.z, XMVectorScale(XMLoadFloat(&Maxpos1.z), 0.1f * (plscale.z * 0.1f)));
+
+        XMStoreFloat(&Minpos1.x, XMVectorScale(XMLoadFloat(&Minpos1.x), 0.1f * (plscale.x * 0.1f)));
+        XMStoreFloat(&Minpos1.y, XMVectorScale(XMLoadFloat(&Minpos1.y), 0.1f * (plscale.y * 0.1f)));
+        XMStoreFloat(&Minpos1.z, XMVectorScale(XMLoadFloat(&Minpos1.z), 0.1f * (plscale.z * 0.1f)));
+    }
+    XMFLOAT3 Maxpos2 = obj2->GetModel()->bounding_box[min];
+    XMFLOAT3 Minpos2 = obj2->GetModel()->bounding_box[max];
+    XMFLOAT3 obj2scale = obj2->GetScale();
+    {
+        XMStoreFloat(&Maxpos2.x, XMVectorScale(XMLoadFloat(&Maxpos2.x), 0.1f * (obj2scale.x * 0.1f)));
+        XMStoreFloat(&Maxpos2.y, XMVectorScale(XMLoadFloat(&Maxpos2.y), 0.1f * (obj2scale.y * 0.1f)));
+        XMStoreFloat(&Maxpos2.z, XMVectorScale(XMLoadFloat(&Maxpos2.z), 0.1f * (obj2scale.z * 0.1f)));
+
+        XMStoreFloat(&Minpos2.x, XMVectorScale(XMLoadFloat(&Minpos2.x), 0.1f * (obj2scale.x * 0.1f)));
+        XMStoreFloat(&Minpos2.y, XMVectorScale(XMLoadFloat(&Minpos2.y), 0.1f * (obj2scale.y * 0.1f)));
+        XMStoreFloat(&Minpos2.z, XMVectorScale(XMLoadFloat(&Minpos2.z), 0.1f * (obj2scale.z * 0.1f)));
+    }
+    XMFLOAT3 plpos = player->GetPosition();
+    XMFLOAT3 obj2pos = obj2->GetPosition();
+    {
+        DirectX::XMStoreFloat3(&thisobj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos1), DirectX::XMLoadFloat3(&plpos)));
+        DirectX::XMStoreFloat3(&thisobj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos1), DirectX::XMLoadFloat3(&plpos)));
+
+        DirectX::XMStoreFloat3(&obj_min, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Minpos2), DirectX::XMLoadFloat3(&obj2pos)));
+        DirectX::XMStoreFloat3(&obj_max, DirectX::XMVectorAdd(DirectX::XMLoadFloat3(&Maxpos2), DirectX::XMLoadFloat3(&obj2pos)));
+    }
+    if (thisobj_min.x <= obj_max.x && thisobj_max.x >= obj_min.x &&
+        thisobj_min.y <= obj_max.y && thisobj_max.y >= obj_min.y &&
+        thisobj_min.z <= obj_max.z && thisobj_max.z >= obj_min.z)
+    {
+        /*
+      //  using namespace DirectX;
+
+      //  XMFLOAT3 leftup_mae{};
+      //  XMFLOAT3 rightup_mae{};
+
+      //  XMFLOAT3 leftdown_mae{};
+      //  XMFLOAT3 rightdown_mae{};
+
+      //  XMFLOAT3 leftup_back{};
+      //  XMFLOAT3 rightup_back{};
+
+      //  XMFLOAT3 leftdown_back{};
+      //  XMFLOAT3 rightdown_back{};
+
+
+
+      //  XMFLOAT3 Maxpos = obj2->GetModel()->bounding_box[max];
+      //  XMFLOAT3 Minpos = obj2->GetModel()->bounding_box[min];
+      //  XMStoreFloat(&Maxpos.x, XMVectorScale(XMLoadFloat(&Maxpos.x), 0.1f * (obj2scale.x * 0.1f)));
+      //  XMStoreFloat(&Maxpos.y, XMVectorScale(XMLoadFloat(&Maxpos.y), 0.1f * (obj2scale.y * 0.1f)));
+      //  XMStoreFloat(&Maxpos.z, XMVectorScale(XMLoadFloat(&Maxpos.z), 0.1f * (obj2scale.z * 0.1f)));
+      //
+      //  XMStoreFloat(&Minpos.x, XMVectorScale(XMLoadFloat(&Minpos.x), 0.1f * (obj2scale.x * 0.1f)));
+      //  XMStoreFloat(&Minpos.y, XMVectorScale(XMLoadFloat(&Minpos.y), 0.1f * (obj2scale.y * 0.1f)));
+      //  XMStoreFloat(&Minpos.z, XMVectorScale(XMLoadFloat(&Minpos.z), 0.1f * (obj2scale.z * 0.1f)));
+      //  XMFLOAT3 LeftUp_Max{ Maxpos.x,Maxpos.y,Maxpos.z };
+      //  XMFLOAT3 RightUp_Max{ -Maxpos.x,Maxpos.y,Maxpos.z };
+
+      //  XMFLOAT3 LeftDown_Max{ Maxpos.x,-Maxpos.y,Maxpos.z };
+      //  XMFLOAT3 RightDown_Max{ -Maxpos.x,-Maxpos.y,Maxpos.z };
+
+      //  XMFLOAT3 LeftUp_Min{ Minpos.x, Minpos.y,Minpos.z };
+      //  XMFLOAT3 RightUp_Min{ -Minpos.x, Minpos.y,Minpos.z };
+
+      //  XMFLOAT3 LeftDown_Min{ Minpos.x,-Minpos.y,Minpos.z };
+      //  XMFLOAT3 RightDown_Min{ -Minpos.x,-Minpos.y,Minpos.z };
+      //  {
+      //      XMVECTOR POS = DirectX::XMLoadFloat3(&obj2pos);
+      //      DirectX::XMStoreFloat3(&leftup_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftUp_Max)));
+      //      DirectX::XMStoreFloat3(&rightup_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightUp_Max)));
+
+      //      DirectX::XMStoreFloat3(&leftdown_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftDown_Max)));
+      //      DirectX::XMStoreFloat3(&rightdown_mae, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Max)));
+
+      //      DirectX::XMStoreFloat3(&leftup_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftUp_Min)));
+      //      DirectX::XMStoreFloat3(&rightup_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightUp_Min)));
+
+      //      DirectX::XMStoreFloat3(&leftdown_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&LeftDown_Min)));
+      //      DirectX::XMStoreFloat3(&rightdown_back, DirectX::XMVectorAdd(POS, DirectX::XMLoadFloat3(&RightDown_Min)));
+
+      //  }
+      //  float RightLength;
+      //  float LeftLength;
+      //  float FrontLength;
+      //  float BackLength;
+      //std::vector<FaceBoundingBoxCollition> arry;
+      //FaceBoundingBoxCollition face_;
+      //  //rightの長さ
+      //  {
+      //      XMVECTOR Right1 = XMVectorSubtract(XMLoadFloat3(&rightup_mae)    ,XMLoadFloat3(&plpos));
+      //      XMVECTOR Right2 = XMVectorSubtract(XMLoadFloat3(&rightup_back)   ,XMLoadFloat3(&plpos));
+      //      XMVECTOR Right3 = XMVectorSubtract(XMLoadFloat3(&rightdown_mae)  ,XMLoadFloat3(&plpos));
+      //      XMVECTOR Right4 = XMVectorSubtract(XMLoadFloat3(&rightdown_back) ,XMLoadFloat3(&plpos));
+      //      RightLength = XMVectorGetX(XMVector3Length(XMVectorAdd(Right1, XMVectorAdd(Right2, XMVectorAdd(Right3, Right4)))));
+      //      face_.length =RightLength;
+      //      face_.type   = FaceBoundingBoxCollition::face::Right;
+      //      arry.push_back(face_);
+      //  }
+      //  //leftの長さ
+      //  {
+      //      XMVECTOR Left1 = XMVectorSubtract(XMLoadFloat3(&leftup_mae),    XMLoadFloat3(&plpos));
+      //      XMVECTOR Left2 = XMVectorSubtract(XMLoadFloat3(&leftup_back),   XMLoadFloat3(&plpos));
+      //      XMVECTOR Left3 = XMVectorSubtract(XMLoadFloat3(&leftdown_mae),  XMLoadFloat3(&plpos));
+      //      XMVECTOR Left4 = XMVectorSubtract(XMLoadFloat3(&leftdown_back), XMLoadFloat3(&plpos));
+      //      LeftLength = XMVectorGetX(XMVector3Length(XMVectorAdd(Left1, XMVectorAdd(Left2, XMVectorAdd(Left3, Left4)))));
+      //      face_.length = LeftLength;
+      //      face_.type   =FaceBoundingBoxCollition::face::Left;
+      //      arry.push_back(face_);
+
+      //  }
+      //  //Frontの長さ
+      //  {
+      //      XMVECTOR Front1 = XMVectorSubtract(XMLoadFloat3(&rightup_mae),   XMLoadFloat3(&plpos));
+      //      XMVECTOR Front2 = XMVectorSubtract(XMLoadFloat3(&leftup_mae),    XMLoadFloat3(&plpos));
+      //      XMVECTOR Front3 = XMVectorSubtract(XMLoadFloat3(&rightdown_mae), XMLoadFloat3(&plpos));
+      //      XMVECTOR Front4 = XMVectorSubtract(XMLoadFloat3(&leftdown_mae),  XMLoadFloat3(&plpos));
+      //      FrontLength = XMVectorGetX(XMVector3Length(XMVectorAdd(Front1,   XMVectorAdd(Front2, XMVectorAdd(Front3, Front4)))));
+      //      face_.length =FrontLength;
+      //      face_.type   = FaceBoundingBoxCollition::face::Front;
+      //      arry.push_back(face_);
+
+      //  }
+      //  //backの長さ
+      //  {
+      //      XMVECTOR Back1 = XMVectorSubtract(XMLoadFloat3(&rightup_back),   XMLoadFloat3(&plpos));
+      //      XMVECTOR Back2 = XMVectorSubtract(XMLoadFloat3(&leftup_back),    XMLoadFloat3(&plpos));
+      //      XMVECTOR Back3 = XMVectorSubtract(XMLoadFloat3(&rightdown_back), XMLoadFloat3(&plpos));
+      //      XMVECTOR Back4 = XMVectorSubtract(XMLoadFloat3(&leftdown_back),  XMLoadFloat3(&plpos));
+      //      BackLength = XMVectorGetX(XMVector3Length(XMVectorAdd(Back1, XMVectorAdd(Back2, XMVectorAdd(Back3, Back4)))));
+      //      face_.length= BackLength;
+      //      face_.type  = FaceBoundingBoxCollition::face::Back;
+      //      arry.push_back(face_);
+      //  }
+      //
+      //  std::sort(arry.begin(),arry.end(),sort_);
+      //  face_check = arry[0].type;
+      */
+        int a = 0;
+        return true;
+    }
+
+    return false;
+#endif
+
+}

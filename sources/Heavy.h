@@ -7,9 +7,9 @@ public:
     ~Heavy()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-    bool gimic_VS_Object();
     void Gui()override;
 private:
+
     const char* filename = ".\\resources\\stage1\\tumiki.fbx";
 };
 class Super_Heavy :public Object

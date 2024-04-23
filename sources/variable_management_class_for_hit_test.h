@@ -3,7 +3,13 @@
 #include <d3d11.h>
 #include <directxmath.h>
 #include "collision_mesh.h"
-
+#include"Model.h"
+enum class Ray_ObjType//どのオブジェクトに対してRayを飛ばすかを指定
+{
+	Static_objects,//静的オブジェクト
+	DaynamicObjects,//動的オブジェクト
+	Stage,
+};
 class VMCFHT
 {
 public:
@@ -14,7 +20,7 @@ public:
 	{};
 	~VMCFHT() {};
 
-    static VMCFHT& instance()
+	static VMCFHT& instance()
 	{
 		static VMCFHT ins;
 		return ins;
@@ -31,8 +37,9 @@ public:
 	void update(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3& distance);
 
 	//raycast
-	bool raycast(collision_mesh& collision_mesh, DirectX::XMFLOAT4X4 transform,Intersection& intersection,float length = 1.0e+7f,bool skip = false);
-
+	bool raycast(collision_mesh& collision_mesh, DirectX::XMFLOAT4X4 transform, Intersection& intersection, float length = 1.0e+7f, bool skip = false);
+	bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 LocalTransform);
+	bool RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& hit, Ray_ObjType type);
 	static DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection);
 private:
 	D3D11_VIEWPORT view_port;

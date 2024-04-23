@@ -7,8 +7,8 @@
 class PlayerManager
 {
 public:
-    PlayerManager(){}
-    ~PlayerManager(){}
+    PlayerManager() {}
+    ~PlayerManager() {}
 
     static PlayerManager& Instance()
     {

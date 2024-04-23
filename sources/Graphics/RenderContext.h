@@ -13,11 +13,18 @@ enum class rasterizerMode
 };
 struct RenderContext
 {
+	//debugdrawŽg‚¤‚½‚ß’Ç‰Á
+	static RenderContext& incetance()
+	{
+		static RenderContext ince;
+		return ince;
+	}
 	ID3D11DeviceContext* deviceContext;
-  
+	ID3D11Device* device;
 	DirectX::XMFLOAT4X4 view;
 	DirectX::XMFLOAT4X4 projection;
 	DirectX::XMFLOAT4 lightDirection;
-	Microsoft::WRL::ComPtr<ID3D11RasterizerState> rasterizers[4];
-   	
+
+
+
 };
