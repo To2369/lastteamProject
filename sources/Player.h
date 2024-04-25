@@ -27,6 +27,9 @@ public:
 
     //ジャンプ入力処理
     void inputJump();
+
+    //プレイヤーとギミックの当たり判定
+    void CollisionPlayerVsGimics();
 protected:
     //着地したときに呼び出される
     void OnLanding()override;
@@ -35,13 +38,13 @@ private:
     const char* filename = ".\\Resources\\3Dmodel\\Jammo\\Jammo.fbx";
 
     //移動スピード
-    float moveSpeed = 0.5f;
+    float moveSpeed = 5.0f;
 
     //旋回スピード
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     //ジャンプ力
-    float jumpSpeed = 20.0f;
+    float jumpSpeed = 1.0f;
 
     //ジャンプ回数
     int jumpCount = 0;

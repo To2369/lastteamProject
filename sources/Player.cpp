@@ -42,6 +42,8 @@ Player::Player(ID3D11Device* device)
     model = std::make_unique<Model>(device, filename, true);
     const float scale_fcator = 0.001f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
+
+    radius = 0.05f;
 }
 
 //デストラクタ
@@ -54,21 +56,29 @@ Player::~Player()
 void Player::update(float elapsedTime)
 {
 
-    if (1)
-    {
-        //////移動入力処理
-        inputMove(elapsedTime);
+    //////移動入力処理
+    inputMove(elapsedTime);
 
-        ////ジャンプ入力処理
-        inputJump();
+    ////ジャンプ入力処理
+    inputJump();
 
-        ////速度処理更新
-        updateVelocity(elapsedTime);
-    }
+    ////速度処理更新
+    updateVelocity(elapsedTime);
+
+    CollisionPlayerVsGimics();
 
     ////ワールド行列の更新
     UpdateTransform();
-    //model->UpdateTransform(transform);
+   
+    gamepad& gamePad = gamepad::Instance();
+    if (gamePad.button_state(gamepad::button::b))
+    {
+        velocity.y = 0;
+        position.y = 30;
+        velocity.y = 0;
+        position.x = 0;
+        position.z = 0;
+    }
 }
 
 //描画処理
@@ -88,6 +98,9 @@ void Player::inputMove(float elapsedTime)
 
     //旋回処理
     turn(elapsedTime, moveVec.x, moveVec.z, this->turnSpeed);
+
+    //進行ベクトルがゼロベクトルでない場合は入力された
+    moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f;
 }
 
 //入力値から移動ベクトルを取得
@@ -95,25 +108,14 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 {
     //入力情報を取得
     gamepad& gamePad = gamepad::Instance();
-    float ax = gamePad.thumb_state_lx();//->getAxisLX();
-    float ay = gamePad.thumb_state_ly();//->getAxisLY();
+    float ax = gamePad.thumb_state_rx();//->getAxisLX();
+    float ay = gamePad.thumb_state_ry();//->getAxisLY();
 
     //カメラ方向を取得
     Camera& camera = Camera::instance();
     const DirectX::XMFLOAT3 cameraFront = camera.GetFront();//camera->getFront();
     const DirectX::XMFLOAT3 cameraRight = camera.GetRight();
 
-    //カメラ前方向ベクトルをXZ単位ベクトルに変換
-    float cameraFrontX = cameraFront.x;
-    float cameraFrontZ = cameraFront.z;
-
-    //カメラ前方向ベクトルを単位ベクトル化
-    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
-    if (cameraFrontLength > 0.0f)
-    {
-        cameraFrontX = cameraFrontX / cameraFrontLength;
-        cameraFrontZ = cameraFrontZ / cameraFrontLength;
-    }
 
     //カメラ右方向ベクトルをXZ単位ベクトルに変換
     float cameraRightX = cameraRight.x;
@@ -122,7 +124,19 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
     if (cameraRightLength > 0.0f)
     {
         cameraRightX = cameraRightX / cameraRightLength;
-        cameraRightZ = cameraRightZ / cameraFrontLength;
+        cameraRightZ = cameraRightZ / cameraRightLength;
+    }
+
+    //カメラ前方向ベクトルをXZ単位ベクトルに変換
+    float cameraFrontX = cameraFront.x;
+    float cameraFrontZ = cameraFront.z;
+
+    //カメラ前方向ベクトルを単位ベクトル化
+    float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
+    if (cameraFrontLength < 0.0f)
+    {
+        cameraFrontX = cameraFrontX / cameraFrontLength;
+        cameraFrontZ = cameraFrontZ / cameraFrontLength;
     }
 
     //垂直入力値をカメラ前方向に反映し、水平方向をカメラ右方向に反映し進行ベクトルを計算する
@@ -140,9 +154,8 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 void Player::inputJump()
 {
     gamepad& gamePad = gamepad::Instance();
-    if (GetKeyState('Z') & 1)
+    if (gamePad.button_state(gamepad::button::a))
     {
-        a++;
         //ジャンプ回数制限
         if (jumpCount < jumpLimit)
         {
@@ -156,4 +169,37 @@ void Player::inputJump()
 void Player::OnLanding()
 {
     jumpCount = 0;
+}
+
+void Player::CollisionPlayerVsGimics()
+{
+    Objectmanajer& objMgr = Objectmanajer::incetance();
+    //全てのギミックと総当たりで衝突処理
+    int objCount = objMgr.Get_GameObjCount();
+    for (int i = 0; i < objCount; i++)
+    {
+        Object* obj = objMgr.Get_GameObject(i);
+        //衝突判定
+        Object::ResultSphereQuadPlacement outsphere;
+        if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
+        {
+            switch (outsphere.type)
+            {
+            case Object::SphereAttribute::Right:
+                position = outsphere.Spherepos;
+                break;
+            case Object::SphereAttribute::Left:
+                position = outsphere.Spherepos;
+                break;
+            case Object::SphereAttribute::Front:
+                position = outsphere.Spherepos;
+                 break;
+            case Object::SphereAttribute::Backfront:
+                position = outsphere.Spherepos;
+                break;
+            case Object::SphereAttribute::null:
+                break;
+            }
+        }
+    }
 }

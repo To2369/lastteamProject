@@ -304,7 +304,10 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
 		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;
 
-		camera_controller->SetEye(camera_position);
+		Player* pl = PlayerManager::Instance().GetPlayer(0);
+		DirectX::XMFLOAT3 target = pl->GetPosition();
+		target.y += 0.5f;
+		camera_controller->SetEye(target);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);
 

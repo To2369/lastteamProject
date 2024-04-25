@@ -24,6 +24,9 @@ private:
 
     //水平移動更新処理
     void updateHorizontalMove(float elapsedTime);
+
+    //レイとキャラ判定
+    void RayVsCharacter(float moveX, float moveZ);
 protected:
     //移動処理
     void move(float vx, float vz, float speed);
@@ -62,12 +65,10 @@ public:
     void SetVelocity(XMFLOAT3 vel) { velocity = vel; }
     //半径の取得
     float getRadius()const { return radius; }
-    float geta()const { return a; }
     //着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
     DirectX::XMFLOAT3 GetPosition() { return position; }
 protected:
-    float a = 0;
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
@@ -92,7 +93,7 @@ protected:
     float friction = 0.5f;                          //摩擦力
 
     float acceleration = 1.0f;                      //加速度
-    float maxMoveSpeed = 0.5f;                      //最大速度
+    float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
     float airControl = 0.3f;                        //空中制御用係数
 };

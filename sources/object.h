@@ -157,10 +157,12 @@ public:
     void SetResultSphere(ResultSphereQuadPlacement sphere) { ResultSphere = sphere; }
     ////自分がオブジェクトに接触していたらの処理
     void HitSphere();
+
 protected:
 
-    void CreateQuadPlacement(SphereQuadPlacement& sphere);
     bool QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position, ResultSphereQuadPlacement& outsphere);
+
+    void CreateQuadPlacement(SphereQuadPlacement& sphere);
 
     virtual void UpdateTransform();
     void RayCastGround();
