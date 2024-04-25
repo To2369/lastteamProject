@@ -306,6 +306,11 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 
 		Player* pl = PlayerManager::Instance().GetPlayer(0);
 		DirectX::XMFLOAT3 target = pl->GetPosition();
+	/*	if (GetKeyState('3') & 0x01)
+		{
+			target.y += 0.1f;
+			target.z += 0.1f;
+		}*/
 		target.y += 0.5f;
 		camera_controller->SetEye(target);
 		if (mouseMove)
@@ -372,6 +377,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	DirectX::XMStoreFloat4x4(&scene_data->data.view_projection, VP);
 	scene_data->activate(rc.deviceContext, 1);
 	parametric_constant->activate(rc.deviceContext, 2);
+	
 	DebugRenderer& ince_d = DebugRenderer::incetance(device_.Get());
 	{
 		XMFLOAT3 pos = camera_position;
@@ -380,12 +386,11 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 		pos.x += camerafront.x * 1.1f;
 		pos.y += camerafront.y * 1.1f;
 		ince_d.DrawSphere(pos, 0.1f, { 1,0,0,1 });
+
 	}
 	{
 		//プレイヤー描画処理
-		//PlayerManager::Instance().Render(&rc);
 		plm.Render(&rc);
-
 
 		StageManager::incetance().Render(&rc);
 		if (Debug_ParameterObj)
@@ -395,6 +400,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 		//オブジェクト描画処理
 		Objectmanajer::incetance().render(&rc);
 		Goal_navi->Render(&rc);
+		plm.drawDrawPrimitive(device_.Get());
 
 
 	}
@@ -533,6 +539,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 		ImGui::End();
 		StageManager::incetance().Gui(device_.Get(), &rc);
 		Objectmanajer::incetance().Gui(device_.Get());
+		PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
 		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG

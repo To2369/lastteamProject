@@ -96,7 +96,7 @@ public:
 public:
 
     void SetMoveObjectFlag(bool f) { moveobjectFlag = f; }
-    void SetVeloty(DirectX::XMFLOAT3 sp) { Velocty = sp; }
+    void SetVelotyXZ(DirectX::XMFLOAT2 sp) { VelocityXZ = sp; }
     void SetReturnTimer(float timer1 = 0.f, int num = 0) { ReturnTimer[num] = timer1; }
     void SetColor(DirectX::XMFLOAT4 color_) { color = color_; }
     void SetPosition(XMFLOAT3 Pos) { Position = Pos; }
@@ -183,7 +183,8 @@ protected:
 
     DirectX::XMFLOAT3 Normal{ 0.f,0.f,0.f };//raycast—p
     DirectX::XMFLOAT3 Position{ 0.f,0.f,0.f };
-    DirectX::XMFLOAT3 Velocty{ 0.f,0.f,0.f };
+    DirectX::XMFLOAT2 VelocityXZ = { 0.0f,0.0f };
+    float VeloctyY = 0;
     DirectX::XMFLOAT3 Angle{ 0.f,0.f,0.f };
     DirectX::XMFLOAT3 Scale{ 1.f,1.f,1.f };
     DirectX::XMFLOAT4 color{ 1.f,1.f,1.f,1.f };

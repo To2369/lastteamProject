@@ -5,6 +5,7 @@
 #include"StageManager.h"
 #include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
+#include"Graphics/DebugRenderer.h"
 /// <summary>
 /// 
 /// </summary>
@@ -40,10 +41,10 @@ bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, co
 Player::Player(ID3D11Device* device)
 {
     model = std::make_unique<Model>(device, filename, true);
-    const float scale_fcator = 0.001f;	//モデルが大きいのでスケール調整
+    const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
 
-    radius = 0.05f;
+    radius = 0.5f;
 }
 
 //デストラクタ
@@ -65,7 +66,8 @@ void Player::update(float elapsedTime)
     ////速度処理更新
     updateVelocity(elapsedTime);
 
-    CollisionPlayerVsGimics();
+    //プレイヤーとギミックの当たり判定
+    CollisionPlayerVsGimics(elapsedTime);
 
     ////ワールド行列の更新
     UpdateTransform();
@@ -84,6 +86,10 @@ void Player::update(float elapsedTime)
 //描画処理
 void Player::render(RenderContext* rc)
 {
+    DebugRenderer debugRenderer = DebugRenderer::incetance(rc->device);
+        //衝突判定用のデバッグ球を描画
+        debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
+
     model->render(rc->deviceContext, transform, 0.0f, { 1.0f,1.0f,1.0f,1.0f });
 }
 
@@ -171,7 +177,8 @@ void Player::OnLanding()
     jumpCount = 0;
 }
 
-void Player::CollisionPlayerVsGimics()
+//プレイヤーとギミックの当たり判定
+void Player::CollisionPlayerVsGimics(float elapsedTime)
 {
     Objectmanajer& objMgr = Objectmanajer::incetance();
     //全てのギミックと総当たりで衝突処理
@@ -187,14 +194,23 @@ void Player::CollisionPlayerVsGimics()
             {
             case Object::SphereAttribute::Right:
                 position = outsphere.Spherepos;
+                if(velocity.x*elapsedTime<0)
+                obj->SetVelotyXZ({ velocity.x * elapsedTime,0 });
+                
                 break;
             case Object::SphereAttribute::Left:
+                if (velocity.x * elapsedTime > 0)
+                    obj->SetVelotyXZ({ velocity.x * elapsedTime,0 });
                 position = outsphere.Spherepos;
                 break;
             case Object::SphereAttribute::Front:
+                if (velocity.z * elapsedTime > 0)
+                    obj->SetVelotyXZ({ 0,velocity.z * elapsedTime });
                 position = outsphere.Spherepos;
                  break;
             case Object::SphereAttribute::Backfront:
+                if (velocity.z * elapsedTime < 0)
+                    obj->SetVelotyXZ({ 0,velocity.z * elapsedTime });
                 position = outsphere.Spherepos;
                 break;
             case Object::SphereAttribute::null:

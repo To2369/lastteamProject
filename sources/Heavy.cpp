@@ -33,7 +33,7 @@ void Heavy::Update(float elapsedTime)
         CreateQuadPlacement(spheres);
 
     }
-    Velocty.y = -elapsedTime * 2;
+    VeloctyY = -elapsedTime * 2;
     Objectmanajer& ince = Objectmanajer::incetance();
     int count = ince.Get_GameGimicCount();
     {
@@ -47,10 +47,15 @@ void Heavy::Update(float elapsedTime)
                 {
                     string g = gimic->GetGimicID();
                     Set_GimicType(g);
-                    Velocty.y = 0;
+                    VeloctyY = 0;
                     break;
                 }
             }
+        }
+        if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
+        {
+            Position.x += VelocityXZ.x;
+            Position.z += VelocityXZ.y;
         }
         HitSphere();
     }
@@ -95,7 +100,7 @@ void Super_Heavy::Update(float elapsedTime)
         CreateQuadPlacement(spheres);
 
     }
-    Velocty.y = -elapsedTime * 4;
+    VeloctyY = -elapsedTime * 4;
     Objectmanajer& ince = Objectmanajer::incetance();
     int count = ince.Get_GameGimicCount();
     HitSphere();

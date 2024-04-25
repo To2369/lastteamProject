@@ -33,11 +33,11 @@ void Object::RayCastGround()
         collision_mesh* mesh = ince_st.GetStages(i)->GetModel()->Get_RaycastCollition();
         if (ince_vf.raycast(*mesh, ince_st.GetStages(i)->GetTransform(), result_intersection, legth))
         {
-            Velocty.y = 0.0f;
+            VeloctyY = 0.0f;
             break;
         }
     }
-    Position.y += Velocty.y;
+    Position.y += VeloctyY;
 }
 
 void Object::ObjType_effect(float elapsedTime)

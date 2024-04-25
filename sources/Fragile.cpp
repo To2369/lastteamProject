@@ -25,7 +25,7 @@ void Fragile::Update(float elapsedTime)
 
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
-    Velocty.y = -elapsedTime;
+    VeloctyY = -elapsedTime;
     //box_Collition_obj();
 
     if (!Get_isGimic_UpPosNow())RayCastGround();
@@ -64,7 +64,7 @@ void Super_fragile::Update(float elapsedTime)
 
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
-    Velocty.y = -elapsedTime;
+    VeloctyY = -elapsedTime;
     //box_Collition_obj();
 
     if (!Get_isGimic_UpPosNow())RayCastGround();

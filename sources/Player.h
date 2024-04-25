@@ -29,13 +29,13 @@ public:
     void inputJump();
 
     //プレイヤーとギミックの当たり判定
-    void CollisionPlayerVsGimics();
+    void CollisionPlayerVsGimics(float elapsedTime);
 protected:
     //着地したときに呼び出される
     void OnLanding()override;
 private:
     std::unique_ptr<Model> model;
-    const char* filename = ".\\Resources\\3Dmodel\\Jammo\\Jammo.fbx";
+    const char* filename = ".\\Resources\\3Dmodel\\hand\\hand.fbx";
 
     //移動スピード
     float moveSpeed = 5.0f;

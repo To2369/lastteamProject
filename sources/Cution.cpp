@@ -27,7 +27,7 @@ Cution::~Cution()
 void Cution::Update(float elapsedTime)
 {
     Return_orijinal_ObjType(elapsedTime);
-    Velocty.y = -elapsedTime;
+    VeloctyY = -elapsedTime;
     //box_Collition_obj();
 
     if (!Get_isGimic_UpPosNow())RayCastGround();
@@ -65,7 +65,7 @@ Super_Cution::~Super_Cution()
 void Super_Cution::Update(float elapsedTime)
 {
     Return_orijinal_ObjType(elapsedTime);
-    Velocty.y = -elapsedTime;
+    VeloctyY = -elapsedTime;
     //box_Collition_obj();
 
     if (!Get_isGimic_UpPosNow())RayCastGround();

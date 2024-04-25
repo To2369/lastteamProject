@@ -57,14 +57,16 @@ void PlayerManager::DrawDebugGui()
         DirectX::XMFLOAT3 plScale = players[i]->GetScale();
         ImGui::InputFloat3("Scale", &plScale.x);
 
-
+        //velocity
+        DirectX::XMFLOAT3 plVelocity = players[i]->GetVelocity();
+        ImGui::InputFloat3("Velocity", &plVelocity.x);
         /*DirectX::XMFLOAT3 plvel = *players[i]->GetVelocity();
         ImGui::InputFloat3("Vel", &plvel.x);*/
     }
     ImGui::End();
 }
 
-void PlayerManager::drawDrawPrimitive(ID3D11Device* device)
+void PlayerManager::drawDrawPrimitive(ID3D11Device*device)
 {
     DebugRenderer debugRenderer = DebugRenderer::incetance(device);
 
@@ -72,6 +74,6 @@ void PlayerManager::drawDrawPrimitive(ID3D11Device* device)
     for (int i = 0; i < count; i++)
     {
         //衝突判定用のデバッグ球を描画
-        debugRenderer.DrawSphere(players[i]->GetPosition(), players[i]->getRadius(), { 0,0,0,1 });
+        debugRenderer.DrawSphere(players[i]->GetPosition(), players[i]->getRadius(), { 0,1,0,1 });
     }
 }
