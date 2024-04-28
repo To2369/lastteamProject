@@ -22,7 +22,7 @@ public:
     {
         Rigister_Static_Object(std::move(obj));
     }
-    void Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos);
+    void Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos,XMFLOAT3 Scale);
     void Update(float elapsedTime);
     void render(RenderContext* rc);
 

@@ -26,6 +26,7 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
+    oldPosition = Position;
     Return_orijinal_ObjType(elapsedTime);
     {
         SphereQuadPlacement spheres(Position);
@@ -52,13 +53,31 @@ void Heavy::Update(float elapsedTime)
                 }
             }
         }
-        if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
+       
+        if (!GetIsWall()&&!GetIsObject())
         {
-            Position.x += VelocityXZ.x;
-            Position.z += VelocityXZ.y;
+            if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
+            {
+                Position.x += VelocityXZ.x;
+                Position.z += VelocityXZ.y;
+            }
         }
-        HitSphere();
     }
+    InvisibleWall_VS_Object();
+    isObject = false;
+    count = ince.Get_GameObjCount();
+    for (int i = 0; i < count; i++)
+    {
+        Object* obj = ince.Get_GameObject(i);
+        if (this == obj)continue;
+        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, false))
+        {
+            Position = oldPosition;
+            isObject = true;
+            break;
+        }
+    }
+
     RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
@@ -103,7 +122,7 @@ void Super_Heavy::Update(float elapsedTime)
     VeloctyY = -elapsedTime * 4;
     Objectmanajer& ince = Objectmanajer::incetance();
     int count = ince.Get_GameGimicCount();
-    HitSphere();
+   
     RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();

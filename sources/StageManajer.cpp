@@ -13,12 +13,14 @@
 #include "../imgui/imgui_internal.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
-#include"objectManajer.h"
 #endif
+#include"objectManajer.h"
+#include"UIManajer.h"
 void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 {
 	using namespace std;
 	Objectmanajer& obj_Manager = Objectmanajer::incetance();
+	UIManager& ince_UI = UIManager::incetance();
 	XMFLOAT3 pos{};
 	switch (name)
 	{
@@ -27,48 +29,100 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	case StageName::stage1_1:
 
 		obj_Manager.Initialize(name, ObjType::heavy, device, {
-			 -1.037836f,
-			 23.747557f,
-			 -0.430794f
+			
+			  -1.037836f,
+			   23.747557f,
+			  -0.430794f
 			});
-
-
-		obj_Manager.Initialize(name, Gimic_Type::Door, device, {
-			 -1.515878f,
-			 23.275631f,
-			 -0.925332f
-			}, "kabe");
-
+		obj_Manager.Initialize(name, ObjType::cution, device, {
+			 -1.336630f,
+			 23.747557f,
+			  0.460227f
+			});
 		obj_Manager.Initialize(name, Gimic_Type::Switch, device, {
-			-2.010655f,
-			22.747557f,
-			-0.632938f
+		-2.010655f,
+		22.640562f,
+		-0.632938f
 			}, "kabe");
 		obj_Manager.Initialize(name, Gimic_Type::Goal, device, {
 		-0.970918,
 		22.747557,
 		-1.307508
 			});
+
+	
+
+	
 		{
 			unique_ptr<Static_Object>obj = make_unique<stage_OBJ>(device);
 			obj_Manager.Initialize_Static_Object(move(obj));
+			
 		}
 		{
 
-			obj_Manager.Initialize_InvisibleBarria(device, { 0.762f,23.473f,-0.290f });
+			obj_Manager.Initialize_InvisibleBarria(device,
+				{
+			    	0.762000,
+			    	23.473000,
+			    	-1.133001 
+				},
+				{ 
+
+				    305.402313f,
+				    198.938995f,
+				    164.204910f
+				});
+			obj_Manager.Initialize_InvisibleBarria(device, 
+				{
+					-1.001000f,
+					22.841f,
+					-0.772001f
+				
+				},
+				{
+					50.922291f,
+					58.687035f,
+					28.108971f
+				});
+			obj_Manager.Initialize_InvisibleBarria(device,
+				{
+					-2.001124,
+					22.949366,
+				    -0.818629
+				},
+				{
+				    50.922291f,
+				    58.687035f,
+				    27.466879f
+				});
+			obj_Manager.Initialize_InvisibleBarria(device,
+				{
+					-0.810468,
+					22.382496,
+					0.076248
+				},
+				{
+				    -27.452732f,
+				     57.414883f,
+				     116.421349f
+				});
 		}
 		{
 
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
-			stage->SetStage(StageName::stage1_1);
 			Rigister(move(stage));
 
 			unique_ptr<Stage>hokyou_yuka = make_unique<stage_Yuka>(device);
-			hokyou_yuka->SetStage(StageName::stage1_1);
 			Rigister(move(hokyou_yuka));
-			SetStage(StageName::stage1_1);
+			
 		}
+		obj_Manager.Initialize(name, Gimic_Type::Door, device, {
+		 -1.515878f,
+		 23.275631f,
+		 -0.925332f
+			}, "kabe");
+		ince_UI.CreateUI(device);
 		break;
 	case StageName::null:
 		break;
@@ -1092,7 +1146,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 					if (ince.GetCreateObjeType() != ObjType::null && Object_CreateFlag)
 					{
-						result_intersection.intersection_position.y += 0.3f;
+						result_intersection.intersection_position.y += 0.9f;
 						ince.Set_CreateObject_Thred(ince.GetCreateObjeType(), device, result_intersection);
 						ince.DeleteThred();
 						break;
@@ -1123,7 +1177,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 					if (ince.GetCreateGimicType() != Gimic_Type::null && Object_CreateFlag)
 					{
-						result_intersection.intersection_position.y += 0.3f;
+						result_intersection.intersection_position.y += 0.9f;
 						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection, ID.c_str());
 						ince.DeleteThred();
 						ID = "null";
@@ -1157,7 +1211,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 					if (GetCreateStaticObjeType() != Static_ObjType::null && Object_CreateFlag)
 					{
-						result_intersection.intersection_position.y += 0.3f;
+						result_intersection.intersection_position.y += 0.9f;
 						if (Static_ObjType::Static_Object == GetCreateStaticObjeType())
 						{
 

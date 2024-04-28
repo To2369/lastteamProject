@@ -28,7 +28,8 @@ void Character::move(float vx, float vz, float speed)
     // 移動方向ベクトルを決定
     direction.x = vx;
     direction.z = vz;
-
+    velocity.x = vx;
+    velocity.z = vz;
     // 最大速度設定
     maxMoveSpeed = speed;
 }
@@ -137,15 +138,15 @@ void Character::updateVerticalMove(float elapsedTime)
             Object* st = ince_st.GetStages(i);
             collision_mesh& mesh = *st->GetModel()->Get_RaycastCollition();
             XMFLOAT3 start{ position };
-            start.y += 0.3f;
+            start.y += 0.9f;
             XMFLOAT3 end{ position };
-            end.y -= moveY;
+            end.y -= 0.1f;
             HitResult hit;
             Ray_ObjType type = Ray_ObjType::Stage;
             //地面判定
             if (ince_ray.RayCast(start, end, hit, type))
             {
-                position.y = hit.position.y;
+                position.y = hit.position.y+0.1f;
                 velocity.y = 0.0f;
 
                 //着地した
@@ -175,6 +176,7 @@ void Character::updateVerticalMove(float elapsedTime)
 //水平速度更新処理
 void Character::updateHorizontalVelocity(float elapsedTime)
 {
+#if 1
     // 速度に力が加わっていたら（0 じゃなかったら）減速処理を行う
     float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     if (length > 0.0f)
@@ -239,11 +241,14 @@ void Character::updateHorizontalVelocity(float elapsedTime)
             }
         }
     }
+#endif
+  
 }
 
 //水平移動更新処理
 void Character::updateHorizontalMove(float elapsedTime)
 {
+#if 0//透真
     float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     if (velocityLengthXZ > 0.0f)
     {
@@ -254,7 +259,7 @@ void Character::updateHorizontalMove(float elapsedTime)
         HitResult hit;
         XMFLOAT3 start{ position.x,position.y+1.0f,position.z };
         XMFLOAT3 end{ position.x + moveX,position.y+1.0f,position.z + moveZ };
-        Ray_ObjType type = Ray_ObjType::Static_objects;
+        Ray_ObjType type = Ray_ObjType::DaynamicObjects;
         VMCFHT& ins_ray = VMCFHT::instance();
         Objectmanajer& objMgr = Objectmanajer::incetance();
         int count = objMgr.Get_GameObjCount();
@@ -304,4 +309,141 @@ void Character::updateHorizontalMove(float elapsedTime)
             }
         }
     }
+#else
+    float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+    if (velocityLengthXZ > 0.0f)
+    {
+        using namespace DirectX;
+        float mx = velocity.x * elapsedTime;
+        float mz = velocity.z * elapsedTime;
+
+        VMCFHT& ince_ray = VMCFHT::instance();
+        HitResult hit;
+        XMFLOAT3 start{ position.x,position.y+0.1f,position.z };
+        XMFLOAT3 end{ position.x + mx,position.y+0.1f,position.z + mz };
+        Ray_ObjType type = Ray_ObjType::Static_objects;
+        Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
+        Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
+        Ray_ObjType type4 = Ray_ObjType::Stage;
+        if (ince_ray.RayCast(start, end, hit, type))
+        {
+
+            XMVECTOR Start{ hit.position.x,hit.position.y,hit.position.z };
+
+            XMVECTOR End{ XMLoadFloat3(&end) };
+            XMVECTOR SEvec{ XMVectorSubtract(Start,End) };
+            XMVECTOR Normal{ XMLoadFloat3(&hit.normal) };
+            XMVECTOR Dot{ XMVector3Dot(Normal, SEvec) };
+            float dot = 0;
+            XMStoreFloat(&dot, Dot);
+            XMVECTOR S{ XMVectorScale(Normal,dot*1.2f) };
+            XMFLOAT3 p;
+            XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+            HitResult hit2;
+            if (ince_ray.RayCast(hit.position, p, hit2, type))
+            {
+                position.x = hit.position.x;
+                position.z = hit.position.z;
+            }
+            else
+            {
+                position.x = p.x;
+                position.z = p.z;
+            }
+
+
+        }
+        else if (ince_ray.RayCast(start, end, hit, type2))
+        {
+            XMVECTOR Start{ hit.position.x,hit.position.y,hit.position.z };
+
+            XMVECTOR End{ XMLoadFloat3(&end) };
+
+            XMVECTOR SEvec{ XMVectorSubtract(Start,End) };
+
+            XMVECTOR Normal{ XMLoadFloat3(&hit.normal) };
+            XMVECTOR Dot{ XMVector3Dot(Normal, SEvec) };
+            float dot = 0;
+            XMStoreFloat(&dot, Dot);
+            XMVECTOR S{ XMVectorScale(Normal,dot*1.2f) };
+            XMFLOAT3 p;
+            XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+            HitResult hit2;
+            if (ince_ray.RayCast(hit.position, p, hit2, type2))
+            {
+                position.x = hit.position.x;
+                position.z = hit.position.z;
+            }
+            else
+            {
+                position.x = p.x;
+                position.z = p.z;
+            }
+
+        }
+        else if (ince_ray.RayCast(start, end, hit, type3))
+        {
+            XMVECTOR Start{ hit.position.x,hit.position.y,hit.position.z };
+
+            XMVECTOR End{ XMLoadFloat3(&end) };
+
+            XMVECTOR SEvec{ XMVectorSubtract(Start,End) };
+
+            XMVECTOR Normal{ XMLoadFloat3(&hit.normal) };
+            XMVECTOR Dot{ XMVector3Dot(Normal, SEvec) };
+            float dot = 0;
+            XMStoreFloat(&dot, Dot);
+            XMVECTOR S{ XMVectorScale(Normal,dot*1.2f) };
+            XMFLOAT3 p;
+            XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+            HitResult hit2;
+            if (ince_ray.RayCast(hit.position, p, hit2, type3))
+            {
+                position.x = hit.position.x;
+                position.z = hit.position.z;
+            }
+            else
+            {
+                position.x = p.x;
+                position.z = p.z;
+            }
+
+        }
+        else if (ince_ray.RayCast(start, end, hit, type4))
+        {
+            XMVECTOR Start{ hit.position.x,hit.position.y,hit.position.z };
+
+            XMVECTOR End{ XMLoadFloat3(&end) };
+
+            XMVECTOR SEvec{ XMVectorSubtract(Start,End) };
+
+            XMVECTOR Normal{ XMLoadFloat3(&hit.normal) };
+            XMVECTOR Dot{ XMVector3Dot(Normal, SEvec) };
+            float dot = 0;
+            XMStoreFloat(&dot, Dot);
+            XMVECTOR S{ XMVectorScale(Normal,dot*1.2f) };
+            XMFLOAT3 p;
+            XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+            HitResult hit2;
+            if (ince_ray.RayCast(hit.position, p, hit2, type4))
+            {
+                position.x = hit.position.x;
+                position.z = hit.position.z;
+            }
+            else
+            {
+                position.x = p.x;
+                position.z = p.z;
+            }
+
+        }
+        else
+        {
+            // 移動処理
+            position.x += mx;
+            position.z += mz;
+        }
+
+    }
+#endif
 }

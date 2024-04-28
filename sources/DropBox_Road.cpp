@@ -16,7 +16,6 @@ DropBox_Road::DropBox_Road(ID3D11Device* device)
 {
 
     model = make_unique<Model>(device, filename, true);
-    HitBox = make_unique<Model>(device, filename, true);
     initialaize_Set_attribute(ObjType::null, ObjType::null);
     Gimic_type = Gimic_Type::Drop_Road;
     Scale = { 10.f,10.f,10.f };
@@ -58,14 +57,12 @@ void DropBox_Road::Update(float elapsedTime)
     }
 
     UpdateTransform();
-    HitBox_TransformUpdate();
 }
 void DropBox_Road::Render(RenderContext* rc)
 {
     DebugRenderer& ince_d = DebugRenderer::incetance(rc->device);
     ince_d.DrawSphere(dropbox.oppnentPos, radius * radius, { 0,1,0,1 });
     model->render(rc->deviceContext, Transform, 0.f, color);
-    HitBox->render(rc->deviceContext, HitBox_Transform, 0.f, { 1,1,1,0.3f });
 }
 //ç°ì˙ÇÕÇ±Ç±Ç‹Ç≈
 
@@ -74,61 +71,7 @@ void DropBox_Road::Gui()
 
     BaseGui();
 
-    if (ImGui::CollapsingHeader("Box_Paramerter", ImGuiTreeNodeFlags_DefaultOpen))
-    {
-        if (ImGui::CollapsingHeader("Box_Transform", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::TreeNode("_Box_position"))
-            {
-
-                XMFLOAT3 pos{ GetHitBox_Position() };
-                ImGui::InputFloat("_Box_Position.x:", &pos.x);
-                ImGui::InputFloat("_Box_Position.y:", &pos.y);
-                ImGui::InputFloat("_Box_Position.z:", &pos.z);
-
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("_Box_scale"))
-            {
-                XMFLOAT3 scale{ GetHitBox_Scale() };
-                ImGui::InputFloat("_Box_scale.x:", &scale.x);
-                ImGui::InputFloat("_Box_scale.y:", &scale.y);
-                ImGui::InputFloat("_Box_scale.z:", &scale.z);
-
-                ImGui::TreePop();
-            }
-        }
-
-        if (ImGui::CollapsingHeader("Box_move_obj", ImGuiTreeNodeFlags_DefaultOpen))
-        {
-            if (ImGui::TreeNode("Box_position"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 pos{};
-                ImGui::SliderFloat("Box_Position.x:", &pos.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("Box_Position.y:", &pos.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("Box_Position.z:", &pos.z, valu.Min.z, valu.Max.z);
-                HitBox_Position.x += pos.x;
-                HitBox_Position.y += pos.y;
-                HitBox_Position.z += pos.z;
-                ImGui::TreePop();
-            }
-            if (ImGui::TreeNode("Box_scale"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 scale{};
-                ImGui::SliderFloat("Box_scale.x:", &scale.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("Box_scale.y:", &scale.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("Box_scale.z:", &scale.z, valu.Min.z, valu.Max.z);
-                HitBox_Scale.x += scale.x;
-                HitBox_Scale.y += scale.y;
-                HitBox_Scale.z += scale.z;
-                ImGui::TreePop();
-            }
-
-        }
-
-    }
+   
     if (ImGui::CollapsingHeader("Flags", ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (ImGui::TreeNode("isPlayerInRangeOf_Box")) {
@@ -147,30 +90,6 @@ void DropBox_Road::Gui()
 }
 
 
-
-void DropBox_Road::HitBox_TransformUpdate()
-{
-    const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
-     { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
-     { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
-     { -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 2:RHS Z-UP
-     { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 3:LHS Z-UP
-    };
-    const float scale_factor = 0.01f;
-    XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
-    XMMATRIX S{ XMMatrixScaling(HitBox_Scale.x
-                               ,HitBox_Scale.y,
-                                HitBox_Scale.z) };
-    XMMATRIX R{ XMMatrixRotationRollPitchYaw(HitBox_Angle.x,HitBox_Angle.y,HitBox_Angle.z) };
-    XMMATRIX T{ XMMatrixTranslation(HitBox_Position.x
-                                   ,HitBox_Position.y,
-                                    HitBox_Position.z) };
-
-    XMMATRIX World = C * S * R * T;
-    XMStoreFloat4x4(&HitBox_Transform, World);
-
-
-}
 bool DropBox_Road::isPlayerInRangeOf_Box()
 {
 

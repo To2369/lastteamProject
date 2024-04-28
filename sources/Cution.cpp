@@ -28,9 +28,9 @@ void Cution::Update(float elapsedTime)
 {
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime;
-    //box_Collition_obj();
+   
 
-    if (!Get_isGimic_UpPosNow())RayCastGround();
+    RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
@@ -38,6 +38,8 @@ void Cution::Update(float elapsedTime)
 void Cution::Render(RenderContext* rc)
 {
 
+    DebugRenderer& ince = DebugRenderer::incetance(rc->device);
+    ince.DrawSphere(Position, radius, { 1,1,1,1 });
     model->render(rc->deviceContext, Transform, 0.0f, color);
 
 

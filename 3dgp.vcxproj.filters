@@ -53,14 +53,14 @@
     <Filter Include="Sources\Stages\GameStage">
       <UniqueIdentifier>{1b5401d1-7171-440e-a81a-55482cddec1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\Stages\GameStage\1_1">
-      <UniqueIdentifier>{f4322006-7da1-4548-9bc7-347b1f1dc1ae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers\objects\gimik">
       <UniqueIdentifier>{30074231-4683-452e-9546-6eff0db3a766}</UniqueIdentifier>
     </Filter>
     <Filter Include="Sources\objects\gimic">
       <UniqueIdentifier>{9f2c7f30-7cbf-433d-81e2-dfe7ef8aa69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers\UI">
+      <UniqueIdentifier>{32cadb48-4e9e-4783-ba8e-3b87c7f90e35}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -178,12 +178,6 @@
     <ClCompile Include="sources\Heavy.cpp">
       <Filter>Sources\objects</Filter>
     </ClCompile>
-    <ClCompile Include="sources\stage.cpp">
-      <Filter>Sources\Stages</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Stage1_1.cpp">
-      <Filter>Sources\Stages\GameStage\1_1</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Gimic.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
@@ -213,6 +207,18 @@
     </ClCompile>
     <ClCompile Include="sources\Invisiblebarrier.cpp">
       <Filter>Sources\objects</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\UI.cpp">
+      <Filter>Headers\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\UIManajer.cpp">
+      <Filter>Headers\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Stage1_1.cpp">
+      <Filter>Sources\Stages\GameStage</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\stage1_3.cpp">
+      <Filter>Sources\Stages\GameStage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -348,9 +354,6 @@
     <ClInclude Include="sources\Hard_to_Break.h">
       <Filter>Headers\objects</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Stage.h">
-      <Filter>Headers\stages</Filter>
-    </ClInclude>
     <ClInclude Include="sources\Gimic.h">
       <Filter>Headers\objects\gimik</Filter>
     </ClInclude>
@@ -371,6 +374,15 @@
     </ClInclude>
     <ClInclude Include="sources\InvisibleBarria.h">
       <Filter>Headers\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\UIManajer.h">
+      <Filter>Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\UI.h">
+      <Filter>Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Stage.h">
+      <Filter>Headers\stages</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

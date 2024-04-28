@@ -7,6 +7,7 @@ class InvisibleBarrier :public Static_Object
 {
 public:
 
+    InvisibleBarrier(ID3D11Device* device,XMFLOAT3 Scale_);
     InvisibleBarrier(ID3D11Device* device);
     ~InvisibleBarrier() override {}
 public:

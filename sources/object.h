@@ -93,8 +93,10 @@ public:
 
     float GetRadius() { return radius; }
     bool GetMoveObjectFlag() { return moveobjectFlag; };
+    bool GetIsWall() { return isWall;}
+    bool GetIsObject() { return isObject; }
 public:
-
+    void InvisibleWall_VS_Object();
     void SetMoveObjectFlag(bool f) { moveobjectFlag = f; }
     void SetVelotyXZ(DirectX::XMFLOAT2 sp) { VelocityXZ = sp; }
     void SetReturnTimer(float timer1 = 0.f, int num = 0) { ReturnTimer[num] = timer1; }
@@ -111,6 +113,7 @@ public:
     void SetNormal(DirectX::XMFLOAT3 normal) { Normal = normal; };
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
     void Set_GimicType(string g) { GetBootGimicType_ID = g; }
+    void SetIsWall(bool f) { isWall = f; }
 public:
     enum class SphereAttribute
     {
@@ -152,15 +155,12 @@ public:
     //SphereQuadPlacementを生成した後にこの関数に渡す
     void SetMySphere(const SphereQuadPlacement& sphere) { Mysphere = sphere; }
     const SphereQuadPlacement GetMySphere()const { return Mysphere; }
-    //player側で使う
-    const ResultSphereQuadPlacement GetResultSphere()const { return ResultSphere; }
-    void SetResultSphere(ResultSphereQuadPlacement sphere) { ResultSphere = sphere; }
-    ////自分がオブジェクトに接触していたらの処理
-    void HitSphere();
+    
+   
 
 protected:
 
-    bool QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position, ResultSphereQuadPlacement& outsphere);
+   // bool QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position);
 
     void CreateQuadPlacement(SphereQuadPlacement& sphere);
 
@@ -178,9 +178,11 @@ protected:
         old_attribute_state.push_back(type1);
         old_attribute_state.push_back(type2);
     }
+
+    bool isObject = false;
     bool moveobjectFlag = false;
     float radius = 0.123f;
-
+    XMFLOAT3 oldPosition = {};//位置更新する前にこの変数に代入
     DirectX::XMFLOAT3 Normal{ 0.f,0.f,0.f };//raycast用
     DirectX::XMFLOAT3 Position{ 0.f,0.f,0.f };
     DirectX::XMFLOAT2 VelocityXZ = { 0.0f,0.0f };
@@ -198,11 +200,10 @@ protected:
     std::unique_ptr<Model> model;
 private:
 
-
+    bool isWall = false;
     std::string GetBootGimicType_ID = "null";
     bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない
     bool DestroyObj = false;
-    bool NotUpdateFlag = false;//gimic_VS_Object関数にしか使わない予定
     float ReturnTimer[2]{};
     StageName stage_name = StageName::null;
     //todo:ここをvectorにする必要がないので手が空き次第配列に書き換える

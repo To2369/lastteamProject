@@ -65,12 +65,9 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
     {
     case Ray_ObjType::Static_objects:
         count = ince_o.Get_GameStatic_ObjectCount();
-        //count = ince_st.GetStageCount();
         for (int i = 0; i < count; i++)
         {
             Static_Object* obj = ince_o.Get_GameStatic_Object(i);
-
-            //Stage* obj = ince_st.GetStages(i);
 
             if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
             {
@@ -79,17 +76,31 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
         }
 
         break;
+    case Ray_ObjType::DynamicGimics:
+        count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* obj = ince_o.Get_GameGimic(i);
+            if (obj->GetBootFlag())continue;
+            if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
+            {
+                return true;
+            }
+        }
+        break;
     case Ray_ObjType::DaynamicObjects:
         count = ince_o.Get_GameObjCount();
         for (int i = 0; i < count; i++)
         {
-            Gimic* obj = ince_o.Get_GameGimic(i);
+            Object* obj = ince_o.Get_GameObject(i);
 
             if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
             {
                 return true;
             }
         }
+
+        break;
     case Ray_ObjType::Stage:
         count = ince_st.GetStageCount();
         for (int i = 0; i < count; i++)

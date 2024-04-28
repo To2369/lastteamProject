@@ -8,9 +8,7 @@ public:
 
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(RenderContext* rc) = 0;
-    //ステージに対してオブジェクトのレイキャスト処理
-    void SetStage(StageName n) { s_name = n; }
-    StageName GetNowStage() { return s_name; }
+   
 public:
     void Set_Color(XMFLOAT4 color_) { color = color_; }
 public:
@@ -31,6 +29,22 @@ public:
 private:
     const char* filename = ".\\resources\\stage1\\stage_1.fbx";
 };
+
+
+class Stage_1_3 :public Stage
+{
+public:
+    Stage_1_3(ID3D11Device* device);
+    ~Stage_1_3()override {};
+    void Update(float elapsedTime)override;
+    void Render(RenderContext* rc)override;
+private:
+    const char* filename = ".\\resources\\stage3\\stage1_3.fbx";
+};
+
+
+
+
 
 class stage_Yuka :public Stage
 {
@@ -64,11 +78,9 @@ public:
     void Render(RenderContext* rc)override {};
     void Gui()override {};
     Static_ObjType GetStatic_ObjType() { return type; }
-    DirectX::XMFLOAT3 GetNormal()const { return Normal; }
 
 protected:
     Static_ObjType type = Static_ObjType::null;
-    DirectX::XMFLOAT3 Normal{};
 };
 
 

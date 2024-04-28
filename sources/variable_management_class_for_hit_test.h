@@ -8,6 +8,7 @@ enum class Ray_ObjType//どのオブジェクトに対してRayを飛ばすかを指定
 {
 	Static_objects,//静的オブジェクト
 	DaynamicObjects,//動的オブジェクト
+	DynamicGimics,//動的ギミックオブジェ
 	Stage,
 };
 class VMCFHT

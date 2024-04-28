@@ -36,7 +36,7 @@ void Door::Render(RenderContext* rc)
 void Door::Gimic_VS_GimicFlagBoot()
 {
 #if 1
-    bootFlag.clear();
+    this->SetBootFlag(false);
     Objectmanajer& ince = Objectmanajer::incetance();
     int count = ince.Get_GameGimicCount();
     for (int i = 0; i < count; i++)
@@ -59,12 +59,9 @@ void Door::Gui()
     BaseGui();
     if (ImGui::TreeNode("Door_BootChack"))
     {
-        int count = bootFlag.size();
-        for (int i = 0; i < count; i++)
-        {
-            bool f = GetBootFlag(i);
-            ImGui::Checkbox("Door_Boot", &f);
-        }
+       
+        bool f = GetBootFlag();
+        ImGui::Checkbox("Door_Boot", &f);
         ImGui::TreePop();
     }
 

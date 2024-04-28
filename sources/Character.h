@@ -80,7 +80,7 @@ protected:
         0,0,1,0,
         0,0,0,1
     };
-    float radius = 0.5f;                            //îºåa
+    float radius =0.f;                            //îºåa
 
     //èdóÕ
     float gravity = -1.0f;

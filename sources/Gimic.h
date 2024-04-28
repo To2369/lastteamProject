@@ -30,15 +30,14 @@ public:
     virtual XMFLOAT4X4 GetBoxTransForm() { return XMFLOAT4X4(); }//今のところDropBoxクラスに対してしか使っていない
 public:
     virtual void Gimic_VS_GimicFlagBoot() {};//今のところDoorクラスに対してしか使っていない
-    bool GetBootFlag()const { return bootFlag[0]; }//今のところDoorクラスに対してしか使っていない
-    bool GetBootFlag(int i)const { return bootFlag[i]; }//今のところDoorクラスに対してしか使っていない
-    void SetBootFlag(bool f) { bootFlag.push_back(f); }//今のところDoorクラスに対してしか使っていない
+    bool GetBootFlag()const { return bootFlag; }//今のところDoorクラスに対してしか使っていない
+    void SetBootFlag(bool f) { bootFlag=f; }//今のところDoorクラスに対してしか使っていない
 public:
 
 
 protected:
     string ID;
-    vector<bool> bootFlag;
+    bool bootFlag;
     bool switchFlag = false;
     void Gimic_effect(Gimic_Type type);
     //自分のタイプ
@@ -118,15 +117,11 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gui()override;
-    void HitBox_TransformUpdate();
+  
 public://set
-    void SetHitBox_Position(XMFLOAT3 Pos) { HitBox_Position = Pos; }
-    void SetHitBox_Scale(XMFLOAT3 scale) { HitBox_Scale = scale; }
+  
 public://get
-    DirectX::XMFLOAT3 GetHitBox_Position() { return HitBox_Position; }
-    DirectX::XMFLOAT3 GetHitBox_Scale() { return HitBox_Scale; }
-    collision_mesh* GetHitBoxMesh()override { return HitBox->Get_RaycastCollition(); };
-    XMFLOAT4X4 GetBoxTransForm()override { return HitBox_Transform; }
+  
     bool GetPlayerStopFlag() override { return playerStopFlag; }
 
 public:
@@ -143,18 +138,7 @@ private:
     float radius = 1;
     dropboxNow dropbox;
     bool playerStopFlag{};
-    XMFLOAT3 HitBox_Position{ 0.f,0.5f,0.5f };
-    XMFLOAT3 HitBox_Velocty{ 0.f,0.f,0.f };
-    XMFLOAT3 HitBox_Angle{ 0.f,0.f,0.f };
-    XMFLOAT3 HitBox_Scale{ 200.f,100.f,10.f };
-    XMFLOAT4X4 HitBox_Transform
-    {
-        1,0,0,0,
-        0,1,0,0,
-        0,0,1,0,
-        0,0,0,1,
-    };
-    unique_ptr<Model>HitBox;
+  
 
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
 

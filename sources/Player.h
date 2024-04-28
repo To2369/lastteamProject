@@ -38,7 +38,7 @@ private:
     const char* filename = ".\\Resources\\3Dmodel\\hand\\hand.fbx";
 
     //移動スピード
-    float moveSpeed = 5.0f;
+    float moveSpeed = 1.0f;
 
     //旋回スピード
     float turnSpeed = DirectX::XMConvertToRadians(720);

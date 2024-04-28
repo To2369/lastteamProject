@@ -203,6 +203,7 @@
     <ClCompile Include="sources\Goal_navi.cpp" />
     <ClCompile Include="sources\Invisiblebarrier.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
+    <ClCompile Include="sources\stage1_3.cpp" />
     <ClCompile Include="sources\Switch_Gimic.cpp" />
     <ClCompile Include="sources\camera.cpp" />
     <ClCompile Include="sources\camera_controller.cpp" />
@@ -233,11 +234,12 @@
     <ClCompile Include="sources\scene_loading.cpp" />
     <ClCompile Include="sources\scene_management.cpp" />
     <ClCompile Include="sources\scene_title.cpp" />
-    <ClCompile Include="sources\stage.cpp" />
     <ClCompile Include="sources\Stage1_1.cpp" />
     <ClCompile Include="sources\StageManajer.cpp" />
     <ClCompile Include="sources\static_mesh_batch.cpp" />
     <ClCompile Include="sources\texture.cpp" />
+    <ClCompile Include="sources\UI.cpp" />
+    <ClCompile Include="sources\UIManajer.cpp" />
     <ClCompile Include="sources\variable_management_class_for_hit_test.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -292,6 +294,8 @@
     <ClInclude Include="sources\StageManager.h" />
     <ClInclude Include="sources\static_mesh_bacth.h" />
     <ClInclude Include="sources\texture.h" />
+    <ClInclude Include="sources\UI.h" />
+    <ClInclude Include="sources\UIManajer.h" />
     <ClInclude Include="sources\variable_management_class_for_hit_test.h" />
   </ItemGroup>
   <ItemGroup>

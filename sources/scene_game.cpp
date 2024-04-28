@@ -13,7 +13,7 @@
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern ImWchar glyphRangesJapanese[];
 #endif
-
+#include"UIManajer.h"
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -378,16 +378,8 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	scene_data->activate(rc.deviceContext, 1);
 	parametric_constant->activate(rc.deviceContext, 2);
 	
-	DebugRenderer& ince_d = DebugRenderer::incetance(device_.Get());
-	{
-		XMFLOAT3 pos = camera_position;
-		XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-		pos.z += camerafront.z * 1.1f;
-		pos.x += camerafront.x * 1.1f;
-		pos.y += camerafront.y * 1.1f;
-		ince_d.DrawSphere(pos, 0.1f, { 1,0,0,1 });
-
-	}
+	UIManager& ince_ui = UIManager::incetance();
+	ince_ui.Render(&rc);
 	{
 		//プレイヤー描画処理
 		plm.Render(&rc);
@@ -398,8 +390,8 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 			Debug_ParameterObj->Render(&rc);
 		}
 		//オブジェクト描画処理
-		Objectmanajer::incetance().render(&rc);
 		Goal_navi->Render(&rc);
+		Objectmanajer::incetance().render(&rc);
 		plm.drawDrawPrimitive(device_.Get());
 
 
@@ -547,6 +539,8 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 
 	//UI描画
 	{
+
+		
 	}
 }
 

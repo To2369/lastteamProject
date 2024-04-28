@@ -17,20 +17,19 @@ void Gimic::Gimic_effect(Gimic_Type type)
         break;
     case Gimic_Type::Door:
         Gimic_VS_GimicFlagBoot();
-        if (bootFlag.size() > 0)
+        
+        if (bootFlag)
         {
-            if (bootFlag[0])
+            ObjType oldtype = this->Get_Old_Objtype(0);
+            this->Set_attribute(ObjType::Super_fragile, 0);
+            ObjType newtype = this->Get_Old_Objtype(0);
+            if (oldtype == newtype)
             {
-                ObjType oldtype = this->Get_Old_Objtype(0);
-                this->Set_attribute(ObjType::Super_fragile, 0);
-                ObjType newtype = this->Get_Old_Objtype(0);
-                if (oldtype == newtype)
-                {
-                    this->SetReturnTimer();
-                }
-
+                this->SetReturnTimer();
             }
+
         }
+    
         break;
     case Gimic_Type::null:
         break;

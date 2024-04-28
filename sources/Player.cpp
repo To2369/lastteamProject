@@ -44,7 +44,7 @@ Player::Player(ID3D11Device* device)
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
 
-    radius = 0.5f;
+    radius = 0.1f;
 }
 
 //デストラクタ
@@ -86,11 +86,12 @@ void Player::update(float elapsedTime)
 //描画処理
 void Player::render(RenderContext* rc)
 {
-    DebugRenderer debugRenderer = DebugRenderer::incetance(rc->device);
-        //衝突判定用のデバッグ球を描画
-        debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
+    DebugRenderer& debugRenderer = DebugRenderer::incetance(rc->device);
+     
+    model->render(rc->deviceContext, transform, 0, { 1.0f,1.0f,1.0f,1.0f });
+    //衝突判定用のデバッグ球を描画
+    debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
 
-    model->render(rc->deviceContext, transform, 0.0f, { 1.0f,1.0f,1.0f,1.0f });
 }
 
 
@@ -181,41 +182,106 @@ void Player::OnLanding()
 void Player::CollisionPlayerVsGimics(float elapsedTime)
 {
     Objectmanajer& objMgr = Objectmanajer::incetance();
+    gamepad& ince_pad = gamepad::Instance();
     //全てのギミックと総当たりで衝突処理
+
     int objCount = objMgr.Get_GameObjCount();
     for (int i = 0; i < objCount; i++)
     {
         Object* obj = objMgr.Get_GameObject(i);
         //衝突判定
         Object::ResultSphereQuadPlacement outsphere;
-        if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
+
+        if (GetKeyState(' '))//supaceキー
         {
-            switch (outsphere.type)
+            if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
             {
-            case Object::SphereAttribute::Right:
-                position = outsphere.Spherepos;
-                if(velocity.x*elapsedTime<0)
-                obj->SetVelotyXZ({ velocity.x * elapsedTime,0 });
-                
-                break;
-            case Object::SphereAttribute::Left:
-                if (velocity.x * elapsedTime > 0)
-                    obj->SetVelotyXZ({ velocity.x * elapsedTime,0 });
-                position = outsphere.Spherepos;
-                break;
-            case Object::SphereAttribute::Front:
-                if (velocity.z * elapsedTime > 0)
-                    obj->SetVelotyXZ({ 0,velocity.z * elapsedTime });
-                position = outsphere.Spherepos;
-                 break;
-            case Object::SphereAttribute::Backfront:
-                if (velocity.z * elapsedTime < 0)
-                    obj->SetVelotyXZ({ 0,velocity.z * elapsedTime });
-                position = outsphere.Spherepos;
-                break;
-            case Object::SphereAttribute::null:
-                break;
+                float objMovesp = velocity.x;
+                switch (outsphere.type)
+                {
+                case Object::SphereAttribute::Right:
+                {
+                        objMovesp = velocity.x*elapsedTime;
+                       // if (objMovesp < 0)
+                        if (!obj->GetIsWall() && !obj->GetIsObject())
+                            if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                                if (objMovesp < 0)
+                                {
+                                    obj->SetVelotyXZ({ objMovesp,0 });
+                                }
+                                else
+                                {
+                                    obj->SetVelotyXZ({ 0,0 });
+                                }
+                    position.x = outsphere.Spherepos.x;
+                    position.z = outsphere.Spherepos.z;
+                }
+                    break;
+                case Object::SphereAttribute::Left:
+                {
+                     objMovesp = velocity.x*elapsedTime;
+                   // if (velocity.x * elapsedTime > 0)
+                     if (!obj->GetIsWall()&&!obj->GetIsObject())
+                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                            if (objMovesp>0)
+                            {
+                                obj->SetVelotyXZ({ objMovesp,0 });
+                            }
+                            else
+                            {
+                                obj->SetVelotyXZ({ 0,0 });
+                            }
+                    position.x = outsphere.Spherepos.x;
+                    position.z = outsphere.Spherepos.z;
+                }
+                    break;
+                case Object::SphereAttribute::Front:
+
+                    objMovesp = velocity.z * elapsedTime;
+                    if (!obj->GetIsWall() && !obj->GetIsObject())
+                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                            if (objMovesp<0)
+                            {
+                                obj->SetVelotyXZ({ 0,objMovesp });
+                            }
+                            else
+                            {
+                                obj->SetVelotyXZ({ 0,0 });
+                            }
+                    position.x = outsphere.Spherepos.x;
+                    position.z = outsphere.Spherepos.z;
+                    break;
+                case Object::SphereAttribute::Backfront:
+
+                    objMovesp = velocity.z * elapsedTime;
+                  //  if (objMovesp < 0)
+                    if (!obj->GetIsWall() && !obj->GetIsObject())
+                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                            if (objMovesp>0)
+                            {
+                                obj->SetVelotyXZ({ 0,objMovesp });
+                            }
+                            else
+                            {
+                                obj->SetVelotyXZ({ 0,0 });
+                            }
+                    position.x = outsphere.Spherepos.x;
+                    position.z = outsphere.Spherepos.z;
+                    break;
+                case Object::SphereAttribute::null:
+                    break;
+                }
             }
         }
+        else
+        {
+            obj->SetVelotyXZ({ 0,0 });
+        }
+
     }
+
+    
+
+
+
 }

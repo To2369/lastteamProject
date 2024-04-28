@@ -122,9 +122,10 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
     }
 }
 
-void Objectmanajer::Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos)
+void Objectmanajer::Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos,XMFLOAT3 Scale_ )
 {
-    unique_ptr<Static_Object>obj = make_unique<InvisibleBarrier>(device);
+    
+    unique_ptr<Static_Object>obj = make_unique<InvisibleBarrier>(device,Scale_);
     obj->SetPosition(pos);
     Rigister_Static_Object(move(obj));
 }
@@ -177,13 +178,14 @@ void Objectmanajer::render(RenderContext* rc)
     {
         obj->Render(rc);
     }
-    for (const auto& gimic : game_Gimics)
-    {
-        gimic->Render(rc);
-    }
+   
     for (const auto& static_object : game_static_objes)
     {
         static_object->Render(rc);
+    }
+    for (const auto& gimic : game_Gimics)
+    {
+        gimic->Render(rc);
     }
 }
 

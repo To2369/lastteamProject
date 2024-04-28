@@ -246,35 +246,69 @@ void Object::BaseGui()
         {
             ImGui::TextUnformatted("yellow_back");
         }
+        ImGui::Checkbox("IsObject", &isObject);
         ImGui::TreePop();
     }
 }
 
-
-void Object::HitSphere()
+void Object::InvisibleWall_VS_Object()
 {
-    Objectmanajer& ince = Objectmanajer::incetance();
-    //自分がオブジェクトに接触していたら動けないようにする
-    int count = ince.Get_GameObjCount();
-    for (int i = 0; i < count; i++)
+    using namespace DirectX;
+    isWall = false;
+    VMCFHT& ince_ray = VMCFHT::instance();
+    
+    Ray_ObjType type = Ray_ObjType::Static_objects;
+    XMFLOAT3 start{ this->Position };
+    XMFLOAT3 end{this->Position.x+VelocityXZ.x,
+                 this->Position.y,
+                 this->Position.z+VelocityXZ.y};
+    HitResult hit;
+    if (ince_ray.RayCast(start, end, hit, type))
     {
-        Object* obj = ince.Get_GameObject(i);
-        if (obj == this)continue;
-        ResultSphereQuadPlacement resultSphere{};
-        if (QuadPlacement_vs_ThisSphere(obj->GetMySphere(), Position, resultSphere))
-        {
-            resultsphere_GUI = resultSphere;
-            SetResultSphere(resultSphere);
-            break;
-        }
-        else
-        {
-            resultsphere_GUI = resultSphere;
-            SetResultSphere(resultSphere);
-        }
+        isWall = true;
+        XMVECTOR Start{ hit.position.x,hit.position.y,hit.position.z };
 
+        XMVECTOR End{ XMLoadFloat3(&end) };
+
+        XMVECTOR SEvec{ XMVectorSubtract(Start,End) };
+
+        XMVECTOR Normal{ XMLoadFloat3(&hit.normal) };
+        XMVECTOR Dot{ XMVector3Dot(Normal, SEvec) };
+        float dot = 0;
+        XMStoreFloat(&dot, Dot);
+        XMVECTOR S{ XMVectorScale(Normal,dot*1.3f) };
+        XMFLOAT3 p;
+        XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
+       this->Position.x = p.x;
+       this->Position.z = p.z;
     }
 }
+
+//
+//void Object::HitSphere()
+//{
+//    Objectmanajer& ince = Objectmanajer::incetance();
+//    //自分がオブジェクトに接触していたら動けないようにする
+//    int count = ince.Get_GameObjCount();
+//    isObject = false;
+//    for (int i = 0; i < count; i++)
+//    {
+//        Object* obj = ince.Get_GameObject(i);
+//        if (obj == this)continue;
+//        XMFLOAT3 pos;
+//        if (QuadPlacement_vs_ThisSphere(obj->GetMySphere(), Position))
+//        {
+//            Position = oldPosition;
+//            isObject = true;
+//
+//            break;
+//        }
+//        else
+//        {
+//        }
+//
+//    }
+//}
 
 void Object::CreateQuadPlacement(SphereQuadPlacement& sphere)
 {
@@ -291,30 +325,28 @@ void Object::CreateQuadPlacement(SphereQuadPlacement& sphere)
     ince.DrawSphere(sphere.pos[3].Spherepos, sphere.SphereRadius, { 1, 1, 0, 1 });
     SetMySphere(sphere);
 }
-
-bool Object::QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position, ResultSphereQuadPlacement& outsphere)
-{
-    using namespace DirectX;
-
-    XMVECTOR ThisPos{ XMLoadFloat3(&Position) };
-    const int SphereCount = sphere.size;
-    SphereQuadPlacement param{};
-    for (int i = 0; i < SphereCount; i++)
-    {
-        XMVECTOR QuadSpherePos{ XMLoadFloat3(&sphere.pos[i].Spherepos) };
-        XMVECTOR Vec = XMVector3LengthSq(XMVectorSubtract(QuadSpherePos, ThisPos));
-
-        float dist = XMVectorGetX(Vec);
-        float rad = radius + sphere.SphereRadius;
-        if (dist < rad * rad)
-        {
-            XMStoreFloat3(&outsphere.Spherepos, QuadSpherePos);
-            outsphere.type = sphere.pos[i].Type;
-            return true;
-        }
-    }
-    return false;
-}
+//
+//bool Object::QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position)
+//{
+//    using namespace DirectX;
+//
+//    XMVECTOR ThisPos{ XMLoadFloat3(&Position) };
+//    const int SphereCount = sphere.size;
+//    SphereQuadPlacement param{};
+//    for (int i = 0; i < SphereCount; i++)
+//    {
+//        XMVECTOR QuadSpherePos{ XMLoadFloat3(&sphere.pos[i].Spherepos) };
+//        XMVECTOR Vec = XMVector3LengthSq(XMVectorSubtract(QuadSpherePos, ThisPos));
+//
+//        float dist = XMVectorGetX(Vec);
+//        float rad = radius + sphere.SphereRadius;
+//        if (dist < rad * rad)
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 void Object::UpdateTransform()
 {

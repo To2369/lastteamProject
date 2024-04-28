@@ -8,11 +8,18 @@ using namespace DirectX;
 #include "../imgui/imgui_impl_win32.h"
 #endif
 
+InvisibleBarrier::InvisibleBarrier(ID3D11Device* device,XMFLOAT3 Scale_)
+{
+    model = make_unique<Model>(device, filename, true);
+    type = Static_ObjType::Invisible_Wall;
+    Scale = Scale_;
+    //Scale = { 291.298f,198.939f,20.385 };
+}
+
 InvisibleBarrier::InvisibleBarrier(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
     type = Static_ObjType::Invisible_Wall;
-
     Scale = { 291.298f,198.939f,20.385 };
 }
 

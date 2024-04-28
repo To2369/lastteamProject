@@ -12,7 +12,7 @@ Switch::Switch(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::null, ObjType::null);
     model = make_unique<Model>(device, filename, true);
-    Scale = { 1.452999f,3.f, 0.930000f };
+    Scale = { 1.452999f,3.456001f, 0.930000f };
     Gimic_type = Gimic_Type::Switch;
     MyObjeFlagType = ObjType::heavy;
 }
