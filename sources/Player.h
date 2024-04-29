@@ -30,6 +30,8 @@ public:
 
     //プレイヤーとギミックの当たり判定
     void CollisionPlayerVsGimics(float elapsedTime);
+
+    void ExtractionAttribute(float elapsedTime);
 protected:
     //着地したときに呼び出される
     void OnLanding()override;
@@ -51,6 +53,4 @@ private:
 
     //ジャンプ制限
     int jumpLimit = 2;
-
-
 };

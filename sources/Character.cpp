@@ -442,6 +442,7 @@ void Character::updateHorizontalMove(float elapsedTime)
             // ˆÚ“®ˆ—
             position.x += mx;
             position.z += mz;
+            extractFlag = false;
         }
 
     }
