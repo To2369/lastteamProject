@@ -126,27 +126,44 @@ void Character::updateVerticalMove(float elapsedTime)
     {
         //移動処理
         position.y += velocity.y * elapsedTime;
-
-        StageManager& ince_st = StageManager::incetance();
         VMCFHT& ince_ray = VMCFHT::instance();
-        XMFLOAT3 pos = position;
-
-        ince_ray.update(pos, normal);
-        int stagecount = ince_st.GetStageCount();
-        for (int i = 0; i < stagecount; i++)
+        Objectmanajer& ince_o = Objectmanajer::incetance();
+        Gimic* road = nullptr;
+        int gimic_count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < gimic_count; i++)
         {
-            Object* st = ince_st.GetStages(i);
-            collision_mesh& mesh = *st->GetModel()->Get_RaycastCollition();
-            XMFLOAT3 start{ position };
-            start.y += 0.9f;
-            XMFLOAT3 end{ position };
-            end.y -= 0.1f;
-            HitResult hit;
-            Ray_ObjType type = Ray_ObjType::Stage;
-            //地面判定
-            if (ince_ray.RayCast(start, end, hit, type))
+            Gimic* obj = ince_o.Get_GameGimic(i);
+            if (obj->Get_GimicType() == Gimic_Type::Drop_Road)
             {
-                position.y = hit.position.y+0.1f;
+                road = obj;
+            }
+        }
+       
+        XMFLOAT3 start{ position };
+        start.y += 0.9f;
+        XMFLOAT3 end{ position };
+        end.y -= 0.1f;
+        HitResult hit;
+        Ray_ObjType type = Ray_ObjType::Stage;
+            
+        //地面判定
+        if (ince_ray.RayCast(start, end, hit, type))
+        {
+            position.y = hit.position.y+0.1f;
+            velocity.y = 0.0f;
+
+            //着地した
+            if (!groundedFlag)
+            {
+                OnLanding();
+            }
+            groundedFlag = true;
+        }
+        else if (road)
+        {
+            if (ince_ray.raycast(start, end, road->GetModel(), hit, road->GetTransform()))
+            {
+                position.y = hit.position.y + 0.1f;
                 velocity.y = 0.0f;
 
                 //着地した
@@ -155,15 +172,15 @@ void Character::updateVerticalMove(float elapsedTime)
                     OnLanding();
                 }
                 groundedFlag = true;
-                break;
-            }
-            else
-            {
-                //空中に浮いている
-                position.y += moveY;
-                groundedFlag = false;
             }
         }
+        else
+        {
+            //空中に浮いている
+            position.y += moveY;
+            groundedFlag = false;
+        }
+        
     }
     else if (moveY > 0.0f)
     {

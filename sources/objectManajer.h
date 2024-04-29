@@ -51,6 +51,8 @@ public:
         game_static_objes.erase(it, game_static_objes.end());
 
     }
+    bool Sphere_VS_Player(const XMFLOAT3& plPos_,const float& pl_radius,
+                          const XMFLOAT3& objPos,const float& obj_radius,XMFLOAT3&outPos);
     //この関数を使うときはそのオブジェクトがステージに存在してるのが1つの時だけ
     Gimic* Select_GetGimic(Gimic_Type type)
     {

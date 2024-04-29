@@ -9,6 +9,7 @@ using namespace std;
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include"PlayerManager.h"
 #include"Graphics/DebugRenderer.h"
 Cution::Cution(ID3D11Device* device)
 {
@@ -27,8 +28,16 @@ Cution::~Cution()
 void Cution::Update(float elapsedTime)
 {
     Return_orijinal_ObjType(elapsedTime);
-    VeloctyY = -elapsedTime;
-   
+    VeloctyY = -elapsedTime*0.9f;
+    PlayerManager& ince_pl = PlayerManager::Instance();
+    Objectmanajer& ince_o = Objectmanajer::incetance();
+    Player* pl = ince_pl.GetPlayer(0);
+    XMFLOAT3 outpos;
+    if (ince_o.Sphere_VS_Player(pl->GetPosition(), pl->getRadius(), this->Position, this->radius, outpos))
+    {
+        
+        pl->SetPosition(outpos);
+    }
 
     RayCastGround();
     ObjType_effect(elapsedTime);
@@ -56,7 +65,7 @@ Super_Cution::Super_Cution(ID3D11Device* device)
     model = make_unique<Model>(device, filename, true);
     initialaize_Set_attribute(ObjType::Super_cution, ObjType::null);
     //  Position = { 0,0,0 };
-    Scale.x = Scale.y = Scale.z = 10.f;
+    Scale.x = Scale.y = Scale.z = 1.f;
 
 }
 
@@ -67,10 +76,17 @@ Super_Cution::~Super_Cution()
 void Super_Cution::Update(float elapsedTime)
 {
     Return_orijinal_ObjType(elapsedTime);
-    VeloctyY = -elapsedTime;
-    //box_Collition_obj();
+    VeloctyY = -elapsedTime*0.7f;
+    PlayerManager& ince_pl = PlayerManager::Instance();
+    Objectmanajer& ince_o = Objectmanajer::incetance();
+    Player* pl = ince_pl.GetPlayer(0);
+    XMFLOAT3 outpos;
+    if (ince_o.Sphere_VS_Player(pl->GetPosition(), pl->getRadius(), this->Position, this->radius, outpos))
+    {
 
-    if (!Get_isGimic_UpPosNow())RayCastGround();
+        pl->SetPosition(outpos);
+    }
+    RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }

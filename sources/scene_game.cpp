@@ -106,53 +106,7 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 	gamepad& pad = gamepad::Instance();
 	VMCFHT ince_ray = VMCFHT::instance();
 	Objectmanajer& ince_o = Objectmanajer::incetance();
-
-	XMFLOAT3 pos = camera_position;
-	XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-
-	auto Ray_vs_kabe = [](VMCFHT& ince_ray, Gimic* obj, XMFLOAT3& camerapos_, XMFLOAT3 normal, XMFLOAT3 vel)
-
-		{
-			Camera& camera = Camera::instance();
-			XMFLOAT3 front = camera.GetFront();
-			front.y = 0;
-			XMFLOAT3 pos = camerapos_;
-			pos.x += vel.x;
-			pos.z += vel.z;
-			ince_ray.update(pos, vel);
-
-			collision_mesh& mesh = *obj->GetHitBoxMesh();
-			XMFLOAT4X4 boxtransform = obj->GetBoxTransForm();
-			float rayLength = 1.2f;
-			Intersection result;
-			if (ince_ray.raycast(mesh, boxtransform, result, rayLength))
-			{
-
-				XMVECTOR Start = { camerapos_.x,camerapos_.y,camerapos_.z };
-				XMFLOAT3 end{ result.intersection_position.x + vel.x,
-							  result.intersection_position.y,
-							  result.intersection_position.z + vel.z };
-
-				XMVECTOR End = XMLoadFloat3(&end);
-				XMVECTOR Vec = XMVectorSubtract(Start, End);
-				//objnormal
-				XMVECTOR Normal = XMLoadFloat3(&result.intersection_normal);
-
-				XMVECTOR Dot = DirectX::XMVector3Dot(Normal, Vec);
-				float dot = 0;
-				XMStoreFloat(&dot, Dot);
-				XMVECTOR S = DirectX::XMVectorScale(Normal, dot);
-				XMFLOAT3 p;
-				XMStoreFloat3(&p, DirectX::XMVectorAdd(End, S));
-
-				camerapos_.x = p.x;
-				camerapos_.z = p.z;
-				return true;
-
-
-			}
-			return false;
-		};
+	
 	//DropBox_Road* obj = Debug_ParameterObj.get();
 	DirectX::XMFLOAT3 moveVec = {};
 	//1êlèÃà⁄ìÆ

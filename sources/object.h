@@ -156,7 +156,7 @@ public:
     void SetMySphere(const SphereQuadPlacement& sphere) { Mysphere = sphere; }
     const SphereQuadPlacement GetMySphere()const { return Mysphere; }
     
-   
+  
 
 protected:
 

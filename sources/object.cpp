@@ -174,15 +174,7 @@ void Object::BaseGui()
 
                 ImGui::TreePop();
             }
-            if (ImGui::TreeNode("normal"))
-            {
-                XMFLOAT3 normal{ Normal };
-                ImGui::InputFloat("normal.x:", &normal.x);
-                ImGui::InputFloat("normal.y:", &normal.y);
-                ImGui::InputFloat("normal.z:", &normal.z);
-
-                ImGui::TreePop();
-            }
+            
         }
 
         if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
@@ -211,16 +203,7 @@ void Object::BaseGui()
                 Scale.z += scale.z;
                 ImGui::TreePop();
             }
-            if (ImGui::TreeNode("move_normal"))
-            {
-                Gui_parameter_Valu valu = parameter_valu;
-                XMFLOAT3 normal{ Normal };
-                ImGui::SliderFloat("move_normal.x:", &normal.x, valu.Min.x, valu.Max.x);
-                ImGui::SliderFloat("move_normal.y:", &normal.y, valu.Min.y, valu.Max.y);
-                ImGui::SliderFloat("move_normal.z:", &normal.z, valu.Min.z, valu.Max.z);
-
-                ImGui::TreePop();
-            }
+            
         }
     }
     if (ImGui::TreeNode("SpherePos"))

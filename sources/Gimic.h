@@ -24,17 +24,17 @@ public:
     string GetGimicID() { return ID; }//この関数を使って自分(ギミック)がどのギミックに対して起動するかを識別する
 public:
 
+    const XMFLOAT4X4 GetWallTransform() const { return BoxTransform; }
+    const Model* GetWallModel() const { return Baria_Wall.get(); }//dropBoxに使ってる見えない壁
 
     virtual collision_mesh* GetHitBoxMesh() { return nullptr; }//今のところDropBoxクラスに対してしか使っていない
     virtual bool GetPlayerStopFlag() { return false; };//今のところDropBoxクラスに対してしか使っていない
-    virtual XMFLOAT4X4 GetBoxTransForm() { return XMFLOAT4X4(); }//今のところDropBoxクラスに対してしか使っていない
 public:
     virtual void Gimic_VS_GimicFlagBoot() {};//今のところDoorクラスに対してしか使っていない
     bool GetBootFlag()const { return bootFlag; }//今のところDoorクラスに対してしか使っていない
     void SetBootFlag(bool f) { bootFlag=f; }//今のところDoorクラスに対してしか使っていない
 public:
-
-
+  
 protected:
     string ID;
     bool bootFlag;
@@ -45,7 +45,18 @@ protected:
     //ObjType get_gameobj;
     ObjType MyObjeFlagType = ObjType::null;//自分がどのオブジェクトタイプでギミックが起動するかの変数
     Gimic_Type MyGimicFlagType = Gimic_Type::null;//自分がどのGimicタイプで自分のギミックが起動するかの変数
-
+    //dropWall二しか使っていない
+    XMFLOAT3 BoxPosition{};
+    XMFLOAT3 BoxScale{ 1.f,1.f,1.f };
+    XMFLOAT3 BoxAngle{};
+    XMFLOAT4X4 BoxTransform{
+    1,0,0,0,
+    0,1,0,0,
+    0,0,1,0,
+    0,0,0,1
+    };
+    
+    unique_ptr<Model>Baria_Wall;
 };
 
 class Switch :public Gimic
@@ -118,28 +129,22 @@ public:
     void Render(RenderContext* rc)override;
     void Gui()override;
   
-public://set
-  
-public://get
-  
-    bool GetPlayerStopFlag() override { return playerStopFlag; }
-
-public:
+private:
     bool isPlayerInRangeOf_Box();
+   
+    void IsWall_UpdateTransform();
     struct dropboxNow
     {
         XMFLOAT3 oppnentPos{};//落ちてきた位置保持
         bool flag = false;///わたることができますよフラグ
         float radius;
     };
-
-    dropboxNow GetDropBoxNow() { return dropbox; }
-private:
-    float radius = 1;
-    dropboxNow dropbox;
-    bool playerStopFlag{};
   
-
+    
+   const dropboxNow GetDropBoxNow()const { return dropbox; }
+private:
+    
+    dropboxNow dropbox;  
+   
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
-
 };

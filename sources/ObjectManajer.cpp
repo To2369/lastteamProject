@@ -196,6 +196,30 @@ void Objectmanajer::Clear()
     game_static_objes.clear();
 }
 
+bool Objectmanajer::Sphere_VS_Player(const XMFLOAT3& plPos_, const float& pl_radius, 
+                                     const XMFLOAT3& objPos, const float& obj_radius, XMFLOAT3& outPos)
+{
+    using namespace DirectX;
+    XMVECTOR PL_pos{XMLoadFloat3(&plPos_)};
+    XMVECTOR OBJ_pos{XMLoadFloat3(&objPos)};
+    XMVECTOR VEC{ XMVectorSubtract(OBJ_pos, PL_pos) };
+    float LengthSq{ XMVectorGetX(XMVector3LengthSq(VEC)) };
+    float rad = pl_radius + obj_radius;
+    if (LengthSq < rad * rad)
+    {
+        VEC = XMVector3Normalize(VEC);
+        float remainLenSq = rad - sqrtf(LengthSq);
+        float weight = 0.5f;
+        XMVECTOR pullLength{ XMVectorReplicate(-remainLenSq * weight) };
+        PL_pos = XMVectorMultiplyAdd(VEC, pullLength, PL_pos);
+        XMStoreFloat3(&outPos, PL_pos);
+        return true;
+    }
+
+    return false;
+}
+
+
 
 void Objectmanajer::Gui(ID3D11Device* device)
 {
