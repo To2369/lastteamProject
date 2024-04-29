@@ -1,5 +1,7 @@
 #include"PlayerManager.h"
 #include"Graphics/DebugRenderer.h"
+#include"object.h"
+#include<string>
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
@@ -60,6 +62,43 @@ void PlayerManager::DrawDebugGui()
         //velocity
         DirectX::XMFLOAT3 plVelocity = players[i]->GetVelocity();
         ImGui::InputFloat3("Velocity", &plVelocity.x);
+
+        std::string str = "";
+        ObjType platt = players[i]->Getattribute();
+        switch (platt)
+        {
+        case Obj_attribute::cution:
+            str = "cution";
+            break;
+        case Obj_attribute::Super_cution:
+            str = "super cution";
+            break;
+        case Obj_attribute::heavy:
+            str = "hevy";
+            break;
+        case Obj_attribute::Super_heavy:
+            str = "super hevy";
+            break;
+        case Obj_attribute::Fragile:
+            str = "Fragile";
+            break;
+        case Obj_attribute::Super_fragile:
+            str = "Super_fragile";
+            break;
+        case Obj_attribute::Hard_to_Break:
+            str = "hard_to_break";
+            break;
+        case Obj_attribute::Super_hard_to_Break:
+            str = "super_hard_to_Break";
+            break;
+        case Obj_attribute::Crack:
+            str = "crack";
+            break;
+        case Obj_attribute::null:
+            str = "null";
+            break;
+        }
+        ImGui::Text(u8"platt@%s", str.c_str());
         /*DirectX::XMFLOAT3 plvel = *players[i]->GetVelocity();
         ImGui::InputFloat3("Vel", &plvel.x);*/
     }

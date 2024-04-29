@@ -1,7 +1,7 @@
 #pragma once
 #include"model.h"
 #include"DirectXMath.h"
-
+#include"object.h"
 //キャラクター
 class Character
 {
@@ -68,6 +68,7 @@ public:
     //着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
     DirectX::XMFLOAT3 GetPosition() { return position; }
+    Obj_attribute Getattribute() { return playerType; }
 protected:
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
@@ -96,6 +97,8 @@ protected:
     float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
     float airControl = 0.3f;                        //空中制御用係数
+    bool extractFlag = false;                       //オブジェクトの属性抽出できるか
+    ObjType playerType = ObjType::null;
 };
 ////キャラクター
 //class Character

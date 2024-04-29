@@ -69,11 +69,13 @@ void Player::update(float elapsedTime)
     //プレイヤーとギミックの当たり判定
     CollisionPlayerVsGimics(elapsedTime);
 
+    ExtractionAttribute(elapsedTime);
+
     ////ワールド行列の更新
     UpdateTransform();
    
     gamepad& gamePad = gamepad::Instance();
-    if (gamePad.button_state(gamepad::button::b))
+        if (GetKeyState('L'))
     {
         velocity.y = 0;
         position.y = 30;
@@ -279,9 +281,46 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         }
 
     }
+}
 
-    
+void Player::ExtractionAttribute(float elapsedTime)
+{
+    gamepad& gamePad = gamepad::Instance();
+    float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
+    if (velocityLengthXZ > 0.0f)
+    {
+        float mx = velocity.x * elapsedTime;
+        float mz = velocity.z * elapsedTime;
 
+        VMCFHT& ince_ray = VMCFHT::instance();
+        HitResult hit;
+        XMFLOAT3 start{ position.x,position.y + 0.1f,position.z };
+        XMFLOAT3 end{ position.x + mx,position.y + 0.1f,position.z + mz };
 
+        Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
+        Objectmanajer& objMgr = Objectmanajer::incetance();
+        int objCount = objMgr.Get_GameObjCount();
+        for (int i = 0; i < objCount; i++)
+        {
 
+            if(ince_ray.RayCast(start, end, hit, type2))
+            {
+                Object* obj = objMgr.Get_GameObject(i);
+                if (GetKeyState('I'))
+                {
+                    playerType = obj->Get_Original_Objtype(i);
+                    break;
+                }
+                if (GetKeyState('J'))
+                {
+                    obj->Set_attribute(playerType, i);
+                    break;
+                }
+            }
+        }
+    }
+    if (GetKeyState('K'))
+    {
+        playerType = Obj_attribute::null;
+    }
 }
