@@ -286,38 +286,49 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
 void Player::ExtractionAttribute(float elapsedTime)
 {
     gamepad& gamePad = gamepad::Instance();
-    float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
-    if (velocityLengthXZ > 0.0f)
+    float mx = velocity.x * elapsedTime;
+    float mz = velocity.z * elapsedTime;
+
+    VMCFHT& ince_ray = VMCFHT::instance();
+    HitResult hit;
+    float lengthpow = -0.1f;
+    XMFLOAT3 start{ position.x,position.y + 0.1f,position.z };
+    XMFLOAT3 end{ position.x + lengthpow,position.y + 0.1f,position.z + lengthpow };
+    DirectX::XMFLOAT3 outpos = { 0,0,0 };
+    Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
+    Objectmanajer& objMgr = Objectmanajer::incetance();
+    int objCount = objMgr.Get_GameObjCount();
+    for (int i = 0; i < objCount; i++)
     {
-        float mx = velocity.x * elapsedTime;
-        float mz = velocity.z * elapsedTime;
-
-        VMCFHT& ince_ray = VMCFHT::instance();
-        HitResult hit;
-        XMFLOAT3 start{ position.x,position.y + 0.1f,position.z };
-        XMFLOAT3 end{ position.x + mx,position.y + 0.1f,position.z + mz };
-
-        Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
-        Objectmanajer& objMgr = Objectmanajer::incetance();
-        int objCount = objMgr.Get_GameObjCount();
-        for (int i = 0; i < objCount; i++)
+        Object* obj = objMgr.Get_GameObject(i);
+        if (ince_ray.RayCast(start, end, hit, type2))
         {
-
-            if(ince_ray.RayCast(start, end, hit, type2))
+            if (gamePad.button_state(gamepad::button::b))
             {
-                Object* obj = objMgr.Get_GameObject(i);
-                if (GetKeyState('I'))
-                {
-                    playerType = obj->Get_Original_Objtype(0);
-                    break;
-                }
-                if (GetKeyState('J'))
-                {
-                    obj->Set_attribute(playerType, i);
-                    break;
-                }
+                playerType = obj->Get_Original_Objtype(0);
+                break;
+            }
+            if (GetKeyState('J'))
+            {
+                obj->Set_attribute(playerType, 0);
+
+                break;
             }
         }
+        else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
+        {
+            if (gamePad.button_state(gamepad::button::b))
+            {
+                playerType = obj->Get_Original_Objtype(0);
+                break;
+            }
+            if (GetKeyState('J'))
+            {
+                obj->Set_attribute(playerType, 0);
+                break;
+            }
+        }
+
     }
     if (GetKeyState('K'))
     {

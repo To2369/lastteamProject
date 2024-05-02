@@ -24,9 +24,6 @@ private:
 
     //水平移動更新処理
     void updateHorizontalMove(float elapsedTime);
-
-    //レイとキャラ判定
-    void RayVsCharacter(float moveX, float moveZ);
 protected:
     //移動処理
     void move(float vx, float vz, float speed);
@@ -96,7 +93,7 @@ protected:
     float acceleration = 1.0f;                      //加速度
     float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.3f;                        //空中制御用係数
+    float airControl = 0.1f;                        //空中制御用係数
     bool extractFlag = false;                       //オブジェクトの属性抽出できるか
     ObjType playerType = ObjType::null;
 };

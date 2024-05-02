@@ -260,11 +260,14 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 
 		Player* pl = PlayerManager::Instance().GetPlayer(0);
 		DirectX::XMFLOAT3 target = pl->GetPosition();
-	/*	if (GetKeyState('3') & 0x01)
+		if (GetKeyState('3') & 0x01)
 		{
 			target.y += 0.1f;
-			target.z += 0.1f;
-		}*/
+		}
+		else
+		{
+			target.y += 0.5f;
+		}
 		target.y += 0.5f;
 		camera_controller->SetEye(target);
 		if (mouseMove)
