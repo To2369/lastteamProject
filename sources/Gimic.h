@@ -34,7 +34,7 @@ public:
     bool GetBootFlag()const { return bootFlag; }//今のところDoorクラスに対してしか使っていない
     void SetBootFlag(bool f) { bootFlag=f; }//今のところDoorクラスに対してしか使っていない
 public:
-  
+
 protected:
     string ID;
     bool bootFlag;
@@ -93,8 +93,8 @@ public:
 
 private:
     Switch* switch_ = nullptr;
-    const char* filename = ".\\resources\\stage1\\tumiki.fbx";
-    //const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
+    const char* filename = ".\\resources\\stage1\\syashin_tento.fbx";
+    float elapsedtime_;
 };
 
 class Goal :public Gimic
@@ -111,7 +111,7 @@ public:
     bool Get_GoalFlag()const { return Goal_Flag; }
 
 private:
-    float radius = 0.2f;
+    float radius = 0.1f;
     bool Goal_Flag = false;
     const char* filename = ".\\resources\\ground.fbx";
     ID3D11Device* device;

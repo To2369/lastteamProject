@@ -75,6 +75,7 @@ Super_Cution::~Super_Cution()
 
 void Super_Cution::Update(float elapsedTime)
 {
+
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime*0.7f;
     PlayerManager& ince_pl = PlayerManager::Instance();

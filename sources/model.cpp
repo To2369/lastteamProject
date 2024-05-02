@@ -12,6 +12,7 @@ using namespace DirectX;
 #include "texture.h"
 
 #include <fstream>
+#include <Graphics/DebugRenderer.h>
 
 inline XMFLOAT4X4 to_xmfloat4x4(const FbxAMatrix& fbxamatrix)
 {
@@ -151,6 +152,11 @@ void Model::fetch_scene(const char* fbx_filename, bool triangulate, float sampli
 
 	// UNIT.17
 	fbx_manager->Destroy();
+}
+
+bool Model::StopAnimation()
+{
+	return stop_animation;
 }
 
 Model::Model(ID3D11Device* device, const char* fbx_filename, bool triangulate, float sampling_rate/*UNIT.25*/)
@@ -510,9 +516,10 @@ void Model::create_com_objects(ID3D11Device* device, const char* fbx_filename)
 	hr = device->CreateBuffer(&buffer_desc, nullptr, constant_buffer.ReleaseAndGetAddressOf());
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
-void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& world, float elapsed_time, const DirectX::XMFLOAT4& material_color)
+
+animation::keyframe* Model::getKeyFreame(float elapsedTime)
 {
-	animation::keyframe* keyframe = nullptr;
+	animation::keyframe* keyframe=nullptr;
 	if (animation_clips.data())
 	{
 		if (animation_clips.size() > 0)
@@ -530,11 +537,21 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 			}
 			else
 			{
-				animation_tick += elapsed_time;
+				if (!StopAnimation())
+					animation_tick += elapsedTime;
 			}
 			keyframe = &animation.sequence.at(frame_index);
+
 		}
-	}
+		return keyframe;
+
+	}else
+	return nullptr;
+}
+
+void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& world, float elapsed_time, const DirectX::XMFLOAT4& material_color)
+{
+	
 
 	for (mesh& mesh : meshes)
 	{
@@ -549,11 +566,11 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 		immediate_context->PSSetShader(pixel_shader.Get(), nullptr, 0);
 
 		constants data;
-
+	
 		// UNIT.29
-		if (keyframe && keyframe->nodes.size() > 0)
+		if (kefreame && kefreame->nodes.size() > 0)
 		{
-			const animation::keyframe::node& mesh_node{ keyframe->nodes.at(mesh.node_index) };
+			const animation::keyframe::node& mesh_node{ kefreame->nodes.at(mesh.node_index) };
 			XMStoreFloat4x4(&data.world, XMLoadFloat4x4(&mesh_node.global_transform) * XMLoadFloat4x4(&world));
 
 			const size_t bone_count{ mesh.bind_pose.bones.size() };
@@ -562,7 +579,7 @@ void Model::render(ID3D11DeviceContext* immediate_context, const XMFLOAT4X4& wor
 			for (size_t bone_index = 0; bone_index < bone_count; ++bone_index)
 			{
 				const skeleton::bone& bone{ mesh.bind_pose.bones.at(bone_index) };
-				const animation::keyframe::node& bone_node{ keyframe->nodes.at(bone.node_index) };
+				const animation::keyframe::node& bone_node{ kefreame->nodes.at(bone.node_index) };
 				XMStoreFloat4x4(&data.bone_transforms[bone_index],
 					XMLoadFloat4x4(&bone.offset_transform) *
 					XMLoadFloat4x4(&bone_node.global_transform) *

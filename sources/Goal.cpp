@@ -8,6 +8,8 @@
 #include "../imgui/imgui_impl_win32.h"
 #include"objectManajer.h"
 #endif
+#include"PlayerManager.h"
+
 Goal::Goal(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
@@ -30,13 +32,14 @@ void Goal::Update(float elapsedTime)
 bool Goal::GoalInPosition()
 {
     DebugRenderer& ince = DebugRenderer::incetance(device);
-    Camera& ince_c = Camera::instance();
-    XMVECTOR cameraPos = XMLoadFloat3(&ince_c.GetEye());
+    PlayerManager& ince_pl = PlayerManager::Instance();
+    Player* pl = ince_pl.GetPlayer(0);
+    XMVECTOR plPos = XMLoadFloat3(&pl->GetPosition());
     XMVECTOR GoalPos = XMLoadFloat3(&Position);
 
-    XMVECTOR pos = XMVectorSubtract(GoalPos, cameraPos);
+    XMVECTOR pos = XMVectorSubtract(GoalPos, plPos);
     float len = XMVectorGetX(XMVector3Length(pos));
-    if (len < radius + radius)
+    if (len < radius + pl->getRadius())
     {
         return true;
     }
@@ -46,9 +49,10 @@ bool Goal::GoalInPosition()
 
 void Goal::Render(RenderContext* rc)
 {
+  
     color = { 1,0,0,1 };
     model->render(rc->deviceContext, Transform, 0.0f, color);
-
+   
 }
 
 void Goal::Gui()

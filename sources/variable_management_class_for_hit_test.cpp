@@ -89,6 +89,16 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
                     return true;
                 }
             }
+            else if (obj->Get_GimicType()==Gimic_Type::Door)
+            {
+
+
+               
+                if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
+                {
+                    return true;
+                }
+            }
             else
             {
                 if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
@@ -128,7 +138,7 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
     return false;
 
 }
-bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 LocalTransform)
+bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 WorldTransform_, DirectX::XMMATRIX rotation_ /*回転だけ適用するための行列 */, bool rotation_flag/*rotation_をworld行列に適用するかのフラグ */)
 {
     DirectX::XMVECTOR WorldStart = DirectX::XMLoadFloat3(&start);
     DirectX::XMVECTOR WorldEnd = DirectX::XMLoadFloat3(&end);
@@ -144,7 +154,11 @@ bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& en
 
         //レイをワールド空間からローカル空間へ変換
 
-        DirectX::XMMATRIX WorldTransform = XMMatrixMultiply(XMLoadFloat4x4(&mesh.default_global_transform), XMLoadFloat4x4(&LocalTransform));
+        DirectX::XMMATRIX WorldTransform = XMMatrixMultiply(XMLoadFloat4x4(&mesh.default_global_transform), XMLoadFloat4x4(&WorldTransform_));
+        if (rotation_flag)
+        {
+            WorldTransform = XMMatrixMultiply(WorldTransform,rotation_);
+        }
         XMFLOAT4X4 w;
         DirectX::XMStoreFloat4x4(&w, WorldTransform);
         DirectX::XMMATRIX InverseWorldTransform = DirectX::XMMatrixInverse(nullptr, WorldTransform);
@@ -177,6 +191,27 @@ bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& en
                 const Model::vertex& b = vertices.at(indices.at(index + 1));
                 const Model::vertex& c = vertices.at(indices.at(index + 2));
 
+#if 0 // おすすめできない
+                //  a,b,cの頂点ごとのボーンの行列を取得
+                DirectX::XMMATRIX skin_matrix[3] = DirectX::XMMatrixIdentity();
+                skin_matrix[0] += a.bone_weights[0] * bind_pose_matrixes[a.bone_indices[0]]
+                    + a.bone_weights[1] * bind_pose_matrixes[a.bone_indices[1]]
+                    + a.bone_weights[2] * bind_pose_matrixes[a.bone_indices[2]]
+                    + a.bone_weights[3] * bind_pose_matrixes[a.bone_indices[3]];
+                //  b
+                skin_matrix[1] += a.bone_weights[0] * bind_pose_matrixes[a.bone_indices[0]]
+                    + a.bone_weights[1] * bind_pose_matrixes[a.bone_indices[1]]
+                    + a.bone_weights[2] * bind_pose_matrixes[a.bone_indices[2]]
+                    + a.bone_weights[3] * bind_pose_matrixes[a.bone_indices[3]];
+                //  c
+                skin_matrix[2] += a.bone_weights[0] * bind_pose_matrixes[a.bone_indices[0]]
+                    + a.bone_weights[1] * bind_pose_matrixes[a.bone_indices[1]]
+                    + a.bone_weights[2] * bind_pose_matrixes[a.bone_indices[2]]
+                    + a.bone_weights[3] * bind_pose_matrixes[a.bone_indices[3]];
+                a.position = mul(float4(a.position.xyz, 1), skin_matrix[0]);
+                b.position = mul(float4(b.position.xyz, 1), skin_matrix[1]);
+                c.position = mul(float4(c.position.xyz, 1), skin_matrix[2]);
+#endif
 
                 //三角形の三辺のベクトルを算出
                 DirectX::XMVECTOR AB = DirectX::XMVectorSubtract(DirectX::XMLoadFloat3(&b.position), DirectX::XMLoadFloat3(&a.position));

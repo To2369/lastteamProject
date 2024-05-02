@@ -39,7 +39,7 @@ public:
 
 	//raycast
 	bool raycast(collision_mesh& collision_mesh, DirectX::XMFLOAT4X4 transform, Intersection& intersection, float length = 1.0e+7f, bool skip = false);
-	bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 LocalTransform);
+	bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 WorldTransform_, DirectX::XMMATRIX rotation_ = DirectX::XMMatrixIdentity()/*回転だけ適用するための行列 */, bool rotation_flag=false/*rotation_をworld行列に適用するかのフラグ */);
 	bool RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& hit, Ray_ObjType type);
 	static DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection);
 private:

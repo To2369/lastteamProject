@@ -72,6 +72,8 @@ public:
     virtual ~Object() {};
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(RenderContext* rc) = 0;
+private:
+    float animation_tick{ 0 };
 public:
     void BaseGui();
     virtual void Gui() {};
@@ -82,7 +84,7 @@ public:
     DirectX::XMFLOAT3 GetPosition()const { return Position; }
     DirectX::XMFLOAT3 GetScale() const { return Scale; }
     ObjType Get_Old_Objtype(int Number)const { return old_attribute_state[Number]; };//この関数がリアルタイムで更新されるType
-    ObjType Get_Original_Objtype(int Number)const { return original_attribute_state[Number]; };//定数Type
+    ObjType Get_Original_Objtype(int Number)const { return original_attribute_state[Number]; };//定数Type//基本s的に０番目をとる
     float GetReturnTimer(int i)const { return ReturnTimer[i]; }
     bool GetDestroyObje()const { return DestroyObj; }
     StageName Get_MyStageName()const { return stage_name; }//今自分がどのステージに置かれてるか取得
@@ -91,10 +93,10 @@ public:
     //今自分が起動してるIDを取得
     std::string Get_BootGimicType()const { return GetBootGimicType_ID; }
 
-    float GetRadius() { return radius; }
-    bool GetMoveObjectFlag() { return moveobjectFlag; };
-    bool GetIsWall() { return isWall;}
-    bool GetIsObject() { return isObject; }
+    float GetRadius()const { return radius; }
+    bool GetMoveObjectFlag()const { return moveobjectFlag; };
+    bool GetIsWall() const{ return isWall;}
+    bool GetIsObject()const { return isObject; }
 public:
     void InvisibleWall_VS_Object();
     void SetMoveObjectFlag(bool f) { moveobjectFlag = f; }

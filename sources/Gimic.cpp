@@ -2,6 +2,7 @@
 #include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
 
+
 void Gimic::Gimic_effect(Gimic_Type type)
 {
 
