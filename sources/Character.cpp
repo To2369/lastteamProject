@@ -136,6 +136,7 @@ void Character::updateVerticalMove(float elapsedTime)
         Objectmanajer& ince_o = Objectmanajer::incetance();
         Gimic* road = nullptr;
         int gimic_count = ince_o.Get_GameGimicCount();
+        int object_count = ince_o.Get_GameObjCount();
         for (int i = 0; i < gimic_count; i++)
         {
             Gimic* obj = ince_o.Get_GameGimic(i);
@@ -151,6 +152,7 @@ void Character::updateVerticalMove(float elapsedTime)
         end.y -= 0.1f;
         HitResult hit;
         Ray_ObjType type = Ray_ObjType::Stage;
+        Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
         //地面判定
         if (ince_ray.RayCast(start, end, hit, type))
@@ -188,7 +190,26 @@ void Character::updateVerticalMove(float elapsedTime)
                 slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
             }
         }
-        else if (ince_ray.RayCast(start, end, hit,type3))
+        else if (ince_ray.RayCast(start, end, hit, type2))//ゲームオブジェクトと
+        {
+            for (int i = 0; i < object_count; i++)
+            {
+                position.y = hit.position.y + 0.1f;
+                velocity.y = 0.0f;
+                normal = hit.normal;
+                //着地した
+                if (!groundedFlag)
+                {
+                    OnLanding();
+                }
+                groundedFlag = true;
+
+                //傾斜率の計算
+                float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+                slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+            }
+        }
+        else if (ince_ray.RayCast(start, end, hit,type3))//ギミックと
         {
             for (int i = 0; i < gimic_count; i++)
             {
@@ -387,7 +408,7 @@ void Character::updateHorizontalMove(float elapsedTime)
         VMCFHT& ince_ray = VMCFHT::instance();
         HitResult hit;
         XMFLOAT3 start{ position.x,position.y+0.1f,position.z };
-        XMFLOAT3 end{ position.x + mx,position.y+0.1f,position.z + mz };
+        XMFLOAT3 end{ (position.x + mx),position.y+0.1f,position.z + mz };
         Ray_ObjType type = Ray_ObjType::Static_objects;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
