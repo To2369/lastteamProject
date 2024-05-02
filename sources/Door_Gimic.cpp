@@ -28,7 +28,7 @@ void Door::Update(float elapsedTime)
     ObjType_effect(elapsedTime);
     Gimic_effect(Gimic_Type::Door);
     Return_orijinal_ObjType(elapsedTime);
-    model->kefreame = model->getKeyFreame(elapsedTime);
+    model->kefreame = model->getKeyFreame(1);
     model->update_animation(*model->kefreame);
     UpdateTransform();
 }
@@ -74,6 +74,18 @@ void Door::Gimic_VS_GimicFlagBoot()
     }
 #endif
 
+}
+
+//ドアギミックが動く時の処理
+void Door::FallDown()
+{
+    falldownCount++;
+    float falldownMaxCount = 90.0f;
+    if (falldownCount >= falldownMaxCount)
+    {
+        falldownCount = falldownMaxCount;
+    }
+    Angle.x = XMConvertToRadians(-falldownCount);
 }
 
 void Door::Gui()

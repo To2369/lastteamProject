@@ -286,8 +286,6 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
 void Player::ExtractionAttribute(float elapsedTime)
 {
     gamepad& gamePad = gamepad::Instance();
-    float mx = velocity.x * elapsedTime;
-    float mz = velocity.z * elapsedTime;
 
     VMCFHT& ince_ray = VMCFHT::instance();
     HitResult hit;

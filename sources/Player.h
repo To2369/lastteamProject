@@ -37,7 +37,7 @@ protected:
     void OnLanding()override;
 private:
     std::unique_ptr<Model> model;
-    const char* filename = ".\\Resources\\3Dmodel\\hand\\hand.fbx";
+    const char* filename = ".\\Resources\\Character\\Hand\\hand.fbx";
 
     //移動スピード
     float moveSpeed = 1.0f;

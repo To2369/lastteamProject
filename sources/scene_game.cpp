@@ -268,7 +268,6 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 		{
 			target.y += 0.5f;
 		}
-		target.y += 0.5f;
 		camera_controller->SetEye(target);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);

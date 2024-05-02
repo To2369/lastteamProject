@@ -96,4 +96,6 @@ protected:
     float airControl = 0.1f;                        //空中制御用係数
     bool extractFlag = false;                       //オブジェクトの属性抽出できるか
     ObjType playerType = ObjType::null;
+    //斜めの時間制限
+    float slopeRate = 1.0f;
 };

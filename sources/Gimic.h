@@ -85,6 +85,7 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gimic_VS_GimicFlagBoot()override;
+    void FallDown();        //ドアギミックが動く時の処理
     void Gui()override;
 
 
@@ -95,6 +96,7 @@ private:
     Switch* switch_ = nullptr;
     const char* filename = ".\\resources\\stage1\\syashin_tento.fbx";
     float elapsedtime_;
+    float falldownCount = 0;
 };
 
 class Goal :public Gimic

@@ -3,6 +3,7 @@
 #include"Mathf.h"
 #include <objectManajer.h>
 #include"variable_management_class_for_hit_test.h"
+using namespace DirectX;
 //行列更新処理
 void Character::UpdateTransform()
 {
@@ -10,7 +11,10 @@ void Character::UpdateTransform()
     DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 
     //回転行列を作成
-    DirectX::XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(angle.x, angle.y, angle.z);
+    DirectX::XMMATRIX X = DirectX::XMMatrixRotationX(angle.x);
+    DirectX::XMMATRIX Y = DirectX::XMMatrixRotationY(angle.y);
+    DirectX::XMMATRIX Z = DirectX::XMMatrixRotationZ(angle.z);
+    DirectX::XMMATRIX R = Y * X * Z;
 
     //位置行列
     DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
@@ -98,11 +102,11 @@ void Character::jump(float speed)
 void Character::updateVelocity(float elapsedTime)
 {
     //垂直速度更新処理
-   // updateVerticalVelocity(elapsedTime);
+    updateVerticalVelocity(elapsedTime);
     updateHorizontalVelocity(elapsedTime);
 
     //垂直移動更新処理
-    //updateVerticalMove(elapsedTime);
+    updateVerticalMove(elapsedTime);
     updateHorizontalMove(elapsedTime);
 
 }
@@ -120,8 +124,10 @@ void Character::updateVerticalMove(float elapsedTime)
     //垂直方向の移動量
     float moveY = velocity.y * elapsedTime;
 
+    slopeRate = 0.0f;
+
     //キャラクターのY軸方向となる法線ベクトル
-    DirectX::XMFLOAT3 normal = { 0,-1,0 };
+    DirectX::XMFLOAT3 normal = { 0,1,0 };
     if (moveY < 0.0f)
     {
         //移動処理
@@ -145,19 +151,23 @@ void Character::updateVerticalMove(float elapsedTime)
         end.y -= 0.1f;
         HitResult hit;
         Ray_ObjType type = Ray_ObjType::Stage;
-            
+        Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
         //地面判定
         if (ince_ray.RayCast(start, end, hit, type))
         {
             position.y = hit.position.y+0.1f;
             velocity.y = 0.0f;
-
+            normal = hit.normal;
             //着地した
             if (!groundedFlag)
             {
                 OnLanding();
             }
             groundedFlag = true;
+
+            //傾斜率の計算
+            float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+            slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
         }
         else if (road)
         {
@@ -165,13 +175,36 @@ void Character::updateVerticalMove(float elapsedTime)
             {
                 position.y = hit.position.y + 0.1f;
                 velocity.y = 0.0f;
-
+                normal = hit.normal;
                 //着地した
                 if (!groundedFlag)
                 {
                     OnLanding();
                 }
                 groundedFlag = true;
+
+                //傾斜率の計算
+                float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+                slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+            }
+        }
+        else if (ince_ray.RayCast(start, end, hit,type3))
+        {
+            for (int i = 0; i < gimic_count; i++)
+            {
+                position.y = hit.position.y + 0.1f;
+                velocity.y = 0.0f;
+                normal = hit.normal;
+                //着地した
+                if (!groundedFlag)
+                {
+                    OnLanding();
+                }
+                groundedFlag = true;
+
+                //傾斜率の計算
+                float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+                slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
             }
         }
         else
@@ -187,6 +220,16 @@ void Character::updateVerticalMove(float elapsedTime)
         //上昇中
         position.y += moveY;
         groundedFlag = false;
+    }
+
+    //地面の向きに添うようにXZ軸回転
+    {
+        float x = atan2f(normal.z, normal.y);//normal.z / normal.y;
+        float z = -atan2f(normal.x, normal.y);//normal.x / normal.y;
+
+        //線形補完で滑らかにする
+        angle.x = Mathf::Leap(angle.x, x, 0.1f);
+        angle.z = Mathf::Leap(angle.z, z, 0.1f);
     }
 }
 
@@ -255,6 +298,13 @@ void Character::updateHorizontalVelocity(float elapsedTime)
                 float vz = velocity.z / length;
                 velocity.x = vx * maxMoveSpeed;
                 velocity.z = vz * maxMoveSpeed;
+            }
+
+            //下り坂でがたがたしないようにする
+            if (groundedFlag && slopeRate > 0.0f)
+            {
+                //斜面での落下速度-横移動の長さ*
+                velocity.y -= length * slopeRate*elapsedTime;
             }
         }
     }
