@@ -1,5 +1,7 @@
 #pragma once
 #include"Character.h"
+#include"Graphics/RenderContext.h"
+#include"model.h"
 //íçéÀäÌ
 class Syringe : public Character
 {
@@ -19,5 +21,5 @@ private:
 
 private:
     std::unique_ptr<Model> model;
-    const char* filename = ".\\Resources\\Character\\Hand\\hand.fbx";
+    const char* filename = ".\\Resources\\Character\\Syringe\\syringe_m.fbx";
 };

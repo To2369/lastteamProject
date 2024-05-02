@@ -57,13 +57,13 @@ Player::~Player()
 void Player::update(float elapsedTime)
 {
 
-    //////移動入力処理
+    //移動入力処理
     inputMove(elapsedTime);
 
-    ////ジャンプ入力処理
+    //ジャンプ入力処理
     inputJump();
 
-    ////速度処理更新
+    //速度処理更新
     updateVelocity(elapsedTime);
 
     //プレイヤーとギミックの当たり判定
