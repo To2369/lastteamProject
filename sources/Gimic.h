@@ -40,7 +40,9 @@ protected:
     bool bootFlag;
     bool switchFlag = false;
     void Gimic_effect(Gimic_Type type);
-    //自分のタイプ
+    //ドアギミックが動く時の処理(回転したい角度)
+    void FallDown(float MaxAngle);
+    float falldownAngle = 0;    //FallDown関数で使ってる
     Gimic_Type Gimic_type = Gimic_Type::null;
     //ObjType get_gameobj;
     ObjType MyObjeFlagType = ObjType::null;//自分がどのオブジェクトタイプでギミックが起動するかの変数
@@ -85,16 +87,14 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gimic_VS_GimicFlagBoot()override;
-    void FallDown();        //ドアギミックが動く時の処理
     void Gui()override;
-
-
+    
 public:
 
 
 private:
     Switch* switch_ = nullptr;
-    const char* filename = ".\\resources\\stage1\\syashin_tento.fbx";
+    const char* filename = ".\\resources\\stage1\\syashintate.fbx";
     float elapsedtime_;
     float falldownCount = 0;
 };

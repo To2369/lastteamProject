@@ -28,8 +28,7 @@ void Door::Update(float elapsedTime)
     ObjType_effect(elapsedTime);
     Gimic_effect(Gimic_Type::Door);
     Return_orijinal_ObjType(elapsedTime);
-    model->kefreame = model->getKeyFreame(1);
-    model->update_animation(*model->kefreame);
+    FallDown(90);
     UpdateTransform();
 }
 
@@ -39,7 +38,7 @@ void Door::Render(RenderContext* rc)
   
     model->render(rc->deviceContext, Transform,elapsedtime_, color);
 
-    for (auto& node : model->kefreame->nodes)
+   /* for (auto& node : model->kefreame->nodes)
     {
         XMMATRIX S = XMMatrixScaling(node.scaling.x, node.scaling.y, node.scaling.z);
         XMMATRIX T= XMMatrixTranslation(node.translation.x, node.translation.y, node.translation.z);
@@ -51,7 +50,7 @@ void Door::Render(RenderContext* rc)
         XMFLOAT3 pos = {worldtransform._41,worldtransform._42,worldtransform._43};
         ince_debug.DrawSphere(pos, 0.05f, { 1,1,1,1 });
       
-    }
+    }*/
 
 }
 
@@ -74,18 +73,6 @@ void Door::Gimic_VS_GimicFlagBoot()
     }
 #endif
 
-}
-
-//ドアギミックが動く時の処理
-void Door::FallDown()
-{
-    falldownCount++;
-    float falldownMaxCount = 90.0f;
-    if (falldownCount >= falldownMaxCount)
-    {
-        falldownCount = falldownMaxCount;
-    }
-    Angle.x = XMConvertToRadians(-falldownCount);
 }
 
 void Door::Gui()

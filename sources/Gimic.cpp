@@ -43,3 +43,13 @@ void Gimic::Gimic_effect(Gimic_Type type)
 
 }
 
+//ドアギミックが動く時の処理
+void Gimic::FallDown(float MaxAngle)
+{
+    falldownAngle++;
+    if (falldownAngle >= MaxAngle)
+    {
+        falldownAngle = MaxAngle;
+    }
+    Angle.x = XMConvertToRadians(-falldownAngle);
+}
