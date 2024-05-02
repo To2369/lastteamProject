@@ -333,7 +333,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	parametric_constant->activate(rc.deviceContext, 2);
 	
 	UIManager& ince_ui = UIManager::incetance();
-	ince_ui.Render(&rc);
+	
 	{
 		//ƒvƒŒƒCƒ„[•`‰æˆ—
 		plm.Render(&rc);
@@ -494,7 +494,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	//UI•`‰æ
 	{
 
-		
+		ince_ui.Render(&rc);
 	}
 }
 

@@ -308,7 +308,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 Object* obj = objMgr.Get_GameObject(i);
                 if (GetKeyState('I'))
                 {
-                    playerType = obj->Get_Original_Objtype(i);
+                    playerType = obj->Get_Original_Objtype(0);
                     break;
                 }
                 if (GetKeyState('J'))
