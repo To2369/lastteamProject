@@ -43,7 +43,7 @@ Player::Player(ID3D11Device* device)
     model = std::make_unique<Model>(device, filename, true);
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
-
+    color = {0,0,0,0};
     radius = 0.1f;
 }
 
@@ -75,13 +75,18 @@ void Player::update(float elapsedTime)
     UpdateTransform();
    
     gamepad& gamePad = gamepad::Instance();
-        if (GetKeyState('L'))
+    if (GetKeyState('L'))
     {
         velocity.y = 0;
         position.y = 30;
         velocity.y = 0;
         position.x = 0;
         position.z = 0;
+    }
+
+    if (GetKeyState('P'))
+    {
+        color = {1,1,1,1};
     }
 }
 
@@ -90,7 +95,7 @@ void Player::render(RenderContext* rc)
 {
     DebugRenderer& debugRenderer = DebugRenderer::incetance(rc->device);
      
-    model->render(rc->deviceContext, transform, 0, { 1.0f,1.0f,1.0f,1.0f });
+    model->render(rc->deviceContext, transform, 0, color);
     //衝突判定用のデバッグ球を描画
     debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
 
@@ -206,7 +211,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                         objMovesp = velocity.x*elapsedTime;
                        // if (objMovesp < 0)
                         if (!obj->GetIsWall() && !obj->GetIsObject())
-                            if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                            if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                                 if (objMovesp < 0)
                                 {
                                     obj->SetVelotyXZ({ objMovesp,0 });
@@ -217,6 +222,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                 }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    color = { 1,1,1,1 };
                 }
                     break;
                 case Object::SphereAttribute::Left:
@@ -224,7 +230,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                      objMovesp = velocity.x*elapsedTime;
                    // if (velocity.x * elapsedTime > 0)
                      if (!obj->GetIsWall()&&!obj->GetIsObject())
-                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                        if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                             if (objMovesp>0)
                             {
                                 obj->SetVelotyXZ({ objMovesp,0 });
@@ -235,13 +241,14 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    color = { 1,1,1,1 };
                 }
                     break;
                 case Object::SphereAttribute::Front:
 
                     objMovesp = velocity.z * elapsedTime;
                     if (!obj->GetIsWall() && !obj->GetIsObject())
-                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                        if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                             if (objMovesp<0)
                             {
                                 obj->SetVelotyXZ({ 0,objMovesp });
@@ -252,13 +259,14 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    color = { 1,1,1,1 };
                     break;
                 case Object::SphereAttribute::Backfront:
 
                     objMovesp = velocity.z * elapsedTime;
                   //  if (objMovesp < 0)
                     if (!obj->GetIsWall() && !obj->GetIsObject())
-                        if (obj->Get_Old_Objtype(0) == ObjType::heavy || obj->Get_Old_Objtype(0) == ObjType::Super_heavy)
+                        if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                             if (objMovesp>0)
                             {
                                 obj->SetVelotyXZ({ 0,objMovesp });
@@ -269,6 +277,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    color = { 1,1,1,1 };
                     break;
                 case Object::SphereAttribute::null:
                     break;
@@ -278,6 +287,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         else
         {
             obj->SetVelotyXZ({ 0,0 });
+            color = { 0,0,0,0 };
         }
 
     }

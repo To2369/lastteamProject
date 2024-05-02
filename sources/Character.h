@@ -52,25 +52,37 @@ public:
     //回転設定
     void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; };
 
-    //スケール取得
+    //スケール設定
     const DirectX::XMFLOAT3 GetScale()const { return scale; };
 
     //スケール取得
     void  SetScale(const DirectX::XMFLOAT3& scale) { this->scale = scale; };
+
     //速度取得
     DirectX::XMFLOAT3 GetVelocity() { return velocity; };
+
+    //速度設定
     void SetVelocity(XMFLOAT3 vel) { velocity = vel; }
+
     //半径の取得
     float getRadius()const { return radius; }
+
+    //色の取得
+    DirectX::XMFLOAT4 GetColor() { return color; }
+
+    //色の設定
+    void SetColor(const DirectX::XMFLOAT4& color) { this->color; }
+
    // 着地したか同課のフラグ取得
     bool isGrounded() const { return groundedFlag; }
-    DirectX::XMFLOAT3 GetPosition() { return position; }
+
+    //プレイヤーが所持している属性
     Obj_attribute Getattribute() { return playerType; }
 protected:
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
-
+    DirectX::XMFLOAT4 color = { 1,1,1,1 };          //色
     //姿勢行列
     DirectX::XMFLOAT4X4 transform = {
         1,0,0,0,

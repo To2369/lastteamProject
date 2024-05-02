@@ -337,8 +337,6 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	UIManager& ince_ui = UIManager::incetance();
 	
 	{
-		//プレイヤー描画処理
-		plm.Render(&rc);
 
 		StageManager::incetance().Render(&rc);
 		if (Debug_ParameterObj)
@@ -348,8 +346,11 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 		//オブジェクト描画処理
 		Goal_navi->Render(&rc);
 		Objectmanajer::incetance().render(&rc);
-		plm.drawDrawPrimitive(device_.Get());
 
+		//プレイヤー描画処理
+		plm.Render(&rc);
+
+		plm.drawDrawPrimitive(device_.Get());
 
 	}
 
