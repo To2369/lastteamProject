@@ -237,6 +237,7 @@
     <ClCompile Include="sources\Stage1_1.cpp" />
     <ClCompile Include="sources\StageManajer.cpp" />
     <ClCompile Include="sources\static_mesh_batch.cpp" />
+    <ClCompile Include="sources\Syringe.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\UI.cpp" />
     <ClCompile Include="sources\UIManajer.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="sources\Stage.h" />
     <ClInclude Include="sources\StageManager.h" />
     <ClInclude Include="sources\static_mesh_bacth.h" />
+    <ClInclude Include="sources\Syringe.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\UI.h" />
     <ClInclude Include="sources\UIManajer.h" />

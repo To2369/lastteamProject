@@ -40,8 +40,8 @@ protected:
     bool bootFlag;
     bool switchFlag = false;
     void Gimic_effect(Gimic_Type type);
-    //ドアギミックが動く時の処理(回転したい角度)
-    void FallDown(float MaxAngle);
+    //ドアギミックが動く時の処理(回転したい角度,回転速度)
+    void FallDown(float MaxAngle,float speed);
     float falldownAngle = 0;    //FallDown関数で使ってる
     Gimic_Type Gimic_type = Gimic_Type::null;
     //ObjType get_gameobj;

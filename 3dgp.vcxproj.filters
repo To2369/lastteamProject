@@ -220,6 +220,9 @@
     <ClCompile Include="sources\stage1_3.cpp">
       <Filter>Sources\Stages\GameStage</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Syringe.cpp">
+      <Filter>Sources\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -383,6 +386,9 @@
     </ClInclude>
     <ClInclude Include="sources\Stage.h">
       <Filter>Headers\stages</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Syringe.h">
+      <Filter>Headers\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

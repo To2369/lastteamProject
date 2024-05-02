@@ -21,13 +21,14 @@ void Gimic::Gimic_effect(Gimic_Type type)
         
         if (bootFlag)
         {
-            ObjType oldtype = this->Get_Old_Objtype(0);
+            /*ObjType oldtype = this->Get_Old_Objtype(0);
             this->Set_attribute(ObjType::Super_fragile, 0);
             ObjType newtype = this->Get_Old_Objtype(0);
             if (oldtype == newtype)
             {
                 this->SetReturnTimer();
-            }
+            }*/
+            FallDown(90,0.1f);
 
         }
     
@@ -44,9 +45,9 @@ void Gimic::Gimic_effect(Gimic_Type type)
 }
 
 //ドアギミックが動く時の処理
-void Gimic::FallDown(float MaxAngle)
+void Gimic::FallDown(float MaxAngle,float speed)
 {
-    falldownAngle++;
+    falldownAngle+=speed;
     if (falldownAngle >= MaxAngle)
     {
         falldownAngle = MaxAngle;

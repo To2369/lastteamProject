@@ -28,7 +28,6 @@ void Door::Update(float elapsedTime)
     ObjType_effect(elapsedTime);
     Gimic_effect(Gimic_Type::Door);
     Return_orijinal_ObjType(elapsedTime);
-    FallDown(90);
     UpdateTransform();
 }
 
