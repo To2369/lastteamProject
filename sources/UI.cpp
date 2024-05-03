@@ -10,6 +10,9 @@ using namespace DirectX;
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+
+#include "Graphics/graphics.h"
+
 CanBas::CanBas(std::vector<std::unique_ptr<UI>>& uis)
 {
 
@@ -93,10 +96,11 @@ UI::UI(ID3D11Device*device,const wchar_t* filename, DirectX::XMFLOAT2 scale, Dir
 
 void UI::Render(RenderContext* rc)
 {
+    Graphics& graphics = Graphics::Instance();
     XMFLOAT3 sp_pos;
     XMVECTOR UC_pos=XMVectorSubtract(XMLoadFloat2(&Pos),XMLoadFloat2(&canbasPos));
     XMStoreFloat3(&sp_pos, UC_pos);
-    Ui->render(rc->deviceContext, sp_pos.x, sp_pos.y,Scale.x,Scale.y);
+    Ui->render(graphics.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y);
 }
 
 void UI::Gui()

@@ -9,6 +9,7 @@
 #include"objectManajer.h"
 #endif
 #include"PlayerManager.h"
+#include "Graphics/graphics.h"
 
 Goal::Goal(ID3D11Device* device)
 {
@@ -49,10 +50,8 @@ bool Goal::GoalInPosition()
 
 void Goal::Render(RenderContext* rc)
 {
-  
     color = { 1,0,0,1 };
-    model->render(rc->deviceContext, Transform, 0.0f, color);
-   
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Goal::Gui()

@@ -18,23 +18,21 @@ SceneManagement::SceneManagement() {}
 
 SceneManagement::~SceneManagement()
 {
-
-
-	//if (nextScene != nullptr)
-	//{
-	//	delete nextScene;
-	//	nextScene = nullptr;
-	//}
-	//if (currentScene != nullptr)
-	//{
-	//	delete currentScene;
-	//	currentScene = nullptr;
-	//}
+	if (currentScene != nullptr)
+	{
+		delete currentScene;
+		currentScene = nullptr;
+	}
+	if (nextScene != nullptr)
+	{
+		delete nextScene;
+		nextScene = nullptr;
+	}
 };
 
 void SceneManagement::initialize() {}
 
-void SceneManagement::update(ID3D11Device* device,float elapsed_time,float x,float y)
+void SceneManagement::update(float elapsed_time)
 {
 	if (nextScene != nullptr)
 	{
@@ -48,22 +46,22 @@ void SceneManagement::update(ID3D11Device* device,float elapsed_time,float x,flo
 		//ƒV[ƒ“‰Šú‰»ˆ—
 		if (!currentScene->IsReady())
 		{
-			currentScene->initialize(device,x,y);
+			currentScene->initialize();
 		}
 	}
 
 	if (currentScene != nullptr)
 	{
-		currentScene->update(elapsed_time, device, x, y);
+		currentScene->update(elapsed_time);
 	}
 	
 }
 
-void SceneManagement::render(float elapsed_time,RenderContext& rc)
+void SceneManagement::render(float elapsed_time)
 {	
 	if (currentScene != nullptr)
 	{
-		currentScene->render(elapsed_time, rc);
+		currentScene->render(elapsed_time);
 	}
 }
 

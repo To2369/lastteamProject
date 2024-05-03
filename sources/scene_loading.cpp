@@ -1,13 +1,15 @@
 #include "scene_loading.h"
+#include "Graphics/graphics.h"
 
-void SceneLoading::initialize(ID3D11Device* device, float x, float y)
+void SceneLoading::initialize()
 {
+    Graphics& graphics = Graphics::Instance();
+
     //スレッド開始
-    thread = new std::thread(LoadingThread, this,device,x,y);
-    
+    thread = new std::thread(LoadingThread, this);    
 }
 
-void SceneLoading::update(float elapsed_time, ID3D11Device* device, float x,float y)
+void SceneLoading::update(float elapsed_time)
 {
     if (nextScene->IsReady() == true)
     {
@@ -23,8 +25,20 @@ void SceneLoading::update(float elapsed_time, ID3D11Device* device, float x,floa
 #endif
 }
 
-void SceneLoading::render(float elapsed_time, RenderContext& rc)
+void SceneLoading::render(float elapsed_time)
 {
+    RenderContext rc;
+    Graphics& graphics = Graphics::Instance();
+
+    graphics.renderinit();
+
+    graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 1);
+
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
+
+    D3D11_VIEWPORT viewport;
+    UINT num_viewports{ 1 };
+    graphics.GetDeviceContext()->RSGetViewports(&num_viewports, &viewport);
 
 }
 
@@ -39,13 +53,13 @@ void SceneLoading::finalize()
     }
 }
 
-void SceneLoading::LoadingThread(SceneLoading* scene, ID3D11Device* device, float x , float y)
+void SceneLoading::LoadingThread(SceneLoading* scene)
 {
     //COM関連の初期化でスレッド毎に呼ぶ必要がある
     CoInitialize(nullptr);
 
     //次のシーンの初期化を行う
-    scene->nextScene->initialize(device,x,y);
+    scene->nextScene->initialize();
     //スレッドが終わる前にCOM関連の終了化
     CoUninitialize();
 

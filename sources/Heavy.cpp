@@ -1,5 +1,6 @@
 #include"Heavy.h"
 #include <objectManajer.h>
+#include "Graphics/graphics.h"
 
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
@@ -85,9 +86,9 @@ void Heavy::Update(float elapsedTime)
 
 void Heavy::Render(RenderContext* rc)
 {
-    DebugRenderer& ince = DebugRenderer::incetance(rc->device);
+    DebugRenderer& ince = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     ince.DrawSphere(Position, radius, { 1,1,1,1 });
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Heavy::Gui()

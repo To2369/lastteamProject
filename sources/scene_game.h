@@ -22,13 +22,16 @@ public:
 	}
 
 	//開始処理
-	void initialize(ID3D11Device* device, float x = 1280, float y = 720)override;
+	void initialize()override;
 	//更新処理
-	void update(float elapsed_time, ID3D11Device* device, float x, float y)override;
+	void update(float elapsed_time)override;
 	//描画処理
-	void render(float elapsed_time, RenderContext& rc)override;
+	void render(float elapsed_time)override;
 	//終了処理
 	void finalize()override;
+
+	//framebuffer設定
+	void setFramebuffer()override;
 
 	//void DebugMode_MouseRayCast(DebugMode mode,ID3D11Device* device);
 	//定数 
@@ -70,8 +73,6 @@ private:
 	unique_ptr<Goal_navigation_Arrow>Goal_navi;
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
-	//Player* player = nullptr;
-	Microsoft::WRL::ComPtr<ID3D11Device> device_;
 	float ms = 0;
 	PlayerManager& plm = PlayerManager::Instance();
 };

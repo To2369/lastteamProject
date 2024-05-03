@@ -9,6 +9,7 @@
 #include"objectManajer.h"
 #endif
 #include"Graphics/DebugRenderer.h"
+#include "Graphics/graphics.h"
 Door::Door(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::Super_hard_to_Break, ObjType::null);
@@ -35,7 +36,7 @@ void Door::Render(RenderContext* rc)
 {
     DebugRenderer& ince_debug = DebugRenderer::incetance(rc->device);
   
-    model->render(rc->deviceContext, Transform,elapsedtime_, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, elapsedtime_, color);
 
    /* for (auto& node : model->kefreame->nodes)
     {

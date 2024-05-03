@@ -179,13 +179,13 @@ void Objectmanajer::render(RenderContext* rc)
         obj->Render(rc);
     }
    
-    for (const auto& static_object : game_static_objes)
-    {
-        static_object->Render(rc);
-    }
     for (const auto& gimic : game_Gimics)
     {
         gimic->Render(rc);
+    }
+    for (const auto& static_object : game_static_objes)
+    {
+        static_object->Render(rc);
     }
 }
 

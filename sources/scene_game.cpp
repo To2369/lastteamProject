@@ -14,6 +14,7 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam
 extern ImWchar glyphRangesJapanese[];
 #endif
 #include"UIManajer.h"
+#include "Graphics/graphics.h"
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -34,15 +35,18 @@ extern ImWchar glyphRangesJapanese[];
 //	pos.y += velY;
 //}
 
-void SceneGame::initialize(ID3D11Device* device, float x, float y)
+void SceneGame::initialize()
 {
-	device_ = device;
+	Graphics& graphics = Graphics::Instance();
 	Camera& camera = Camera::instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),
 		DirectX::XMFLOAT3(0, 0, 0),
 		DirectX::XMFLOAT3(0, 1, 0)
 	);
+	float x, y;
+	x = static_cast<float>(graphics.GetWindowSize().cx);
+	y = static_cast<float>(graphics.GetWindowSize().cy);
 	camera.SetPerspectiveFov(
 		DirectX::XMConvertToRadians(90),
 		x / y,
@@ -53,8 +57,8 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 
 	//定数バッファ生成
 	{
-		scene_data = std::make_unique<constant_buffer<scene_constants>>(device);
-		parametric_constant = std::make_unique<constant_buffer<parametric_constants>>(device);
+		scene_data = std::make_unique<constant_buffer<scene_constants>>(graphics.GetDevice());
+		parametric_constant = std::make_unique<constant_buffer<parametric_constants>>(graphics.GetDevice());
 	}
 	GetAsyncKeyState(VK_RBUTTON);
 
@@ -66,15 +70,22 @@ void SceneGame::initialize(ID3D11Device* device, float x, float y)
 	{
 		//ステージのオブジェクト初期化
 		StageManager& ince = StageManager::incetance();
-		ince.Initialize_GameStage(StageName::stage1_1, device);
+		ince.Initialize_GameStage(StageName::stage1_1, graphics.GetDevice());
 	}
 	/*Debug_ParameterObj = make_unique<DropBox_Road>(device);
 	Debug_ParameterObj->SetPosition({1.f, 0.8f, 0.5f});*/
-	Goal_navi = make_unique<Goal_navigation_Arrow>(device);
-	unique_ptr<Player>pl = make_unique<Player>(device);
+	Goal_navi = make_unique<Goal_navigation_Arrow>(graphics.GetDevice());
+	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
 	pl->SetPosition({ 0,30,0 });
 	plm.Register(move(pl));
 
+	//framebuffer生成
+	{
+		uint32_t width = static_cast<uint32_t>(graphics.GetWindowSize().cx);
+		uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
+		framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+	}
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -98,7 +109,7 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 }
 //playerの実装ができたらけす
 
-void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float y)
+void SceneGame::update(float elapsed_time)
 
 {
 
@@ -289,6 +300,10 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 
 	//マウスカーソル固定
 	{
+		Graphics& graphics = Graphics::Instance();
+		float x, y;
+		x = static_cast<float>(graphics.GetWindowSize().cx);
+		y = static_cast<float>(graphics.GetWindowSize().cy);
 		DirectX::XMFLOAT2 setCursorWindow =
 		{
 			SceneManagement::instance().GetWindowPosition().x + (x / 2),
@@ -304,8 +319,20 @@ void SceneGame::update(float elapsed_time, ID3D11Device* device, float x, float 
 
 }
 
-void SceneGame::render(float elapsed_time, RenderContext& rc)
+void SceneGame::render(float elapsed_time)
 {
+	RenderContext rc;
+	Graphics& graphics = Graphics::Instance();
+	graphics.renderinit();
+
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 1);
+
+	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
+
+	D3D11_VIEWPORT viewport;
+	UINT num_viewports{ 1 };
+	graphics.GetDeviceContext()->RSGetViewports(&num_viewports, &viewport);
+
 	rc.view = Camera::instance().GetView();
 	rc.projection = Camera::instance().GetProjection();
 	rc.lightDirection = light_direction;
@@ -331,9 +358,16 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 	scene_data->data.camera_position.w = 1.0f;
 
 	DirectX::XMStoreFloat4x4(&scene_data->data.view_projection, VP);
-	scene_data->activate(rc.deviceContext, 1);
-	parametric_constant->activate(rc.deviceContext, 2);
+
+	FLOAT color[] = {CLEAR_COLOR};
+	framebuffers[0]->clear(graphics.GetDeviceContext(), color);
+	framebuffers[0]->activate(graphics.GetDeviceContext());
+	scene_data->activate(graphics.GetDeviceContext(), 1);
+	parametric_constant->activate(graphics.GetDeviceContext(), 2);
 	
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 0);
+	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
+
 	UIManager& ince_ui = UIManager::incetance();
 	
 	{
@@ -350,7 +384,7 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 		//プレイヤー描画処理
 		plm.Render(&rc);
 
-		plm.drawDrawPrimitive(device_.Get());
+		plm.drawDrawPrimitive(graphics.GetDevice());
 
 	}
 
@@ -486,10 +520,16 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 
 
 		ImGui::End();
-		StageManager::incetance().Gui(device_.Get(), &rc);
-		Objectmanajer::incetance().Gui(device_.Get());
+		StageManager::incetance().Gui(graphics.GetDevice(), &rc);
+		Objectmanajer::incetance().Gui(graphics.GetDevice());
 		PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
+
+		scene_data->deactivate(graphics.GetDeviceContext());
+		parametric_constant->deactivate(graphics.GetDeviceContext());
+		framebuffers[0]->deactivate(graphics.GetDeviceContext());
+		graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
+
 		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG
 	}
@@ -499,6 +539,8 @@ void SceneGame::render(float elapsed_time, RenderContext& rc)
 
 		ince_ui.Render(&rc);
 	}
+
+	
 }
 
 void SceneGame::finalize()
@@ -510,6 +552,15 @@ void SceneGame::finalize()
 	//プレイヤー終了化
 	//PlayerManager::Instance().Clear();
 
+}
+
+void SceneGame::setFramebuffer()
+{
+	Graphics& graphics = Graphics::Instance();
+	uint32_t width = static_cast<uint32_t>(graphics.GetWindowSize().cx);
+	uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
+	framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+	framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 }
 
 

@@ -6,8 +6,11 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include "Graphics/graphics.h"
+
 using namespace DirectX;
 using namespace std;
+
 
 Stage_1_1::Stage_1_1(ID3D11Device* device)
 {
@@ -27,7 +30,7 @@ void Stage_1_1::Update(float elapsedTime)
 
 void Stage_1_1::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform);
 }
 
 stage_Yuka::stage_Yuka(ID3D11Device* device)
@@ -48,7 +51,7 @@ void stage_Yuka::Update(float elapsedTime)
 
 void stage_Yuka::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0, { 1,1,1,0.2 });
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0, {1,1,1,0.2});
 }
 
 void stage_Yuka::Gui()
@@ -86,7 +89,7 @@ void stage_OBJ::Update(float elapsedTime)
 
 void stage_OBJ::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform);
 }
 
 void stage_OBJ::Gui()

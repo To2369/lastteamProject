@@ -223,6 +223,9 @@
     <ClCompile Include="sources\Syringe.cpp">
       <Filter>Sources\Player</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Graphics\graphics.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -389,6 +392,9 @@
     </ClInclude>
     <ClInclude Include="sources\Syringe.h">
       <Filter>Headers\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Graphics\graphics.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

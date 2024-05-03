@@ -3,6 +3,8 @@
 using namespace std;
 #include"objectManajer.h"
 
+#include "Graphics/graphics.h"
+
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
@@ -46,12 +48,9 @@ void Cution::Update(float elapsedTime)
 
 void Cution::Render(RenderContext* rc)
 {
-
     DebugRenderer& ince = DebugRenderer::incetance(rc->device);
     ince.DrawSphere(Position, radius, { 1,1,1,1 });
-    model->render(rc->deviceContext, Transform, 0.0f, color);
-
-
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Cution::Gui()

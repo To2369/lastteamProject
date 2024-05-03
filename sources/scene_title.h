@@ -10,13 +10,15 @@ public:
 	SceneTitle() {}
 	~SceneTitle() {}
 	//開始処理
-	void initialize(ID3D11Device* device,float,float)override;
+	void initialize()override;
 	//更新処理
-	void update(float elapsed_time, ID3D11Device* device, float ,float)override;
+	void update(float elapsed_time)override;
 	//描画処理
-	void render(float elapsed_time, RenderContext& rc)override;
+	void render(float elapsed_time)override;
 	//終了処理
 	void finalize()override;
+	//framebuffer設定
+	void setFramebuffer() override;
 private:
 	//定数
 	struct parametric_constants

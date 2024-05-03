@@ -38,7 +38,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_  HINSTANCE prev_instance, _
 	ShowWindow(hwnd, cmd_show);
 
 	BOOL fullscreen{ FALSE };
-	framework framework(hwnd,fullscreen);
+	framework framework(fullscreen);
 	SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&framework));
 	return framework.run();
 }

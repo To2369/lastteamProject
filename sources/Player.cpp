@@ -6,6 +6,7 @@
 #include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
 #include"Graphics/DebugRenderer.h"
+#include "Graphics/graphics.h"
 /// <summary>
 /// 
 /// </summary>
@@ -44,6 +45,7 @@ Player::Player(ID3D11Device* device)
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
     color = {0,0,0,0};
+    isHand = false;
     radius = 0.1f;
 }
 
@@ -87,6 +89,7 @@ void Player::update(float elapsedTime)
     if (GetKeyState('P'))
     {
         color = {1,1,1,1};
+        isHand = true;
     }
 }
 
@@ -94,11 +97,15 @@ void Player::update(float elapsedTime)
 void Player::render(RenderContext* rc)
 {
     DebugRenderer& debugRenderer = DebugRenderer::incetance(rc->device);
-     
-    model->render(rc->deviceContext, transform, 0, color);
+    Graphics& graphics = Graphics::Instance();
+    if(isHand)	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
+    else	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
+
+    model->render(Graphics::Instance().GetDeviceContext(), transform, 0, color);
     //衝突判定用のデバッグ球を描画
     debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
 
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
 
 
@@ -223,6 +230,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
+                    isHand = true;
                 }
                     break;
                 case Object::SphereAttribute::Left:
@@ -242,6 +250,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
+                    isHand = true;
                 }
                     break;
                 case Object::SphereAttribute::Front:
@@ -278,6 +287,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
+                    isHand = true;
                     break;
                 case Object::SphereAttribute::null:
                     break;
@@ -288,6 +298,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         {
             obj->SetVelotyXZ({ 0,0 });
             color = { 0,0,0,0 };
+            isHand = false;
         }
 
     }

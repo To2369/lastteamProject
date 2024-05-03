@@ -12,6 +12,7 @@
 #include"Graphics/DebugRenderer.h"
 using namespace DirectX;
 
+#include "Graphics/graphics.h"
 
 void Object::RayCastGround()
 {
@@ -295,13 +296,12 @@ void Object::InvisibleWall_VS_Object()
 
 void Object::CreateQuadPlacement(SphereQuadPlacement& sphere)
 {
-    RenderContext& rc = RenderContext::incetance();
-
+    
     sphere.pos[0].Spherepos.x += sphere.sphereLength * sphere.sphereLength;//right
     sphere.pos[1].Spherepos.x -= sphere.sphereLength * sphere.sphereLength;//left
     sphere.pos[2].Spherepos.z += sphere.sphereLength * sphere.sphereLength;//front
     sphere.pos[3].Spherepos.z -= sphere.sphereLength * sphere.sphereLength;//back
-    DebugRenderer& ince = DebugRenderer::incetance(rc.device);
+    DebugRenderer& ince = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     ince.DrawSphere(sphere.pos[0].Spherepos, sphere.SphereRadius, { 1, 0, 0, 1 });
     ince.DrawSphere(sphere.pos[1].Spherepos, sphere.SphereRadius, { 0, 1, 0, 1 });
     ince.DrawSphere(sphere.pos[2].Spherepos, sphere.SphereRadius, { 0, 0, 1, 1 });

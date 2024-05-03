@@ -8,6 +8,8 @@
 #include "../imgui/imgui_impl_win32.h"
 #endif
 
+#include "Graphics/graphics.h"
+
 Switch::Switch(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::null, ObjType::null);
@@ -27,8 +29,7 @@ void Switch::Update(float elapsedTime)
 
 void Switch::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
-
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 bool Switch::gimic_VS_Object()

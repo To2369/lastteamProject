@@ -201,6 +201,7 @@
     <ClCompile Include="sources\DropBox_Road.cpp" />
     <ClCompile Include="sources\Goal.cpp" />
     <ClCompile Include="sources\Goal_navi.cpp" />
+    <ClCompile Include="sources\Graphics\graphics.cpp" />
     <ClCompile Include="sources\Invisiblebarrier.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
     <ClCompile Include="sources\stage1_3.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="sources\Gimic.h" />
     <ClInclude Include="sources\Goal_navi.h" />
     <ClInclude Include="sources\Graphics\DebugRenderer.h" />
+    <ClInclude Include="sources\Graphics\graphics.h" />
     <ClInclude Include="sources\Hard_to_Break.h" />
     <ClInclude Include="sources\Heavy.h" />
     <ClInclude Include="sources\InvisibleBarria.h" />

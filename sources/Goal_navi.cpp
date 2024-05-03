@@ -1,7 +1,7 @@
 #include "Goal_navi.h"
 #include"objectManajer.h"
 #include"camera.h"
-
+#include "Graphics/graphics.h"
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
@@ -37,7 +37,7 @@ void Goal_navigation_Arrow::Update(float elapsedTime)
 
 void Goal_navigation_Arrow::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.f, color);
 }
 
 void Goal_navigation_Arrow::UpdateArrow_Front()

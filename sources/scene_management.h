@@ -30,19 +30,21 @@ public:
 	virtual ~Scene() {};
 
 	//開始処理
-	virtual void initialize(ID3D11Device* device,float,float) = 0;
+	virtual void initialize() = 0;
 	//更新処理
-	virtual void update(float elapsed_time, ID3D11Device* device,float,float) = 0;
+	virtual void update(float elapsed_time) = 0;
 	//描画処理
-	virtual void render(float elapsed_time,RenderContext& rc) = 0;
+	virtual void render(float elapsed_time) = 0;
 	//終了処理
 	virtual void finalize() = 0;
 
 	
 	bool IsReady() { return ready; }
 	void SetReady() { ready = true; }
+	virtual void setFramebuffer() = 0;
 protected:
 	bool ready = false;
+	std::unique_ptr<framebuffer> framebuffers[8] = {};
 };
 
 class SceneManagement
@@ -69,8 +71,8 @@ private:
 
 public:
 	void initialize();
-	void update(ID3D11Device*,float,float,float);
-	void render(float elapsed_time,RenderContext&);
+	void update(float);
+	void render(float elapsed_time);
 	void finalize();
 
 	void SceneChange(Scene* scene) { 
@@ -83,6 +85,7 @@ public:
 	const DirectX::XMFLOAT2 GetCurrentCursorPosition() const { return CurrentCursorPos; }
 	void SetWindowPos(const DirectX::XMFLOAT2 pos) { WindowPos = pos; }
 	const DirectX::XMFLOAT2 GetWindowPosition() const { return WindowPos; }
+	void SetFrameBuffer() { currentScene->setFramebuffer(); }
 private:
 	Scene* currentScene = nullptr;
 	Scene* nextScene = nullptr;

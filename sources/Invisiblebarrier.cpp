@@ -7,6 +7,7 @@ using namespace DirectX;
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include "Graphics/graphics.h"
 
 InvisibleBarrier::InvisibleBarrier(ID3D11Device* device,XMFLOAT3 Scale_)
 {
@@ -25,14 +26,16 @@ InvisibleBarrier::InvisibleBarrier(ID3D11Device* device)
 
 void InvisibleBarrier::Update(float elapsedTime)
 {
-
     UpdateTransform();
 }
 
 void InvisibleBarrier::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0, { 0.5f,0.5f,0.5f,0.4f });
+    Graphics& graphics = Graphics::Instance();
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0, {0.5f,0.5f,0.5f,0.1f});
 
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
 
 void InvisibleBarrier::Gui()

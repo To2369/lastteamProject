@@ -53,4 +53,7 @@ private:
 
     //ジャンプ制限
     int jumpLimit = 2;
+
+    //プレイヤーの手出現フラグ
+    bool isHand = true;
 };
