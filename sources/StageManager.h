@@ -5,6 +5,7 @@
 #include "constant_buffer.h"
 #include"Stage.h"
 #include"Gimic.h"
+#include"chain.h"
 #endif//!STAGE_MANAGER
 
 //using ObjectMap = unordered_map<StageName, unique_ptr<Object>>;
@@ -16,7 +17,6 @@
 enum class DebugMode
 {
     Object_Info,//object情報をマウスで取得
-    StageSetUp,//objectの位置設定
     Create_Object,//object生成
     Delete_Object,//object削除
     null,
@@ -26,6 +26,7 @@ enum class debugType
     obj,
     gimic,
     static_obj,
+    LiftChain,
     null
 };
 class StageManager
@@ -34,10 +35,7 @@ public:
     StageManager() {};
     ~StageManager()
     {
-        if (Debug_ParameterObj)
-        {
-            Debug_ParameterObj = nullptr;
-        }
+       
     };
 
 
@@ -82,7 +80,10 @@ public:
     {
         newObject_Thread.push_back(new thread(CreateStaticObject, t, device, in, filename));
     }
-
+    void Set_CreateLiftChain_Thred(Chain_Type t, ID3D11Device* device, Intersection in, std::string id="")
+    {
+        newObject_Thread.push_back(new thread(CreateLiftChain, t, device, in, id));
+    }
     void DeleteThred() {
         for (auto& thred_ : newObject_Thread)
         {
@@ -108,12 +109,14 @@ private:
     ObjType CreateObjeType = ObjType::null;
     Gimic_Type CreateGimicType = Gimic_Type::null;
     Static_ObjType CreateStaticObjeType = Static_ObjType::null;
+    Chain_Type CreateChainType = Chain_Type::null;
     debugType o_or_g = debugType::null;//object_or_gimic
     bool complete_createobje = false;
     vector<thread*> newObject_Thread;
 private:
     Intersection result_intersection{};
     Object* Debug_ParameterObj = nullptr;
+    BaseChain* Debug_ParameterChain = nullptr;
     bool Object_CreateFlag = false;
     float objLength = 1.3f;//objectを持った際のobject位置の距離倍率
     std::string ID = "null";
@@ -123,6 +126,7 @@ public:
     ObjType GetCreateObjeType() { return CreateObjeType; }
     Gimic_Type GetCreateGimicType() { return CreateGimicType; }
     Static_ObjType GetCreateStaticObjeType() { return CreateStaticObjeType; }
+    Chain_Type GetCreateChain() { return CreateChainType; }
     ObjType Get_debug_type() { return debug_type_set_pos; }
 
     void SetMode(DebugMode m) { mode = m; }
@@ -131,6 +135,7 @@ public:
     static void CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in, std::string id = "");
 
     static void CreateStaticObject(Static_ObjType type, ID3D11Device* device, Intersection in, const char* filename);
+    static void CreateLiftChain(Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");
     void DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device);//この関数はマウス以外でのデバッグを想定してない
     string GetObjectType_S(ObjType type)
     {
@@ -187,6 +192,9 @@ public:
         case Gimic_Type::Drop_Road:
             return "Drop_Road";
             break;
+        case Gimic_Type::Lift:
+            return "Lift";
+            break;
         case Gimic_Type::null:
             return "null";
             break;
@@ -204,7 +212,7 @@ public:
     scene_constants scene_data{};
 public://debugmode
     void Object_Info();
-    void StageSetup();
+    
     void Create_Object(ID3D11Device* device);
     void Delete_Object();
     int filenameIndex = 0;

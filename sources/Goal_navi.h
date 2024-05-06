@@ -16,11 +16,12 @@ public:
     DirectX::XMVECTOR D_X_Vec(DirectX::XMVECTOR orientationVec_, DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 target);
     void Gui()override;
 private:
-    bool boot=false;
+    bool boot=true;
     DirectX::XMFLOAT3 playerPos;
     DirectX::XMFLOAT3 GoalPos;
     DirectX::XMFLOAT4 Quaternion{};//例外としてこのオブジェクトはクウォータ二オンを回転として使用する
     const float PIDIV180 = 0.017452f;	// PAI/180
     const char* filename = ".\\resources\\Goal\\Arrow.fbx";
-
+    float turnSpeed = 0;
+    float TurnSpeed = 1.5f;
 };

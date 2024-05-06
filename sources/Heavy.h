@@ -11,7 +11,9 @@ public:
 private:
 
     const char* filename = ".\\resources\\stage1\\tumiki.fbx";
-};
+    //const char* filename = ".\\resources\\stage3\\rifuto_B.fbx";
+
+ };
 class Super_Heavy :public Object
 {
 public:

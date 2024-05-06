@@ -4,7 +4,7 @@
 #include"Gimic.h"
 #include"Player.h"
 #include"InvisibleBarria.h"
-
+#include"chain.h"
 class Objectmanajer
 {
 public:
@@ -16,7 +16,8 @@ public:
         return ince;
     }
     void Initialize(StageName s_name_, ObjType type_name, ID3D11Device* device, XMFLOAT3 pos = { 0,0,0 });
-    void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null");
+    void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
+    void Initialize(Chain_Type type,XMFLOAT3 pos, std::string id = "null");
     template <typename T>
     void Initialize_Static_Object(std::unique_ptr<T> obj)
     {
@@ -51,6 +52,14 @@ public:
         game_static_objes.erase(it, game_static_objes.end());
 
     }
+    void Set_eraceObgect(BaseChain& obj) {
+        auto destroyPredicate = [&](const unique_ptr<BaseChain>& element) {
+            return element.get() == &obj && obj.GetDestroy();
+            };
+        auto it = remove_if(game_lift_chains.begin(), game_lift_chains.end(), destroyPredicate);
+        game_lift_chains.erase(it, game_lift_chains.end());
+
+    }
     bool Sphere_VS_Player(const XMFLOAT3& plPos_,const float& pl_radius,
                           const XMFLOAT3& objPos,const float& obj_radius,XMFLOAT3&outPos);
     //この関数を使うときはそのオブジェクトがステージに存在してるのが1つの時だけ
@@ -73,14 +82,16 @@ public:
     };
     void Rigister_obj(std::unique_ptr<Object> obj) { game_objs.push_back(std::move(obj)); }
     void Rigister_Gimic(std::unique_ptr<Gimic> obj) { game_Gimics.push_back(std::move(obj)); }
-    void Rigister_Static_Object(std::unique_ptr<Static_Object> obj) { game_static_objes.push_back(std::move(obj)); }
+    void Rigister_Static_Object(std::unique_ptr<Static_Object> obj) { game_static_objes.push_back(std::move(obj));}
+    void Rigister_Lift_Chains(std::unique_ptr<BaseChain> obj) { game_lift_chains.push_back(std::move(obj)); }
     int Get_GameObjCount() { return static_cast<int>(game_objs.size()); }
     int Get_GameGimicCount() { return static_cast<int>(game_Gimics.size()); }
     int Get_GameStatic_ObjectCount() { return static_cast<int>(game_static_objes.size()); }
+    int Get_GameLiftChainCount() { return game_lift_chains.size(); }
     Object* Get_GameObject(int i) { return game_objs[i].get(); }
     Gimic* Get_GameGimic(int i) { return game_Gimics[i].get(); }
     Static_Object* Get_GameStatic_Object(int i) { return game_static_objes[i].get(); }
-
+    BaseChain* Get_GameLiftChain(int i) { return game_lift_chains[i].get(); }
     void Gui(ID3D11Device* device);
     /// <summary>
   /// 
@@ -104,7 +115,7 @@ private:
     vector<unique_ptr<Object>> game_objs;
     vector<unique_ptr<Gimic>>  game_Gimics;
     vector<unique_ptr<Static_Object>>  game_static_objes;
-
+    vector<unique_ptr<BaseChain>> game_lift_chains;
 
 
 public:

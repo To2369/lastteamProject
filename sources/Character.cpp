@@ -102,11 +102,11 @@ void Character::jump(float speed)
 void Character::updateVelocity(float elapsedTime)
 {
     //垂直速度更新処理
-    updateVerticalVelocity(elapsedTime);
+ //   updateVerticalVelocity(elapsedTime);
     updateHorizontalVelocity(elapsedTime);
 
     //垂直移動更新処理
-    updateVerticalMove(elapsedTime);
+   // updateVerticalMove(elapsedTime);
     updateHorizontalMove(elapsedTime);
 
 }
@@ -135,6 +135,7 @@ void Character::updateVerticalMove(float elapsedTime)
         VMCFHT& ince_ray = VMCFHT::instance();
         Objectmanajer& ince_o = Objectmanajer::incetance();
         Gimic* road = nullptr;
+        Gimic* lift = nullptr;
         int gimic_count = ince_o.Get_GameGimicCount();
         int object_count = ince_o.Get_GameObjCount();
         for (int i = 0; i < gimic_count; i++)
@@ -144,17 +145,18 @@ void Character::updateVerticalMove(float elapsedTime)
             {
                 road = obj;
             }
+           
         }
        
         XMFLOAT3 start{ position };
-        start.y += 0.9f;
+        //start.y += 0.1f;
         XMFLOAT3 end{ position };
         end.y -= 0.1f;
         HitResult hit;
         Ray_ObjType type = Ray_ObjType::Stage;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
-        //地面判定
+        //地面判定4444444444444
         if (ince_ray.RayCast(start, end, hit, type))
         {
             position.y = hit.position.y+0.1f;
@@ -192,41 +194,39 @@ void Character::updateVerticalMove(float elapsedTime)
         }
         else if (ince_ray.RayCast(start, end, hit, type2))//ゲームオブジェクトと
         {
-            for (int i = 0; i < object_count; i++)
+            
+            position.y = hit.position.y + 0.1f;
+            velocity.y = 0.0f;
+            normal = hit.normal;
+            //着地した
+            if (!groundedFlag)
             {
-                position.y = hit.position.y + 0.1f;
-                velocity.y = 0.0f;
-                normal = hit.normal;
-                //着地した
-                if (!groundedFlag)
-                {
-                    OnLanding();
-                }
-                groundedFlag = true;
-
-                //傾斜率の計算
-                float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
-                slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+                OnLanding();
             }
+            groundedFlag = true;
+
+            //傾斜率の計算
+            float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+            slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+            
         }
         else if (ince_ray.RayCast(start, end, hit,type3))//ギミックと
         {
-            for (int i = 0; i < gimic_count; i++)
+           
+            position.y = hit.position.y + 0.1f;
+            velocity.y = 0.0f;
+            normal = hit.normal;
+            //着地した
+            if (!groundedFlag)
             {
-                position.y = hit.position.y + 0.1f;
-                velocity.y = 0.0f;
-                normal = hit.normal;
-                //着地した
-                if (!groundedFlag)
-                {
-                    OnLanding();
-                }
-                groundedFlag = true;
-
-                //傾斜率の計算
-                float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
-                slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+                OnLanding();
             }
+            groundedFlag = true;
+
+            //傾斜率の計算
+            float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+            slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+            
         }
         else
         {

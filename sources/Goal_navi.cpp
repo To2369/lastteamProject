@@ -28,7 +28,15 @@ Goal_navigation_Arrow::Goal_navigation_Arrow(ID3D11Device* dc)
 
 void Goal_navigation_Arrow::Update(float elapsedTime)
 {
+    turnSpeed = TurnSpeed * elapsedTime;
 
+    XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+    XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+    cameraeye.z += camerafront.z * 1.3f;
+    cameraeye.x += camerafront.x * 1.3f;
+    cameraeye.y += camerafront.y * 1.3f + 0.5f;
+
+    Position = cameraeye;
 
 
     UpdateArrow_Front();
@@ -39,33 +47,36 @@ void Goal_navigation_Arrow::Render(RenderContext* rc)
 {
     model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.f, color);
 }
-
 void Goal_navigation_Arrow::UpdateArrow_Front()
 {
-#if true
-    Camera& ince_c = Camera::instance();
-    Objectmanajer& ince_obj = Objectmanajer::incetance();
+    using namespace DirectX;
 
-    //playerの代わり
-    XMFLOAT3 camerapos{ ince_c.GetEye() };
-
+    DirectX::XMVECTOR quaVec = DirectX::XMLoadFloat4(&Quaternion);
+    DirectX::XMMATRIX quaternionM = DirectX::XMMatrixRotationQuaternion(quaVec);
+    DirectX::XMVECTOR Pos = DirectX::XMLoadFloat3(&Position);
 
     // ゴールの位置を取得
+    Objectmanajer& ince_obj = Objectmanajer::incetance();
     XMFLOAT3 p = { 0.f,1.f,0.f }; // デフォルトのゴールの位置
     XMFLOAT3 goalpos = { ince_obj.Select_GetGimic(Gimic_Type::Goal) != nullptr ?
                             ince_obj.Select_GetGimic(Gimic_Type::Goal)->GetPosition() : p };
-    XMVECTOR QuaternionVec = XMLoadFloat4(&Quaternion);
-    if (boot)
-    {
-        QuaternionVec = D_X_Vec(QuaternionVec, camerapos, goalpos);
 
-    }
-    XMStoreFloat4(&Quaternion, QuaternionVec);
+    DirectX::XMVECTOR GoalPos = DirectX::XMLoadFloat3(&goalpos);
+    DirectX::XMVECTOR TargetVec = DirectX::XMVectorSubtract(GoalPos, Pos);
 
-    Position.x = camerapos.x + ince_c.GetFront().x * 1.5f;
-    Position.y = camerapos.y + ince_c.GetFront().y * 1.5f;
-    Position.z = camerapos.z + ince_c.GetFront().z * 1.5f;
-#endif
+    DirectX::XMVECTOR Front = quaternionM.r[2];
+    DirectX::XMVECTOR cross = DirectX::XMVector3Cross(TargetVec, Front);
+    float ang = DirectX::XMVectorGetX(DirectX::XMVector3Dot(DirectX::XMVector3Normalize(Front), DirectX::XMVector3Normalize(TargetVec)));
+    if (cross.m128_f32[0] == 0 && cross.m128_f32[1] == 0 && cross.m128_f32[2] == 0)return;
+
+    DirectX::XMVECTOR qua = DirectX::XMQuaternionRotationAxis(cross, acosf(ang));
+    DirectX::XMVECTOR Goal = DirectX::XMQuaternionMultiply(quaVec, qua);
+    Goal = { 0,Goal.m128_f32[1],0,Goal.m128_f32[3] };
+    DirectX::XMVECTOR slerpvec = (DirectX::XMQuaternionSlerp(quaVec, Goal, 0.02f));
+
+    DirectX::XMStoreFloat4(&Quaternion, slerpvec);
+
+
 }
 float ang = 0;
 void Goal_navigation_Arrow::UpdateTransform()
@@ -79,20 +90,19 @@ void Goal_navigation_Arrow::UpdateTransform()
     const float scale_factor = 0.01f;
     DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
 
-    DirectX::XMMATRIX M = DirectX::XMMatrixRotationX(DirectX::XM_PIDIV2 * ang);
     //スケール行列を作成
     XMMATRIX S = XMMatrixScaling(Scale.x, Scale.y, Scale.z);
     //回転行列作成
-    XMStoreFloat4(&Quaternion, XMQuaternionNormalize(XMLoadFloat4(&Quaternion)));
-    Quaternion.z;
+    /*XMMATRIX X = XMMatrixRotationX(Angle.x);
+    XMMATRIX Y = XMMatrixRotationY(Angle.y);
+    XMMATRIX Z = XMMatrixRotationZ(Angle.z);*/
     XMMATRIX R = DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&Quaternion));
     //位置行列を作成
     XMMATRIX T = XMMatrixTranslation(Position.x, Position.y, Position.z);
     //4つの行列を組み合わせて、ワールド座標を作成
-    M *= C * S * R * T;
+    DirectX::XMMATRIX W = C * S * R * T;
     //計算したワールド座標を取り出す
-
-    DirectX::XMStoreFloat4x4(&Transform, M);
+    DirectX::XMStoreFloat4x4(&Transform, W);
 }
 void Goal_navigation_Arrow::Gui()
 {

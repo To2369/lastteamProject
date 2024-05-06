@@ -4,6 +4,7 @@ using namespace DirectX;
 using namespace std;
 void UIManager::CreateUI(ID3D11Device* device)
 {
+    ObjectTypes.clear();
     GetStage_objectTypes();
     int count = ObjectTypes.size();
     

@@ -143,6 +143,16 @@ void DropBox_Road::Gui()
     ImGui::Text(ID.c_str());
 }
 
+bool DropBox_Road::Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)
+{
+    
+    if (VMCFHT::instance().raycast(start, end, this->GetWallModel(), Hit, this->GetWallTransform()))
+    {
+        return true;
+    }
+    return false;
+}
+
 
 bool DropBox_Road::isPlayerInRangeOf_Box()
 {
@@ -162,29 +172,4 @@ bool DropBox_Road::isPlayerInRangeOf_Box()
     }
 
     return false;
-}
-
-void DropBox_Road::IsWall_UpdateTransform()
-{
-    const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
-      { -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },	// 0:RHS Y-UP
-      { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },		// 1:LHS Y-UP
-      { -1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },	// 2:RHS Z-UP
-      { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1 },		// 3:LHS Z-UP
-    };
-    const float scale_factor = 0.01f;
-    DirectX::XMMATRIX C{ DirectX::XMLoadFloat4x4(&coordinate_system_transforms[0]) * DirectX::XMMatrixScaling(scale_factor, scale_factor, scale_factor) };
-
-    //スケール行列を作成
-    XMMATRIX S = XMMatrixScaling(BoxScale.x, BoxScale.y, BoxScale.z);
-    //回転行列作成
-   
-    XMMATRIX R = DirectX::XMMatrixRotationRollPitchYaw(BoxAngle.x, BoxAngle.y, BoxAngle.z);
-    //位置行列をBoxPosition
-    XMMATRIX T = XMMatrixTranslation(BoxPosition.x, BoxPosition.y, BoxPosition.z);
-    //4つの行列を組み合わせて、ワールド座標を作成
-    DirectX::XMMATRIX W = C * S * R * T;
-    //計算したワールド座標を取り出す
-    DirectX::XMStoreFloat4x4(&BoxTransform, W);
-
 }

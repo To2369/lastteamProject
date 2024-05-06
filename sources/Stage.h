@@ -31,11 +31,11 @@ private:
 };
 
 
-class Stage_1_3 :public Stage
+class Stage_1_2 :public Stage
 {
 public:
-    Stage_1_3(ID3D11Device* device);
-    ~Stage_1_3()override {};
+    Stage_1_2(ID3D11Device* device);
+    ~Stage_1_2()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
 private:

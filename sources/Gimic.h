@@ -10,7 +10,8 @@ public:
 
     virtual void Update(float elapsedTime) = 0;
     virtual void Render(RenderContext* rc) = 0;
-
+    virtual bool Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit);
+    virtual void ResultInfo();
     //自分のタイプを取得
     Gimic_Type Get_GimicType()const { return Gimic_type; }
 public:
@@ -23,9 +24,10 @@ public:
     void SetGimicID(string id) { ID = id; }//例：複数のスイッチが出てきた時にこれがないと、一つのスイッチでスイッチで起動するすべてのギミックが起動してしまう
     string GetGimicID() { return ID; }//この関数を使って自分(ギミック)がどのギミックに対して起動するかを識別する
 public:
-
+   
     const XMFLOAT4X4 GetWallTransform() const { return BoxTransform; }
     const Model* GetWallModel() const { return Baria_Wall.get(); }//dropBoxに使ってる見えない壁
+    void IsWall_UpdateTransform();
 
     virtual collision_mesh* GetHitBoxMesh() { return nullptr; }//今のところDropBoxクラスに対してしか使っていない
     virtual bool GetPlayerStopFlag() { return false; };//今のところDropBoxクラスに対してしか使っていない
@@ -34,8 +36,24 @@ public:
     bool GetBootFlag()const { return bootFlag; }//今のところDoorクラスに対してしか使っていない
     void SetBootFlag(bool f) { bootFlag=f; }//今のところDoorクラスに対してしか使っていない
 public:
-
+    //liftにしか使わない
+    enum class LiftType
+    {
+        LEFT,
+        RIGHT,
+        null
+    };
+    XMFLOAT3 StartPos = {};
+    XMFLOAT3 EndPos = {};
+    void SetEndPos(XMFLOAT3 p) { EndPos = p; }
+    //lift以外で使わない
+    LiftType GetLiftType()const { return type_; }
+    void SetLiftType(LiftType type) { type_ = type; }
+    void SetisLift(ObjType type) { isLift_Objtype = type; };
+    ObjType GetIsLift() { return isLift_Objtype; }//liftに乗ってるオブジェクトのtype取得
+    ObjType isLift_Objtype = ObjType::null;
 protected:
+    LiftType type_=LiftType::null;
     string ID;
     bool bootFlag;
     bool switchFlag = false;
@@ -72,7 +90,7 @@ public:
     void Render(RenderContext* rc)override;
     bool gimic_VS_Object()override;
     void Gui()override;
-
+    
 
 private:
     const char* filename = ".\\resources\\stage1\\bottan.fbx";
@@ -86,9 +104,11 @@ public:
     ~Door()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+    bool Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)override;
+
     void Gimic_VS_GimicFlagBoot()override;
     void Gui()override;
-    
+  
 public:
 
 
@@ -107,7 +127,7 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gui()override;
-
+    
     bool GoalInPosition();
 public:
     bool Get_GoalFlag()const { return Goal_Flag; }
@@ -116,7 +136,7 @@ private:
     float radius = 0.1f;
     bool Goal_Flag = false;
     const char* filename = ".\\resources\\ground.fbx";
-    ID3D11Device* device;
+  
 };
 
 class DropBox_Road :public Gimic
@@ -130,11 +150,12 @@ public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gui()override;
-  
+    bool Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)override;
+   
 private:
     bool isPlayerInRangeOf_Box();
    
-    void IsWall_UpdateTransform();
+  
     struct dropboxNow
     {
         XMFLOAT3 oppnentPos{};//落ちてきた位置保持
@@ -149,4 +170,31 @@ private:
     dropboxNow dropbox;  
    
     const char* filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
+};
+
+class Lift :public Gimic
+{
+public:
+    Lift(ID3D11Device* device,XMFLOAT3 pos_);
+    ~Lift() {};
+public:
+    void Update(float elapsedTime)override;
+    void Render(RenderContext* rc)override;
+    void Gui()override;
+    bool Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)override;
+    void ResultInfo()override;
+    void IdentityMatrix();
+private:
+    XMFLOAT4X4 render_WorldTransform{};//レンダー用と保存用
+    XMFLOAT4X4 oldWorldTransform{1,0,0,0,
+                            0,1,0,0,
+                            0,0,1,0,
+                            0,0,0,1 };;
+  
+    const char* filename = ".\\resources\\stage3\\rihuto.fbx";
+    const char* box_filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
+    float moveRate = 0.0f;
+    float moveSpeed = 1.0f;
+    vector<Model::mesh>meshes;
+
 };

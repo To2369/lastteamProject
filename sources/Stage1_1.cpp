@@ -23,7 +23,8 @@ Stage_1_1::Stage_1_1(ID3D11Device* device)
 void Stage_1_1::Update(float elapsedTime)
 {
 
-    Position.y = +20;
+   // Position.y = +20;
+    Position.y = -2.f;
 
     UpdateTransform();
 }
@@ -80,7 +81,7 @@ stage_OBJ::stage_OBJ(ID3D11Device* device, const char* filename_)
 void stage_OBJ::Update(float elapsedTime)
 {
     Position.x = 0.708f;
-    Position.y = 22.920f;
+    Position.y = 0.920f;
     Position.z = -1.f;
 
 
