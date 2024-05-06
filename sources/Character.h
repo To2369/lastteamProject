@@ -80,9 +80,12 @@ public:
     Obj_attribute Getattribute() { return playerType; }
 protected:
     DirectX::XMFLOAT3 position = { 0,0,0 };         //位置
+    DirectX::XMFLOAT3 Sposition = { 0,0,0 };         //位置(注射器用)
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
+    DirectX::XMFLOAT3 Sangle = { 0,0,0 };            //回転(注射器用)
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
     DirectX::XMFLOAT4 color = { 1,1,1,1 };          //色
+    DirectX::XMFLOAT4 Scolor = { 1,1,1,1 };          //色(注射器用)
     //姿勢行列
     DirectX::XMFLOAT4X4 transform = {
         1,0,0,0,
@@ -90,6 +93,15 @@ protected:
         0,0,1,0,
         0,0,0,1
     };
+
+    //姿勢行列(注射器用)
+    DirectX::XMFLOAT4X4 Stransform = {
+        1,0,0,0,
+        0,1,0,0,
+        0,0,1,0,
+        0,0,0,1
+    };
+
     float radius =0.f;                            //半径
 
     //重力

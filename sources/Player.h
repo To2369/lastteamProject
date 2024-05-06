@@ -37,7 +37,9 @@ protected:
     void OnLanding()override;
 private:
     std::unique_ptr<Model> model;
+    std::unique_ptr<Model> Smodel;          //注射器用
     const char* filename = ".\\Resources\\Character\\Hand\\hand.fbx";
+    const char* Sfilename = ".\\Resources\\Character\\Syringe\\syringe_m.fbx";      //注射器用
 
     //移動スピード
     float moveSpeed = 1.0f;
@@ -56,4 +58,6 @@ private:
 
     //プレイヤーの手出現フラグ
     bool isHand = true;
+
+    float elapsedTime_ = 0;
 };

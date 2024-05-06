@@ -16,14 +16,19 @@ void Character::UpdateTransform()
     DirectX::XMMATRIX Z = DirectX::XMMatrixRotationZ(angle.z);
     DirectX::XMMATRIX R = Y * X * Z;
 
+    DirectX::XMMATRIX SX = DirectX::XMMatrixRotationX(Sangle.x);
+    DirectX::XMMATRIX SY = DirectX::XMMatrixRotationY(Sangle.y);
+    DirectX::XMMATRIX SZ = DirectX::XMMatrixRotationZ(Sangle.z);
+    DirectX::XMMATRIX SR = SY * SX * SZ;
     //位置行列
     DirectX::XMMATRIX T = DirectX::XMMatrixTranslation(position.x, position.y, position.z);
-
+    DirectX::XMMATRIX ST = DirectX::XMMatrixTranslation(Sposition.x, Sposition.y, Sposition.z);
     //３つの行列を組み合わせ、ワールド行列を作成
     DirectX::XMMATRIX W = S * R * T;
-
+    DirectX::XMMATRIX SW = S * SR * ST;
     // 計算したワールド行列を transform に取り出す
     DirectX::XMStoreFloat4x4(&transform, W);
+    DirectX::XMStoreFloat4x4(&Stransform, SW);
 }
 
 //移動処理
