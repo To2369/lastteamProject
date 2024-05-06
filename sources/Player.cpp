@@ -42,11 +42,13 @@ bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, co
 Player::Player(ID3D11Device* device)
 {
     model = std::make_unique<Model>(device, filename, true);
+    Smodel= std::make_unique<Model>(device, Sfilename, true);
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
     color = {0,0,0,0};
     isHand = false;
     radius = 0.1f;
+    Sposition = { 0,23,0 };
 }
 
 //デストラクタ
@@ -58,6 +60,7 @@ Player::~Player()
 //更新処理
 void Player::update(float elapsedTime)
 {
+    elapsedTime_ = elapsedTime;
 
     //移動入力処理
     inputMove(elapsedTime);
@@ -71,7 +74,11 @@ void Player::update(float elapsedTime)
     //プレイヤーとギミックの当たり判定
     CollisionPlayerVsGimics(elapsedTime);
 
+    //抽出注入
     ExtractionAttribute(elapsedTime);
+
+    Smodel->kefreame = Smodel->getKeyFreame(elapsedTime);
+    Smodel->update_animation(*Smodel->kefreame);
 
     ////ワールド行列の更新
     UpdateTransform();
@@ -91,6 +98,12 @@ void Player::update(float elapsedTime)
         color = {1,1,1,1};
         isHand = true;
     }
+
+    if (GetKeyState('Q'))
+    {
+        color = { 1,1,1,1 };
+        
+    }
 }
 
 //描画処理
@@ -102,6 +115,7 @@ void Player::render(RenderContext* rc)
     else	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
 
     model->render(Graphics::Instance().GetDeviceContext(), transform, 0, color);
+    Smodel->render(Graphics::Instance().GetDeviceContext(), Stransform, elapsedTime_, { Scolor });
     //衝突判定用のデバッグ球を描画
     debugRenderer.DrawSphere(position, radius, { 1,0,0,1 });
 
@@ -230,6 +244,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
+                    angle.y = DirectX::XMConvertToRadians(270);
                     isHand = true;
                 }
                     break;
@@ -249,6 +264,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    angle.y = DirectX::XMConvertToRadians(90);
                     color = { 1,1,1,1 };
                     isHand = true;
                 }
@@ -268,6 +284,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
+                    angle.y = DirectX::XMConvertToRadians(180);
                     color = { 1,1,1,1 };
                     break;
                 case Object::SphereAttribute::Backfront:
@@ -287,6 +304,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
+                    angle.y = DirectX::XMConvertToRadians(0);
                     isHand = true;
                     break;
                 case Object::SphereAttribute::null:
@@ -304,6 +322,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
     }
 }
 
+//抽出注入
 void Player::ExtractionAttribute(float elapsedTime)
 {
     gamepad& gamePad = gamepad::Instance();
@@ -319,14 +338,17 @@ void Player::ExtractionAttribute(float elapsedTime)
     int objCount = objMgr.Get_GameObjCount();
     for (int i = 0; i < objCount; i++)
     {
+        //四角と
         Object* obj = objMgr.Get_GameObject(i);
         if (ince_ray.RayCast(start, end, hit, type2))
         {
+            //抽出
             if (gamePad.button_state(gamepad::button::b))
             {
                 playerType = obj->Get_Original_Objtype(0);
                 break;
             }
+            //注入
             if (GetKeyState('J'))
             {
                 obj->Set_attribute(playerType, 0);
@@ -334,13 +356,16 @@ void Player::ExtractionAttribute(float elapsedTime)
                 break;
             }
         }
+        //円柱と
         else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
+            //抽出
             if (gamePad.button_state(gamepad::button::b))
             {
                 playerType = obj->Get_Original_Objtype(0);
                 break;
             }
+            //注入
             if (GetKeyState('J'))
             {
                 obj->Set_attribute(playerType, 0);
