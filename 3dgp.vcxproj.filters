@@ -62,6 +62,9 @@
     <Filter Include="Headers\UI">
       <UniqueIdentifier>{32cadb48-4e9e-4783-ba8e-3b87c7f90e35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sources\objects\Lift_chain">
+      <UniqueIdentifier>{aa5d3818-15b7-4729-8dc3-11b105152a8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -225,6 +228,27 @@
     </ClCompile>
     <ClCompile Include="sources\Graphics\graphics.cpp">
       <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Lift.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Comp.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\chain_s.cpp">
+      <Filter>Sources\objects\Lift_chain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\chain_l.cpp">
+      <Filter>Sources\objects\Lift_chain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Lift_Chain_P.cpp">
+      <Filter>Sources\objects\Lift_chain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\chain.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Lift_chain_Animatio_ndown.cpp">
+      <Filter>Sources\objects\Lift_chain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -395,6 +419,12 @@
     </ClInclude>
     <ClInclude Include="sources\Graphics\graphics.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\chain.h">
+      <Filter>Sources\objects\Lift_chain</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Comp.h">
+      <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

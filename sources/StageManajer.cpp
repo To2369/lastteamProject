@@ -16,6 +16,7 @@
 #endif
 #include"objectManajer.h"
 #include"UIManajer.h"
+#include"PlayerManager.h"
 void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 {
 	using namespace std;
@@ -27,57 +28,55 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	case StageName::Tutolial:
 		break;
 	case StageName::stage1_1:
-
+	{
 		obj_Manager.Initialize(name, ObjType::heavy, device, {
-			
+
 			  -1.037836f,
-			   23.747557f,
+			   1.747557f,
 			  -0.430794f
 			});
 		obj_Manager.Initialize(name, ObjType::cution, device, {
 			 -1.336630f,
-			 23.747557f,
+			 1.747557f,
 			  0.460227f
 			});
 		obj_Manager.Initialize(name, Gimic_Type::Switch, device, {
 		-2.010655f,
-		22.640562f,
+		0.640562f,
 		-0.632938f
 			}, "kabe");
 		obj_Manager.Initialize(name, Gimic_Type::Goal, device, {
 		-0.970918,
-		22.747557,
+		0.747557,
 		-1.307508
 			});
 
-	
 
-	
 		{
 			unique_ptr<Static_Object>obj = make_unique<stage_OBJ>(device);
 			obj_Manager.Initialize_Static_Object(move(obj));
-			
+
 		}
 		{
 
 			obj_Manager.Initialize_InvisibleBarria(device,
 				{
-			    	0.762000,
-			    	23.473000,
-			    	-1.133001 
+					0.762000f,
+					1.473000f,
+					-1.133001f
 				},
-				{ 
+				{
 
-				    305.402313f,
-				    198.938995f,
-				    164.204910f
+					305.402313f,
+					198.938995f,
+					164.204910f
 				});
-			obj_Manager.Initialize_InvisibleBarria(device, 
+			obj_Manager.Initialize_InvisibleBarria(device,
 				{
 					-1.001000f,
-					22.841f,
+					0.841f,
 					-0.772001f
-				
+
 				},
 				{
 					50.922291f,
@@ -86,44 +85,74 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				});
 			obj_Manager.Initialize_InvisibleBarria(device,
 				{
-					-2.001124,
-					22.949366,
-				    -0.818629
+					-2.001124f,
+					0.949366f,
+					-0.818629f
 				},
 				{
-				    50.922291f,
-				    58.687035f,
-				    27.466879f
+					50.922291f,
+					58.687035f,
+					27.466879f
 				});
 			obj_Manager.Initialize_InvisibleBarria(device,
 				{
-					-0.810468,
-					22.382496,
-					0.076248
+					-0.810468f,
+					0.382496f,
+					0.076248f
 				},
 				{
-				    -27.452732f,
-				     57.414883f,
-				     116.421349f
+					-27.452732f,
+					 57.414883f,
+					 116.421349f
 				});
 		}
 		{
-
 			unique_ptr<Stage>stage = make_unique<Stage_1_1>(device);
 			stage->SetPosition({ 0.f, 0.5f, -0.5f });
 			Rigister(move(stage));
-
-			unique_ptr<Stage>hokyou_yuka = make_unique<stage_Yuka>(device);
-			Rigister(move(hokyou_yuka));
-			
 		}
 		obj_Manager.Initialize(name, Gimic_Type::Door, device, {
 		 -1.515878f,
-		 23.275631f,
+		 1.275631f,
 		 -0.925332f
 			}, "kabe");
 		ince_UI.CreateUI(device);
+	}
 		break;
+	case StageName::stage1_2:
+	{
+		PlayerManager& ince_p = PlayerManager::Instance();
+		ince_p.GetPlayer(0)->SetPosition({4.713f,11.f,-0.564f});
+		{
+			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+				{
+				1.723f,
+				10.220f,
+				-0.152f
+				},
+				"num1",
+			    {
+			     1.723f,
+				8.14f,
+				-0.152f
+			     });
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ 1.723f,
+				10.220f,
+				-0.352f },
+				"num1"
+			);
+		}
+
+
+
+		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
+		stage->SetPosition({ 0.f, 0.5f, -0.5f });
+		Rigister(move(stage));
+
+	}
+	break;
+
 	case StageName::null:
 		break;
 	default:
@@ -179,7 +208,10 @@ void StageManager::Clear()
 		}
 	}
 
-
+	if (Debug_ParameterObj)
+	{
+		Debug_ParameterObj = nullptr;
+	}
 
 	Stages.clear();
 }
@@ -244,8 +276,7 @@ void StageManager::Result_Object_Info(Object& obj)
 
 void StageManager::Result_Gimic_Info(Gimic& obj)
 {
-
-	auto typeMap = [](Gimic_Type type) {
+	auto typeList = [](Gimic_Type type) {
 		switch (type)
 		{
 		case Gimic_Type::Switch:
@@ -260,6 +291,9 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 		case Gimic_Type::Drop_Road:
 			return "Drop_Road";
 			break;
+		case Gimic_Type::Lift:
+			return "Lift";
+			break;
 		case Gimic_Type::null:
 			return "null";
 			break;
@@ -269,28 +303,18 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 		return "";
 		};
 
-	string s = typeMap(obj.Get_GimicType());
-	string pos;
-	string scale;
+	string s = typeList(obj.Get_GimicType());
+	
+
 	OutputDebugStringA(s.c_str());
-	OutputDebugStringA("\n");
-	OutputDebugStringA("Position.x: "); OutputDebugStringA(to_string(obj.GetPosition().x).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
-	OutputDebugStringA("Position.y: "); OutputDebugStringA(to_string(obj.GetPosition().y).c_str()); OutputDebugStringA(","); OutputDebugStringA("\n");
-	OutputDebugStringA("Position.z: "); OutputDebugStringA(to_string(obj.GetPosition().z).c_str()); OutputDebugStringA("\n");
-	OutputDebugStringA("\n");
-	OutputDebugStringA("Scale.x: "); OutputDebugStringA(to_string(obj.GetScale().x).c_str()); OutputDebugStringA("\n");
-	OutputDebugStringA("Scale.y: "); OutputDebugStringA(to_string(obj.GetScale().y).c_str()); OutputDebugStringA("\n");
-	OutputDebugStringA("Scale.z: "); OutputDebugStringA(to_string(obj.GetScale().z).c_str()); OutputDebugStringA("\n");
-
-
-	OutputDebugStringA("\n");
+	obj.ResultInfo();
 }
 
 void StageManager::Result_Static_Object_Info(Static_Object& obj)
 {
 
 
-	auto typeMap = [](Static_ObjType type) {
+	auto typeList = [](Static_ObjType type) {
 
 		switch (type)
 		{
@@ -304,7 +328,7 @@ void StageManager::Result_Static_Object_Info(Static_Object& obj)
 		return "";
 		};
 
-	string s = typeMap(obj.GetStatic_ObjType());
+	string s = typeList(obj.GetStatic_ObjType());
 	string pos;
 	string scale;
 	OutputDebugStringA(s.c_str());
@@ -356,9 +380,6 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			{
 			case DebugMode::Object_Info:
 				return "Object_Info";
-				break;
-			case DebugMode::StageSetUp:
-				return "StageSetUp";
 				break;
 			case DebugMode::Create_Object:
 				return "Create_Object";
@@ -428,6 +449,9 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 		case Gimic_Type::Drop_Road:
 			return "Drop_Load";
 			break;
+		case Gimic_Type::Lift:
+			return "Lift";
+			break;
 		case Gimic_Type::null:
 			return "null";
 			break;
@@ -449,11 +473,34 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			}
 			return "";
 		};
+	auto chain = [](Chain_Type type)
+		{
+			switch (type)
+			{
+			case Chain_Type::lift_chain_S:
+				return "lift_chain_S";
+				break;
+			case Chain_Type::lift_chain_L:
+				return "lift_chain_L";
+				break;
+			case Chain_Type::lift_P_Animatio_ndown:
+				return "lift_P_Animatio_ndown";
+				break;
+			case Chain_Type::lift_P_Not_Animation:
+				return "lift_P_Not_Animation";
+				break;
+			case Chain_Type::null:
+				return "null";
+				break;
+			default:
+				break;
+			}
+
+		};
 	ImGui::Text("Debug_Mode : %s", m(Getmode()));
 	if (ImGui::CollapsingHeader("SelectMode", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 
-		if (ImGui::Button("Change_StageSetUp")) mode = DebugMode::StageSetUp;//stageのobjectをmouseのraycastを使用して位置を設定できるように切り替える
 		if (ImGui::Button("Change_Object_Info")) mode = DebugMode::Object_Info;//object情報をmouseのraycastで確認できる用に切り替える
 		if (ImGui::Button("Change_Create_Object")) mode = DebugMode::Create_Object;//objectを作る
 		if (ImGui::Button("Change_Delete_Object")) mode = DebugMode::Delete_Object;//objectをmouseで選択して消す
@@ -470,6 +517,8 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			if (ImGui::Button("Object"))o_or_g = debugType::obj;
 			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
 			if (ImGui::Button("Static_object"))o_or_g = debugType::static_obj;
+			if (ImGui::Button("LiftChain"))o_or_g = debugType::LiftChain;
+
 		}
 		else
 		{
@@ -481,19 +530,7 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 		}
 		DebugMode_MouseRayCast(mode, device);
 	}
-	else if (mode == DebugMode::StageSetUp)
-	{
-		if (o_or_g == debugType::null)
-		{
-			if (ImGui::Button("Object"))o_or_g = debugType::obj;
-			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
-		}
-		else
-		{
-			if (ImGui::Button("Cancel"))o_or_g = debugType::null;
-		}
-		DebugMode_MouseRayCast(mode, device);
-	}
+	
 	else if (mode == DebugMode::Create_Object)
 	{
 		auto p = [](debugType type) {
@@ -510,6 +547,9 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			case debugType::static_obj:
 				return"static_obj";
 				break;
+			case debugType::LiftChain:
+				return "LiftChain";
+				break;
 			case debugType::null:
 				return"null";
 				break;
@@ -525,6 +565,7 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			if (ImGui::Button("Object"))o_or_g = debugType::obj;
 			if (ImGui::Button("Gimic"))o_or_g = debugType::gimic;
 			if (ImGui::Button("static_object"))o_or_g = debugType::static_obj;
+			if (ImGui::Button("LiftChain"))o_or_g = debugType::LiftChain;
 		}
 		else
 		{
@@ -566,6 +607,8 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 					if (ImGui::Button("Door")) CreateGimicType = Gimic_Type::Door;
 					if (ImGui::Button("Goal")) CreateGimicType = Gimic_Type::Goal;
 					if (ImGui::Button("Drop_Load")) CreateGimicType = Gimic_Type::Drop_Road;
+					if (ImGui::Button("Lift")) CreateGimicType = Gimic_Type::Lift;
+
 
 				}
 			}
@@ -583,11 +626,30 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 
 
 			}
-			if (CreateGimicType != Gimic_Type::null && CreateObjeType != ObjType::null && CreateStaticObjeType != Static_ObjType::null)
+			if (CreateGimicType != Gimic_Type::null && 
+				CreateObjeType != ObjType::null && 
+				CreateStaticObjeType != Static_ObjType::null)
 			{
 				CreateStaticObjeType = Static_ObjType::null;
 			}
 
+		}
+		else if (o_or_g == debugType::LiftChain)
+		{
+			if (CreateChainType == Chain_Type::null)
+			{
+				if (ImGui::Button("lift_chain_L")) CreateChainType = Chain_Type::lift_chain_L;
+				if (ImGui::Button("lift_chain_S"))CreateChainType = Chain_Type::lift_chain_S;
+				if (ImGui::Button("lift_P_Animatio_ndown"))CreateChainType = Chain_Type::lift_P_Animatio_ndown;
+				if (ImGui::Button("lift_P_Not_Animation"))CreateChainType = Chain_Type::lift_P_Not_Animation;
+			}
+			if (CreateGimicType != Gimic_Type::null &&
+				CreateObjeType != ObjType::null &&
+				CreateStaticObjeType != Static_ObjType::null &&
+				CreateChainType != Chain_Type::null)
+			{
+				CreateChainType = Chain_Type::null;
+			}
 		}
 		if (CreateObjeType != ObjType::null)
 		{
@@ -654,6 +716,20 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 
 			}
 
+		}
+		if (CreateChainType != Chain_Type::null)
+		{
+			if (ImGui::Button("NULL")) CreateChainType = Chain_Type::null;
+			// テキスト入力フィールドを表示
+			const int Buffer = 256;
+			ImGui::InputText("CreateID", const_cast<char*>(ID.c_str()), Buffer);
+			ImGui::Checkbox("CreateFlag", &Object_CreateFlag);
+			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("CreateObjType:%s", chain(CreateChainType));
+				DebugMode_MouseRayCast(mode, device);
+
+			}
 		}
 	}
 	else if (mode == DebugMode::Delete_Object)
@@ -773,6 +849,11 @@ void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersecti
 		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
 		break;
+	case Gimic_Type::Lift:
+		obj = make_unique<Lift>(device, in.intersection_position);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
 	case Gimic_Type::null:
 
 		break;
@@ -795,11 +876,38 @@ void StageManager::CreateStaticObject(Static_ObjType type, ID3D11Device* device,
 		obj = make_unique<InvisibleBarrier>(device);
 		obj->SetPosition(in.intersection_position);
 		ince.Rigister_Static_Object(move(obj));
+		break;
 	case Static_ObjType::null:
 		break;
 	}
 }
 
+void StageManager::CreateLiftChain(Chain_Type type, ID3D11Device* device, Intersection in, std::string id)
+{
+	unique_ptr<BaseChain>obj;
+	Objectmanajer& ince = Objectmanajer::incetance();
+	switch (type)
+	{
+	case Chain_Type::lift_chain_S:
+		obj = make_unique<Lift_chain_s>();
+		break;
+	case Chain_Type::lift_chain_L:
+		obj = make_unique<Lift_chain_l>();
+		break;
+	case Chain_Type::lift_P_Animatio_ndown:
+		obj = make_unique<Lift_chain_Animatio_ndown>();
+		break;
+	case Chain_Type::lift_P_Not_Animation:
+		obj = make_unique<Lift_chain_P>();
+		break;
+	case Chain_Type::null:
+		break;
+	
+	}
+	obj->GetTransformComp()->SetPosition(in.intersection_position);
+	obj->SetID(id);
+	ince.Rigister_Lift_Chains(move(obj));
+}
 void StageManager::DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device)
 {
 
@@ -808,11 +916,6 @@ void StageManager::DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device)
 	{
 		//右クリック
 		Object_Info();
-	}
-	else if (mode == DebugMode::StageSetUp)
-	{
-		//右クリック
-		StageSetup();
 	}
 	else if (mode == DebugMode::Create_Object)
 	{
@@ -949,15 +1052,7 @@ void StageManager::Object_Info()
 			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
 			{
 				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 1.3f, 5.f);
-				const int ii = 2;
-				for (int i = 0; i < ii; i++)
-				{
-					string name = GetObjectType_S(Debug_ParameterObj->Get_Old_Objtype(i));
-					ImGui::Text(s("ObjectType", i, true).c_str(), name.c_str());
-					float t = Debug_ParameterObj->GetReturnTimer(i);
-
-					ImGui::InputFloat(s("returnTimer", i).c_str(), &t);
-				}
+				
 				Debug_ParameterObj->Gui();
 			}
 		}
@@ -986,138 +1081,49 @@ void StageManager::Object_Info()
 				}
 			}
 		}
-
+		
+		if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
 		{
-
-
-			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
-			{
-				Debug_ParameterObj->Gui();
-			}
-		}
-
-	}
-
-
-
-}
-
-void StageManager::StageSetup()
-{
-
-	VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
-
-	result_intersection = {};
-	int gameobject_count = Objectmanajer::incetance().Get_GameObjCount();
-	int gamegimic_count = Objectmanajer::incetance().Get_GameGimicCount();
-
-	switch (o_or_g)
-	{
-
-	case debugType::obj:
-		for (int i = 0; i < gameobject_count; i++)
-		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
-			StageManager& ince = StageManager::incetance();
-			int stageCount = ince.GetStageCount();
-			for (int j = 0; j < stageCount; j++)
-			{
-				Object* stage_ = ince.GetStages(j);
-				Object* obj = ince_obj.Get_GameObject(i);
-				if (VMCFHT::instance().raycast(*obj->GetModel()->Get_RaycastCollition(), obj->GetTransform(), result_intersection))
-				{
-					if (GetAsyncKeyState(VK_RBUTTON) & 1)
-					{
-						Debug_ParameterObj = obj;
-					}
-					break;
-				}
-				else if (Debug_ParameterObj)
-				{
-					if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
-					{
-						result_intersection.intersection_position.y = 0.750f;
-						Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
-						if (GetAsyncKeyState(VK_RBUTTON) & 1)
-						{
-							Debug_ParameterObj = nullptr;
-						}
-					}
-					else
-					{
-						XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
-						XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-						cameraeye.z += camerafront.z * objLength;
-						cameraeye.x += camerafront.x * objLength;
-						cameraeye.y += camerafront.y * objLength;
-
-						Debug_ParameterObj->SetPosition(cameraeye);
-						if (GetAsyncKeyState(VK_RBUTTON) & 1)
-						{
-							Debug_ParameterObj = nullptr;
-						}
-
-
-					}
-					break;
-				}
-			}
+			Debug_ParameterObj->Gui();
 		}
 		break;
-	case debugType::gimic:
-		for (int i = 0; i < gamegimic_count; i++)
+	case debugType::LiftChain:
+		if (GetAsyncKeyState(VK_RBUTTON) & 1)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
-			StageManager& ince = StageManager::incetance();
-			Object* obj_gimic = ince_obj.Get_GameGimic(i);
-			int stageCount = ince.GetStageCount();
-			for (int j = 0; j < stageCount; j++)
-			{
-				Object* stage_ = ince.GetStages(j);
+			VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
 
-				if (VMCFHT::instance().raycast(*obj_gimic->GetModel()->Get_RaycastCollition(), obj_gimic->GetTransform(), result_intersection) && !Debug_ParameterObj)
+			result_intersection = {};
+			int gameliftchain_count = Objectmanajer::incetance().Get_GameLiftChainCount();
+			for (int i = 0; i < gameliftchain_count; i++)
+			{
+				Objectmanajer& ince_obj = Objectmanajer::incetance();
+				BaseChain* obj = ince_obj.Get_GameLiftChain(i);
+				collision_mesh* mesh = obj->GetRenderComp()->GetModel()->Get_RaycastCollition();
+
+				XMFLOAT4X4 transform = obj->GetTransformComp()->Gettransform();
+				if (VMCFHT::instance().raycast(*mesh,transform,result_intersection))
 				{
-					if (GetAsyncKeyState(VK_RBUTTON) & 1)
-					{
-						Debug_ParameterObj = obj_gimic;
-					}
+					Debug_ParameterChain = obj;
 					break;
 				}
-				else if (Debug_ParameterObj)
+				else
 				{
-					if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
-					{
-						result_intersection.intersection_position.y = 0.750f;
-						Debug_ParameterObj->SetPosition(result_intersection.intersection_position);
-						if (GetAsyncKeyState(VK_RBUTTON) & 1)
-						{
-							Debug_ParameterObj = nullptr;
-						}
-					}
-					else
-					{
-						XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
-						XMFLOAT3 camerafront{ Camera::instance().GetFront() };
-						cameraeye.z += camerafront.z * objLength;
-						cameraeye.x += camerafront.x * objLength;
-						cameraeye.y += camerafront.y * objLength;
+					Debug_ParameterChain = nullptr;
 
-						Debug_ParameterObj->SetPosition(cameraeye);
-						if (GetAsyncKeyState(VK_RBUTTON) & 1)
-						{
-							Debug_ParameterObj = nullptr;
-						}
-
-
-					}
-					break;
 				}
 			}
 		}
-		break;
-	case debugType::null:
+
+		if (Debug_ParameterChain && !Debug_ParameterChain->GetDestroy())
+		{
+			Debug_ParameterChain->Gui();
+		}
+
 		break;
 	}
+
+
+
 }
 
 void StageManager::Create_Object(ID3D11Device* device)
@@ -1223,6 +1229,42 @@ void StageManager::Create_Object(ID3D11Device* device)
 						}
 						DeleteThred();
 						static_objFilename = "";
+						break;
+					}
+
+				}
+			}
+			else
+			{
+				Debug_ParameterObj = nullptr;
+			}
+
+		}
+		break;
+	case debugType::LiftChain:
+		for (int i = 0; i < stage_count; i++)
+		{
+			Objectmanajer& ince_obj = Objectmanajer::incetance();
+
+			int stagecount = GetStageCount();
+
+			Object* stage_ = GetStages(i);
+			
+
+			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
+			{
+
+				if (GetAsyncKeyState(VK_RBUTTON) & 1)
+				{
+
+					if (GetCreateChain() != Chain_Type::null && Object_CreateFlag)
+					{
+						//result_intersection.intersection_position.y += 0.9f;
+						
+						{
+							Set_CreateLiftChain_Thred(GetCreateChain(), device, result_intersection,ID);
+						}
+						DeleteThred();
 						break;
 					}
 

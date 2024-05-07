@@ -398,4 +398,5 @@ public://’Ç‰Á
 	bool stop_animation = false;//
 	unique_ptr<collision_mesh> thisRay_vs_partner;
 	collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
+	const scene& GetScene_View() { return scene_view; }
 };

@@ -10,6 +10,7 @@
 #endif
 #include"Graphics/DebugRenderer.h"
 #include "Graphics/graphics.h"
+#include"variable_management_class_for_hit_test.h"
 Door::Door(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::Super_hard_to_Break, ObjType::null);
@@ -52,6 +53,15 @@ void Door::Render(RenderContext* rc)
       
     }*/
 
+}
+
+bool Door::Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)
+{
+    if (VMCFHT::instance().raycast(start, end, this->GetModel(), Hit, this->Transform))
+    {
+        return true;
+    }
+    return false;
 }
 
 void Door::Gimic_VS_GimicFlagBoot()

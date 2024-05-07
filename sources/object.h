@@ -27,6 +27,7 @@ enum class StageName
 {
     Tutolial,
     stage1_1,
+    stage1_2,
     null,
 };
 enum class Gimic_Type
@@ -35,6 +36,7 @@ enum class Gimic_Type
     Door,
     Goal,
     Drop_Road,
+    Lift,
     null
 };
 //Guiをマジックナンバーを使用して操作しないよう

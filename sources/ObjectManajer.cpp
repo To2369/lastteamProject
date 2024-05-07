@@ -82,7 +82,7 @@ void Objectmanajer::Initialize(StageName s_name_, ObjType type_name, ID3D11Devic
 
 }
 
-void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id)
+void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id, XMFLOAT3 endpos)
 {
     unique_ptr<Gimic>gimic;
     switch (type_name)
@@ -115,12 +115,54 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
         gimic->SetGimicID(id);
         Rigister_Gimic(move(gimic));
         break;
+    case Gimic_Type::Lift:
+        gimic = make_unique<Lift>(device,pos);
+        gimic->SetEndPos(endpos);
+        gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
+        Rigister_Gimic(move(gimic));
+        break;
     case Gimic_Type::null:
         break;
     default:
         break;
     }
 }
+
+void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id)
+{
+    unique_ptr<BaseChain> obj;
+    switch (type)
+    {
+    case Chain_Type::lift_chain_S:
+        obj = make_unique<Lift_chain_s>();
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        Rigister_Lift_Chains(move(obj));
+        break;
+    case Chain_Type::lift_chain_L:
+        obj = make_unique<Lift_chain_l>();
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        Rigister_Lift_Chains(move(obj));
+        break;
+    case Chain_Type::lift_P_Animatio_ndown:
+        obj = make_unique<Lift_chain_Animatio_ndown>();
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        Rigister_Lift_Chains(move(obj));
+        break;
+    case Chain_Type::lift_P_Not_Animation:
+        obj = make_unique<Lift_chain_P>();
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        Rigister_Lift_Chains(move(obj));
+        break;
+
+    }
+
+}
+
 
 void Objectmanajer::Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos,XMFLOAT3 Scale_ )
 {
@@ -157,6 +199,15 @@ void Objectmanajer::Update(float elapsedTime)
         Set_eraceObgect(*gimic.get());
     }
 
+    for (const auto& chains : game_lift_chains)
+    {
+        chains->Update(elapsedTime);
+    }
+    for (const auto& chains : game_lift_chains)
+    {
+        Set_eraceObgect(*chains.get());
+    }
+
     for (const auto& static_object : game_static_objes)
     {
         static_object->Update(elapsedTime);
@@ -183,10 +234,16 @@ void Objectmanajer::render(RenderContext* rc)
     {
         gimic->Render(rc);
     }
+
+    for (const auto& chains : game_lift_chains)
+    {
+        chains->Render();
+    }
     for (const auto& static_object : game_static_objes)
     {
         static_object->Render(rc);
     }
+    
 }
 
 void Objectmanajer::Clear()

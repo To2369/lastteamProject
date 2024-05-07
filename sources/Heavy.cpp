@@ -9,6 +9,8 @@
 #include "../imgui/imgui_impl_win32.h"
 #endif
 #include"Graphics/DebugRenderer.h"
+#include"variable_management_class_for_hit_test.h"
+
 using namespace std;
 Heavy::Heavy(ID3D11Device* device)
 {
@@ -28,6 +30,7 @@ Heavy::~Heavy()
 void Heavy::Update(float elapsedTime)
 {
     oldPosition = Position;
+    
     Return_orijinal_ObjType(elapsedTime);
     {
         SphereQuadPlacement spheres(Position);
@@ -36,49 +39,80 @@ void Heavy::Update(float elapsedTime)
 
     }
     VeloctyY = -elapsedTime * 2;
-    Objectmanajer& ince = Objectmanajer::incetance();
-    int count = ince.Get_GameGimicCount();
+    Objectmanajer& ince_o = Objectmanajer::incetance();
+    VMCFHT& ince_ray = VMCFHT::instance();
+    int count = ince_o.Get_GameGimicCount();
+    
     {
         //ギミックに対して何かするfor文
         for (int i = 0; i < count; i++)
         {
-            Gimic* gimic = ince.Get_GameGimic(i);
-            if (ince.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+            Gimic* gimic = ince_o.Get_GameGimic(i);
+            if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
             {
                 if (Get_isGimic_UpPosNow())
                 {
                     string g = gimic->GetGimicID();
                     Set_GimicType(g);
                     VeloctyY = 0;
+                    
                     break;
                 }
             }
         }
        
-        if (!GetIsWall()&&!GetIsObject())
+        
+    }
+    if (!GetIsWall() && !GetIsObject())
+    {
+        if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
         {
-            if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
-            {
-                Position.x += VelocityXZ.x;
-                Position.z += VelocityXZ.y;
-            }
+            Position.x += VelocityXZ.x;
+            Position.z += VelocityXZ.y;
         }
     }
     InvisibleWall_VS_Object();
     isObject = false;
-    count = ince.Get_GameObjCount();
-    for (int i = 0; i < count; i++)
+    count = ince_o.Get_GameObjCount();
+  
     {
-        Object* obj = ince.Get_GameObject(i);
-        if (this == obj)continue;
-        if (ince.Bounding_Box_vs_Bounding_Box(this, obj, false))
+        for (int i = 0; i < count; i++)
         {
-            Position = oldPosition;
-            isObject = true;
-            break;
+            Object* obj = ince_o.Get_GameObject(i);
+            if (this == obj)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+            {
+                Position = oldPosition;
+                isObject = true;
+                break;
+            }
         }
     }
 
+ 
+    {
+        XMFLOAT3 start = Position;
+        XMFLOAT3 end = Position;
+        end.y -=0.1f;
+        HitResult hit;
+        count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* obj = ince_o.Get_GameGimic(i);
+            
+            if (obj->GetLiftType()==Gimic::LiftType::null)continue;
+            if (obj->Raycast(start, end, hit))
+            {
+                VeloctyY = 0;
+                obj->SetisLift(this->Get_Old_Objtype(0));
+                Position.y = hit.position.y+0.1f;
+                break;
+            }
+                
+        }
+        
+    }
     RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
@@ -113,6 +147,8 @@ Super_Heavy::~Super_Heavy()
 
 void Super_Heavy::Update(float elapsedTime)
 {
+    oldPosition = Position;
+
     Return_orijinal_ObjType(elapsedTime);
     {
         SphereQuadPlacement spheres(Position);
@@ -120,10 +156,81 @@ void Super_Heavy::Update(float elapsedTime)
         CreateQuadPlacement(spheres);
 
     }
-    VeloctyY = -elapsedTime * 4;
-    Objectmanajer& ince = Objectmanajer::incetance();
-    int count = ince.Get_GameGimicCount();
-   
+    VeloctyY = -elapsedTime * 2;
+    Objectmanajer& ince_o = Objectmanajer::incetance();
+    VMCFHT& ince_ray = VMCFHT::instance();
+    int count = ince_o.Get_GameGimicCount();
+
+    {
+        //ギミックに対して何かするfor文
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* gimic = ince_o.Get_GameGimic(i);
+            if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+            {
+                if (Get_isGimic_UpPosNow())
+                {
+                    string g = gimic->GetGimicID();
+                    Set_GimicType(g);
+                    VeloctyY = 0;
+
+                    break;
+                }
+            }
+        }
+
+
+    }
+    if (!GetIsWall() && !GetIsObject())
+    {
+        if (VelocityXZ.x > 0.f || VelocityXZ.x < 0 || VelocityXZ.y>0 || VelocityXZ.y < 0)
+        {
+            Position.x += VelocityXZ.x;
+            Position.z += VelocityXZ.y;
+        }
+    }
+    InvisibleWall_VS_Object();
+    isObject = false;
+    count = ince_o.Get_GameObjCount();
+
+    {
+        for (int i = 0; i < count; i++)
+        {
+            Object* obj = ince_o.Get_GameObject(i);
+            if (this == obj)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+            {
+                Position = oldPosition;
+                isObject = true;
+                break;
+            }
+        }
+    }
+
+
+    {
+        XMFLOAT3 start = Position;
+        XMFLOAT3 end = Position;
+        end.y -= 0.1f;
+        HitResult hit;
+        count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* obj = ince_o.Get_GameGimic(i);
+
+            if (obj->GetLiftType() == Gimic::LiftType::null)continue;
+            if (obj->Raycast(start, end, hit))
+            {
+                VeloctyY = 0;
+                obj->SetisLift(this->Get_Old_Objtype(0));
+                Position.y = hit.position.y + 0.1f;
+
+            }
+
+        }
+
+    }
     RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();

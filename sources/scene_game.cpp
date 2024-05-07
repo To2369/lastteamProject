@@ -67,17 +67,18 @@ void SceneGame::initialize()
 	//unique_ptr<Player> player = make_unique<Player>(device);
 	//player->SetPosition({ 5,5,0 });
 	//PlayerManager::Instance().Register(std::move(player));
+	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
+	pl->SetPosition({ 0,30,0 });
+	plm.Register(move(pl));
 	{
 		//ステージのオブジェクト初期化
 		StageManager& ince = StageManager::incetance();
-		ince.Initialize_GameStage(StageName::stage1_1, graphics.GetDevice());
+		ince.Initialize_GameStage(StageName::stage1_2, graphics.GetDevice());
 	}
 	/*Debug_ParameterObj = make_unique<DropBox_Road>(device);
 	Debug_ParameterObj->SetPosition({1.f, 0.8f, 0.5f});*/
 	Goal_navi = make_unique<Goal_navigation_Arrow>(graphics.GetDevice());
-	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
-	pl->SetPosition({ 0,30,0 });
-	plm.Register(move(pl));
+	
 
 	//framebuffer生成
 	{
@@ -380,7 +381,7 @@ void SceneGame::render(float elapsed_time)
 		//オブジェクト描画処理
 		Goal_navi->Render(&rc);
 		Objectmanajer::incetance().render(&rc);
-
+		
 		//プレイヤー描画処理
 		plm.Render(&rc);
 
@@ -461,19 +462,7 @@ void SceneGame::render(float elapsed_time)
 		ImGui::SliderFloat("light_direction.y", &light_direction.y, -10.0f, +10.0f);
 		ImGui::SliderFloat("light_direction.z", &light_direction.z, -10.0f, +10.0f);
 
-		//Goal_navi->Gui();
-		{
-			Objectmanajer& ince_o = Objectmanajer::incetance();
-			int count = ince_o.Get_GameStatic_ObjectCount();
-			for (int i = 0; i < count; i++)
-			{
-
-				Static_Object* obj = ince_o.Get_GameStatic_Object(i);
-				if (Static_Object_name::Invisible_Wall != obj->GetStatic_ObjType())continue;
-				obj->Gui();
-
-			}
-		}
+		
 		auto p = [](ObjType type) {
 
 
@@ -550,7 +539,7 @@ void SceneGame::finalize()
 	Objectmanajer::incetance().Clear();
 	Debug_ParameterObj = nullptr;
 	//プレイヤー終了化
-	//PlayerManager::Instance().Clear();
+	PlayerManager::Instance().Clear();
 
 }
 

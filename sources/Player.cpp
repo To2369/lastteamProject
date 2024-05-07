@@ -87,7 +87,7 @@ void Player::update(float elapsedTime)
     if (GetKeyState('L'))
     {
         velocity.y = 0;
-        position.y = 30;
+        position.y = 1;
         velocity.y = 0;
         position.x = 0;
         position.z = 0;
@@ -109,7 +109,7 @@ void Player::update(float elapsedTime)
 //•`‰æˆ—
 void Player::render(RenderContext* rc)
 {
-    DebugRenderer& debugRenderer = DebugRenderer::incetance(rc->device);
+    DebugRenderer& debugRenderer = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     Graphics& graphics = Graphics::Instance();
     if(isHand)	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
     else	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);

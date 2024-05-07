@@ -38,7 +38,7 @@ void Object::RayCastGround()
             break;
         }
     }
-    Position.y += VeloctyY;
+   Position.y += VeloctyY;
 }
 
 void Object::ObjType_effect(float elapsedTime)

@@ -20,6 +20,7 @@ SceneManagement::~SceneManagement()
 {
 	if (currentScene != nullptr)
 	{
+		currentScene->finalize();
 		delete currentScene;
 		currentScene = nullptr;
 	}

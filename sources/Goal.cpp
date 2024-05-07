@@ -10,7 +10,8 @@
 #endif
 #include"PlayerManager.h"
 #include "Graphics/graphics.h"
-
+#include"scene_management.h"
+#include"scene_title.h"
 Goal::Goal(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
@@ -27,12 +28,16 @@ void Goal::Update(float elapsedTime)
     {
         Goal_Flag = true;
     }
+    if (Goal_Flag)
+    {
+        SceneManagement::instance().SceneChange(new SceneTitle);
+    }
     UpdateTransform();
 }
 
 bool Goal::GoalInPosition()
 {
-    DebugRenderer& ince = DebugRenderer::incetance(device);
+    DebugRenderer& ince = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     PlayerManager& ince_pl = PlayerManager::Instance();
     Player* pl = ince_pl.GetPlayer(0);
     XMVECTOR plPos = XMLoadFloat3(&pl->GetPosition());

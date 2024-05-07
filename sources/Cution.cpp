@@ -40,7 +40,28 @@ void Cution::Update(float elapsedTime)
         
         pl->SetPosition(outpos);
     }
+    {
+        XMFLOAT3 start = Position;
+        XMFLOAT3 end = Position;
+        end.y -= 0.1f;
+        HitResult hit;
+        int count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* obj = ince_o.Get_GameGimic(i);
 
+            if (obj->GetLiftType() == Gimic::LiftType::null)continue;
+            if (obj->Raycast(start, end, hit))
+            {
+                VeloctyY = 0;
+                obj->SetisLift(this->Get_Old_Objtype(0));
+                Position.y = hit.position.y + 0.1f;
+
+            }
+
+        }
+
+    }
     RayCastGround();
     ObjType_effect(elapsedTime);
     UpdateTransform();
@@ -85,6 +106,28 @@ void Super_Cution::Update(float elapsedTime)
     {
 
         pl->SetPosition(outpos);
+    }
+    {
+        XMFLOAT3 start = Position;
+        XMFLOAT3 end = Position;
+        end.y -= 0.1f;
+        HitResult hit;
+        int count = ince_o.Get_GameGimicCount();
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* obj = ince_o.Get_GameGimic(i);
+
+            if (obj->GetLiftType() == Gimic::LiftType::null)continue;
+            if (obj->Raycast(start, end, hit))
+            {
+                VeloctyY = 0;
+                obj->SetisLift(this->Get_Old_Objtype(0));
+                Position.y = hit.position.y + 0.1f;
+
+            }
+
+        }
+
     }
     RayCastGround();
     ObjType_effect(elapsedTime);

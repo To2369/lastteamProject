@@ -6,22 +6,25 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include"Graphics/graphics.h"
 using namespace DirectX;
 using namespace std;
-Stage_1_3::Stage_1_3(ID3D11Device* device)
+Stage_1_2::Stage_1_2(ID3D11Device* device)
 {
     initialaize_Set_attribute(ObjType::null, ObjType::null);
-    model = make_unique<Model>(device, filename, true);
+    model = make_unique<Model>(Graphics::Instance().GetDevice(), filename, true);
     Scale = { 1.f,1.f,1.f };
+    Position={};
 }
 
-void Stage_1_3::Update(float elapsedTime)
+void Stage_1_2::Update(float elapsedTime)
 {
     UpdateTransform();
 }
 
-void Stage_1_3::Render(RenderContext* rc)
+void Stage_1_2::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform);
+    
+    model->render(Graphics::Instance().GetDeviceContext() , Transform);
 
 }
