@@ -32,7 +32,7 @@ void Lift::Update(float elapsedTime)
     DirectX::XMVECTOR Position_ = DirectX::XMLoadFloat(&Position.y);
   //  moveRate += speedRate;
     //ゴールに到達、またはスタートに戻った場合、移動方向を反転させる
-    moveRate = +moveSpeed * elapsedTime;
+    moveRate = moveSpeed * elapsedTime;
 
     if (isLift_Objtype==ObjType::heavy|| isLift_Objtype == ObjType::Super_heavy)
     {
@@ -56,6 +56,7 @@ void Lift::Update(float elapsedTime)
     
    
     BoxPosition = Position;
+    BoxPosition.y -= 0.4f;
     UpdateTransform();
     IsWall_UpdateTransform();
     meshes = Baria_Wall->meshes;
@@ -153,13 +154,13 @@ void Lift::Gui()
             InputFloat("EndPos.x", &EndPos.x);
             InputFloat("EndPos.y", &EndPos.y);
             InputFloat("EndPos.z", &EndPos.z);
-           static XMFLOAT3 pos1{};
-            InputFloat("change_EndPos.x", &pos1.x, val.Min.x, val.Max.x);
-            InputFloat("change_EndPos.y", &pos1.y, val.Min.y, val.Max.y);
-            InputFloat("change_EndPos.z", &pos1.z, val.Min.z, val.Max.z);
-            EndPos.x=pos1.x;
-            EndPos.y=pos1.y;
-            EndPos.z=pos1.z;
+            XMFLOAT3 pos1{};
+            SliderFloat("change_EndPos.x", &pos1.x, val.Min.x, val.Max.x);
+            SliderFloat("change_EndPos.y", &pos1.y, val.Min.y, val.Max.y);
+            SliderFloat("change_EndPos.z", &pos1.z, val.Min.z, val.Max.z);
+            EndPos.x+=pos1.x;
+            EndPos.y+=pos1.y;
+            EndPos.z+=pos1.z;
             TreePop();
         }
         Gui_parameter_Valu param{};
@@ -213,7 +214,7 @@ bool Lift::Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hi
     DirectX::XMStoreFloat3(&loacalStart, LocalStart);
     DirectX::XMStoreFloat3(&loacalEnd, LocalEnd);
     HitResult hit;
-    if (ince.moveStage_raycast(loacalStart, loacalEnd, GetWallModel(), Hit,meshes))
+    if (ince.moveStage_raycast(loacalStart, loacalEnd, Hit,meshes))
     {
 
         //前回のローカル空間から今回のワールド空間へ変換

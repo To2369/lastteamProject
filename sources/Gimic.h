@@ -194,7 +194,7 @@ private:
     const char* filename = ".\\resources\\stage3\\rihuto.fbx";
     const char* box_filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
     float moveRate = 0.0f;
-    float moveSpeed = 1.0f;
+    float moveSpeed = 1.360f;
     vector<Model::mesh>meshes;
 
 };

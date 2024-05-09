@@ -126,7 +126,6 @@ bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& en
     //ワールド空間のレイの長さ
     DirectX::XMStoreFloat(&result.distance, WorldRayLength);
     bool hit = false;
-    const Model* resource = model;
     for (const Model::mesh& mesh : model->meshes)
     {
 
@@ -239,7 +238,7 @@ bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& en
                 //交点と法線を更新
                 HitPosition = P;
                 HitNormal = N;
-                materialIndex = subset.material_unique_id;
+                materialIndex = (int)subset.material_unique_id;
             }
         }
 
@@ -272,7 +271,7 @@ bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& en
     return hit;
 }
 
-bool VMCFHT::moveStage_raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, vector<Model::mesh>& meshes)
+bool VMCFHT::moveStage_raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, HitResult& result, vector<Model::mesh>& meshes)
 {
     DirectX::XMVECTOR WorldStart = DirectX::XMLoadFloat3(&start);
     DirectX::XMVECTOR WorldEnd = DirectX::XMLoadFloat3(&end);
@@ -309,8 +308,8 @@ bool VMCFHT::moveStage_raycast(const DirectX::XMFLOAT3& start, const DirectX::XM
         const std::vector<UINT>indices = mesh.indices;
 
         int materialIndex = -1;
-        DirectX::XMVECTOR HitPosition;
-        DirectX::XMVECTOR HitNormal;
+        DirectX::XMVECTOR HitPosition{};
+        DirectX::XMVECTOR HitNormal{};
         for (const Model::mesh::subset& subset : mesh.subsets)
         {
 
@@ -372,7 +371,7 @@ bool VMCFHT::moveStage_raycast(const DirectX::XMFLOAT3& start, const DirectX::XM
                 //交点と法線を更新
                 HitPosition = P;
                 HitNormal = N;
-                materialIndex = subset.material_unique_id;
+                materialIndex = (int)subset.material_unique_id;
             }
         }
 

@@ -19,6 +19,7 @@ public:
     void SetID(std::string id) { ID = id; }
     std::string GetID() { return ID; }
     Chain_Type GetMyType() { return MyType; }
+   virtual void ResultInfo();
     Gimic* LiftCheck();
 protected:
     Chain_Type MyType = Chain_Type::null;
@@ -57,10 +58,12 @@ public:
     Lift_chain_P();
     ~Lift_chain_P()override {};
     void Update(float elapsedTime)override;
+    //void BaseChainGUI();
     void Gui()override;
 private:
     const char* filename = ".\\resources\\stage3\\rihuto_P.fbx";
-   
+   // const char* filename = ".\\resources\\stage3\\C_L2.fbx";
+
 };
 
 class Lift_chain_Animatio_ndown :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚éAƒAƒjƒ[ƒVƒ‡ƒ“‚ ‚è
@@ -68,9 +71,11 @@ class Lift_chain_Animatio_ndown :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚
 public:
     Lift_chain_Animatio_ndown();
     ~Lift_chain_Animatio_ndown()override { filenames.clear(); };
+    void ResultInfo()override;
     void Update(float elapsedTime)override;
     void Gui()override;
 private:
     const char* filename = ".\\resources\\stage3\\rihuto_Pdown_P.fbx";
+  //    const char* filename = ".\\resources\\stage3\\R_P.fbx";
     std::vector<std::string>filenames;
 };

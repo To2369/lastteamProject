@@ -514,15 +514,14 @@ void SceneGame::render(float elapsed_time)
 		PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
 
-		scene_data->deactivate(graphics.GetDeviceContext());
-		parametric_constant->deactivate(graphics.GetDeviceContext());
-		framebuffers[0]->deactivate(graphics.GetDeviceContext());
-		graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
-
-		GetAsyncKeyState(VK_RBUTTON);
 #endif // !DEBUG
 	}
 
+	scene_data->deactivate(graphics.GetDeviceContext());
+	parametric_constant->deactivate(graphics.GetDeviceContext());
+	framebuffers[0]->deactivate(graphics.GetDeviceContext());
+	graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
+	GetAsyncKeyState(VK_RBUTTON);
 	//UI描画
 	{
 
@@ -534,13 +533,11 @@ void SceneGame::render(float elapsed_time)
 
 void SceneGame::finalize()
 {
-
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
 	Debug_ParameterObj = nullptr;
 	//プレイヤー終了化
 	PlayerManager::Instance().Clear();
-
 }
 
 void SceneGame::setFramebuffer()

@@ -73,6 +73,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 bool framework::uninitialize()
 {
 	graphics.GetImguiRenderer()->uninit();
+	SceneManagement::instance().finalize();
 	return true;
 }
 

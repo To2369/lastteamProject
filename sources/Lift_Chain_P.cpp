@@ -5,12 +5,13 @@ Lift_chain_P::Lift_chain_P()
     transform = make_unique<TransformComp>();
     render = make_unique<RenderComp>(filename,Graphics::Instance());
     MyType = Chain_Type::lift_P_Not_Animation;
-    render->Color = {0,0,0,0};
+    render->Color = {1,1,1,1};
 }
 
 void Lift_chain_P::Update(float elapsedTime)
 {
     Gimic* gimic = LiftCheck();
+    render->Color.w = 0;
     if (gimic)
     {
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)
@@ -22,7 +23,7 @@ void Lift_chain_P::Update(float elapsedTime)
                 BaseChain* obj = ince_o.Get_GameLiftChain(i);
                 if (obj->GetMyType() == Chain_Type::lift_P_Animatio_ndown && obj->GetID() == this->GetID())
                 {
-                    if (obj->GetRenderComp()->anim.animationEnd)
+                    if (obj->GetRenderComp()->anim.animationStart)
                     {
                         render->Color.w = 1;
                     }

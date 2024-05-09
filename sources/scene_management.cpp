@@ -68,16 +68,12 @@ void SceneManagement::render(float elapsed_time)
 
 void SceneManagement::finalize()
 {
+
 	Clear();
 	if (nextScene != nullptr)
 	{
 		delete nextScene;
 		nextScene = nullptr;
-	}
-	if (currentScene != nullptr)
-	{
-		delete currentScene;
-		currentScene = nullptr;
 	}
 }
 

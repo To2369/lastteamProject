@@ -10,7 +10,7 @@ using namespace DirectX;
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
-#include"objectManajer.h"
+
 #include"Graphics/DebugRenderer.h"
 #include"PlayerManager.h"
 #include"variable_management_class_for_hit_test.h"

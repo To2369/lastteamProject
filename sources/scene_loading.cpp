@@ -59,7 +59,9 @@ void SceneLoading::LoadingThread(SceneLoading* scene)
     CoInitialize(nullptr);
 
     //次のシーンの初期化を行う
+   // OutputDebugString("00000000000000000000000000000000000000000\n");
     scene->nextScene->initialize();
+    //OutputDebugString("11111111111111111111111111111111111111111\n");
     //スレッドが終わる前にCOM関連の終了化
     CoUninitialize();
 

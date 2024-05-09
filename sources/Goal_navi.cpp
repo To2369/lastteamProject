@@ -78,7 +78,7 @@ void Goal_navigation_Arrow::UpdateArrow_Front()
 
 
 }
-float ang = 0;
+
 void Goal_navigation_Arrow::UpdateTransform()
 {
     const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
@@ -119,7 +119,7 @@ void Goal_navigation_Arrow::Gui()
             boot = true;
         }
     }
-    SliderFloat("", &ang, 0.f, 10.f);
+   // SliderFloat("", &ang, 0.f, 10.f);
     SliderFloat("Quaternion.x", &Quaternion.x, -10.f, 10.f);
     SliderFloat("Quaternion.y", &Quaternion.y, -10.f, 10.f);
     SliderFloat("Quaternion.z", &Quaternion.z, -10.f, 10.f);

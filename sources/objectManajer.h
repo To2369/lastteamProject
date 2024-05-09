@@ -17,7 +17,7 @@ public:
     }
     void Initialize(StageName s_name_, ObjType type_name, ID3D11Device* device, XMFLOAT3 pos = { 0,0,0 });
     void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
-    void Initialize(Chain_Type type,XMFLOAT3 pos, std::string id = "null");
+    void Initialize(Chain_Type type, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 angle = {});
     template <typename T>
     void Initialize_Static_Object(std::unique_ptr<T> obj)
     {
@@ -66,19 +66,19 @@ public:
     Gimic* Select_GetGimic(Gimic_Type type)
     {
         int count = static_cast<int>(game_Gimics.size());
-        Gimic* gi = nullptr;
-        int type_count = 0;
+       
+       
         for (int i = 0; i < count; i++)
         {
-            gi = game_Gimics[i].get();
-            if (gi->Get_GimicType() == type)
+            
+            if (game_Gimics[i].get()->Get_GimicType() == type)
             {
-                type_count++;
-                if (type_count >= 2)return nullptr;
+               
+                return game_Gimics[i].get();
 
             }
         }
-        return gi;
+        return nullptr;
     };
     void Rigister_obj(std::unique_ptr<Object> obj) { game_objs.push_back(std::move(obj)); }
     void Rigister_Gimic(std::unique_ptr<Gimic> obj) { game_Gimics.push_back(std::move(obj)); }
@@ -87,11 +87,12 @@ public:
     int Get_GameObjCount() { return static_cast<int>(game_objs.size()); }
     int Get_GameGimicCount() { return static_cast<int>(game_Gimics.size()); }
     int Get_GameStatic_ObjectCount() { return static_cast<int>(game_static_objes.size()); }
-    int Get_GameLiftChainCount() { return game_lift_chains.size(); }
+    int Get_GameLiftChainCount() { return (int)game_lift_chains.size(); }
     Object* Get_GameObject(int i) { return game_objs[i].get(); }
     Gimic* Get_GameGimic(int i) { return game_Gimics[i].get(); }
     Static_Object* Get_GameStatic_Object(int i) { return game_static_objes[i].get(); }
     BaseChain* Get_GameLiftChain(int i) { return game_lift_chains[i].get(); }
+    vector<unique_ptr<BaseChain>>Get_GameLiftChains() { return move(game_lift_chains); }
     void Gui(ID3D11Device* device);
     /// <summary>
   /// 

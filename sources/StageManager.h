@@ -61,7 +61,7 @@ public:
     Stage* GetStages(int num) {
         return Stages[num].get();
     }
-    int GetStageCount() { return Stages.size(); }
+    int GetStageCount() { return (int)Stages.size(); }
     void Gui(ID3D11Device* device, RenderContext* rc);
     //ステージ選択したときにセットする
     void SetStage(StageName n) { s_name = n; }
@@ -198,8 +198,7 @@ public:
         case Gimic_Type::null:
             return "null";
             break;
-        default:
-            break;
+       
         }
         return "";
     }

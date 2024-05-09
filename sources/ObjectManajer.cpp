@@ -120,6 +120,7 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
         gimic->SetEndPos(endpos);
         gimic->Set_MystageName(s_name_);
         gimic->SetGimicID(id);
+        gimic->SetAngle({ 0.f,-1.6f,0.f });
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::null:
@@ -129,7 +130,7 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
     }
 }
 
-void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id)
+void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id,XMFLOAT3 angle)
 {
     unique_ptr<BaseChain> obj;
     switch (type)
@@ -138,24 +139,31 @@ void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id)
         obj = make_unique<Lift_chain_s>();
         obj->GetTransformComp()->SetPosition(pos);
         obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
         Rigister_Lift_Chains(move(obj));
         break;
     case Chain_Type::lift_chain_L:
         obj = make_unique<Lift_chain_l>();
         obj->GetTransformComp()->SetPosition(pos);
         obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
+
         Rigister_Lift_Chains(move(obj));
         break;
     case Chain_Type::lift_P_Animatio_ndown:
         obj = make_unique<Lift_chain_Animatio_ndown>();
         obj->GetTransformComp()->SetPosition(pos);
         obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
+
         Rigister_Lift_Chains(move(obj));
         break;
     case Chain_Type::lift_P_Not_Animation:
         obj = make_unique<Lift_chain_P>();
         obj->GetTransformComp()->SetPosition(pos);
         obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
+
         Rigister_Lift_Chains(move(obj));
         break;
 
@@ -251,6 +259,7 @@ void Objectmanajer::Clear()
     game_Gimics.clear();
     game_objs.clear();
     game_static_objes.clear();
+    game_lift_chains.clear();
 }
 
 bool Objectmanajer::Sphere_VS_Player(const XMFLOAT3& plPos_, const float& pl_radius, 

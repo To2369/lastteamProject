@@ -9,6 +9,13 @@ Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown()
     MyType = Chain_Type::lift_P_Animatio_ndown;
 }
 
+void Lift_chain_Animatio_ndown::ResultInfo()
+{
+    BaseChain::ResultInfo();
+    OutputDebugStringA("\n");
+    OutputDebugStringA("animation_speed: "); OutputDebugStringA(to_string(render->anim.animSpeed).c_str()); OutputDebugStringA(";"); OutputDebugStringA("\n");
+}
+
 void Lift_chain_Animatio_ndown::Update(float elapsedTime)
 {
     render->anim.animSpeed = elapsedTime;
@@ -19,13 +26,16 @@ void Lift_chain_Animatio_ndown::Update(float elapsedTime)
         render->anim.stop_animation = false;
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)
         {
-            if (render->anim.animationEnd)
+            render->anim.animationEnd = false;
+            if (render->anim.animationStart)
             {
-                render->Color.w = 0;
+                render->anim.stop_animation = true;
+                render->Color.w = 0.0f;
             }
         }
         else if (gimic->GetIsLift() == ObjType::cution || gimic->GetIsLift() == ObjType::Super_cution)
         {
+            render->anim.animationStart = false;
             render->Color.w = 1;
             
         }

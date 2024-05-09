@@ -6,8 +6,9 @@
 #include "../imgui/imgui_internal.h"
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
-#include"objectManajer.h"
+
 #endif
+#include"objectManajer.h"
 #include"Graphics/DebugRenderer.h"
 #include "Graphics/graphics.h"
 #include"variable_management_class_for_hit_test.h"

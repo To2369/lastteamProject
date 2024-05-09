@@ -33,7 +33,15 @@ void Comp::BaseGui()
 
                 ImGui::TreePop();
             }
+            if (ImGui::TreeNode("angle"))
+            {
+                XMFLOAT3 angle{ transform->GetAngle() };
+                ImGui::InputFloat("angle.x:", &angle.x);
+                ImGui::InputFloat("angle.y:", &angle.y);
+                ImGui::InputFloat("angle.z:", &angle.z);
 
+                ImGui::TreePop();
+            }
         }
 
         if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
@@ -58,11 +66,21 @@ void Comp::BaseGui()
                 transform->AddScale(scale);
                 ImGui::TreePop();
             }
-
+            if (ImGui::TreeNode("Angle"))
+            {
+                Gui_parameter_Valu valu;
+                XMFLOAT3 Angle{};
+                ImGui::SliderFloat("move_angle.x:", &Angle.x, valu.Min.x, valu.Max.x);
+                ImGui::SliderFloat("move_angle.y:", &Angle.y, valu.Min.y, valu.Max.y);
+                ImGui::SliderFloat("move_angle.z:", &Angle.z, valu.Min.z, valu.Max.z);
+                transform->AddAngle(Angle);
+                ImGui::TreePop();
+            }
         }
     }
     
 }
+
 
 void RenderComp::RenderCompGui()
 {

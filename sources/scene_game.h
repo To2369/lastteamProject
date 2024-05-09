@@ -18,7 +18,7 @@ public:
 	SceneGame() {}
 	~SceneGame()
 	{
-
+		
 	}
 
 	//ŠJnˆ—

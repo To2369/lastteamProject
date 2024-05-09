@@ -46,9 +46,9 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 		-0.632938f
 			}, "kabe");
 		obj_Manager.Initialize(name, Gimic_Type::Goal, device, {
-		-0.970918,
-		0.747557,
-		-1.307508
+		-0.970918f,
+		0.747557f,
+		-1.307508f
 			});
 
 
@@ -123,28 +123,90 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({4.713f,11.f,-0.564f});
+		obj_Manager.Initialize(StageName::stage1_2,
+			Gimic_Type::Goal, device,
+			{5.273017f,10.479757f,-0.595079f});
+		{
+
+			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+				{1.751f,10.619f,-0.020f},
+				"num1",
+			    {1.751f,8.14f,-0.020f});
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ 1.747f,10.255f,-0.965f },
+				"num1",
+				{0.f,-1.6f,0.f}
+			);
+			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+				{ 1.723f,10.549f,-0.913f },
+				"num1", 
+				{0.f,-1.6f,0.f}
+				
+			);
+			obj_Manager.Initialize(Chain_Type::lift_chain_L,
+				{1.727651f,10.038761f,-0.499f,},
+				    "num1",
+				{0.000000f,-1.620995f,0.000000f});
+			
+			obj_Manager.Initialize(Chain_Type::lift_chain_S,
+				{ 1.763f,10.295f,-0.502f,},
+				"num1",
+				{0.000000f,-1.590007f,0.000000f});
+
+		}
 		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{
-				1.723f,
-				10.220f,
-				-0.152f
-				},
-				"num1",
-			    {
-			     1.723f,
-				8.14f,
-				-0.152f
-			     });
+				{ -3.365620f,8.575950f,0.012832f },
+				"num2",
+				{ -3.365620f,6.615f,0.012832f });
+
 			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ 1.723f,
-				10.220f,
-				-0.352f },
-				"num1"
-			);
+				{ -3.367943f,8.174998f,-0.905344f },
+				"num2",
+				{ 0.f,-1.6f,0.f });
+
+			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+				{ -3.367943f,8.494998f,-0.905344f },
+				"num2",
+				{ 0.f,-1.6f,0.f });
+
+			obj_Manager.Initialize(Chain_Type::lift_chain_L,
+				{ -3.411f,7.915f,-0.474f, },
+				"num2",
+				{ 0.000000f,-1.620995f,0.000000f });
+
+			obj_Manager.Initialize(Chain_Type::lift_chain_S,
+				{ -3.349821f,8.225961f,-0.474288f, },
+				"num2",
+				{ 0.000000f,-1.590007f,0.000000f });
+
 		}
+		{
+			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+				{ -2.588f,3.156f,-0.945f },
+				"num4",
+				{ -2.538f,1.032f,-0.945f});
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ -2.548887f,2.812f,-0.013175f },
+				"num4",
+				{ 0.f,1.6f,0.f }
+			);
+			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+				{ -2.548887f,3.13f,-0.013175f },
+				"num4",
+				{ 0.f,1.6f,0.f }
+			);
+			obj_Manager.Initialize(Chain_Type::lift_chain_L,
+				{ -2.569f,2.565580f,-0.482558f },
+				"num4",
+				{ 0.000000f,1.6f,0.000000f });
 
+			obj_Manager.Initialize(Chain_Type::lift_chain_S,
+				{ -2.569f,2.845580f, -0.482558f },
+				"num4",
+				{ 0.000000f,1.6f,0.000000f });
 
+		}
 
 		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
@@ -205,6 +267,13 @@ void StageManager::Clear()
 		{
 			Static_Object* obj = ince.Get_GameStatic_Object(i);
 			Result_Static_Object_Info(*obj);
+		}
+		OutputDebugStringA("/////////////Lift_Chain_INFO///////////////"); OutputDebugStringA("\n"); OutputDebugStringA("\n");
+		count = ince.Get_GameLiftChainCount();
+		for (int i = 0; i < count; i++)
+		{
+			BaseChain* obj = ince.Get_GameLiftChain(i);
+			obj->ResultInfo();
 		}
 	}
 
@@ -492,10 +561,9 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			case Chain_Type::null:
 				return "null";
 				break;
-			default:
-				break;
+			
 			}
-
+			return "";
 		};
 	ImGui::Text("Debug_Mode : %s", m(Getmode()));
 	if (ImGui::CollapsingHeader("SelectMode", ImGuiTreeNodeFlags_DefaultOpen))
@@ -991,15 +1059,18 @@ void StageManager::Object_Info()
 					};
 
 					static Num num = Num::null;
-					if (ImGui::Button("heavy")) SetObjType = ObjType::heavy;
-					if (ImGui::Button("Super_heavy")) SetObjType = ObjType::Super_heavy;
-					if (ImGui::Button("Cution")) SetObjType = ObjType::cution;
-					if (ImGui::Button("Super_cution")) SetObjType = ObjType::Super_cution;
-					if (ImGui::Button("Hard_to_Break")) SetObjType = ObjType::Hard_to_Break;
-					if (ImGui::Button("Super_hard_to_Break")) SetObjType = ObjType::Super_hard_to_Break;
-					if (ImGui::Button("Fragile")) SetObjType = ObjType::Fragile;
-					if (ImGui::Button("Super_fragile")) SetObjType = ObjType::Super_fragile;
-					if (ImGui::Button("Crack")) SetObjType = ObjType::Crack;
+					if (SetObjType == ObjType::null)
+					{
+						if (ImGui::Button("heavy")) SetObjType = ObjType::heavy;
+						if (ImGui::Button("Super_heavy")) SetObjType = ObjType::Super_heavy;
+						if (ImGui::Button("Cution")) SetObjType = ObjType::cution;
+						if (ImGui::Button("Super_cution")) SetObjType = ObjType::Super_cution;
+						if (ImGui::Button("Hard_to_Break")) SetObjType = ObjType::Hard_to_Break;
+						if (ImGui::Button("Super_hard_to_Break")) SetObjType = ObjType::Super_hard_to_Break;
+						if (ImGui::Button("Fragile")) SetObjType = ObjType::Fragile;
+						if (ImGui::Button("Super_fragile")) SetObjType = ObjType::Super_fragile;
+						if (ImGui::Button("Crack")) SetObjType = ObjType::Crack;
+					}
 					if (SetObjType != ObjType::null)
 					{
 						if (ImGui::Button("SetTypeNumber0"))num = Num::num0;
@@ -1138,9 +1209,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 	case debugType::obj:
 		for (int i = 0; i < stage_count; i++)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
-			int stagecount = ince.GetStageCount();
 
 			Object* stage_ = ince.GetStages(i);
 
@@ -1171,7 +1240,6 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 		for (int i = 0; i < stage_count; i++)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
 			StageManager& ince = incetance();
 			Object* stage_ = ince.GetStages(i);
 
@@ -1203,10 +1271,6 @@ void StageManager::Create_Object(ID3D11Device* device)
 	case debugType::static_obj:
 		for (int i = 0; i < stage_count; i++)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
-
-			int stagecount = GetStageCount();
-
 			Object* stage_ = GetStages(i);
 
 			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
@@ -1244,10 +1308,6 @@ void StageManager::Create_Object(ID3D11Device* device)
 	case debugType::LiftChain:
 		for (int i = 0; i < stage_count; i++)
 		{
-			Objectmanajer& ince_obj = Objectmanajer::incetance();
-
-			int stagecount = GetStageCount();
-
 			Object* stage_ = GetStages(i);
 			
 

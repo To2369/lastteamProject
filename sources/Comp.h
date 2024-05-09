@@ -50,6 +50,12 @@ public:
        Scale.y += scale.y;
        Scale.z += scale.z;
     };
+    void AddAngle(DirectX::XMFLOAT3 angle)
+    {
+        Angle.x += angle.x;
+        Angle.y += angle.y;
+        Angle.z += angle.z;
+    };
 public://set
     void SetScale(DirectX::XMFLOAT3 scale)
     {
@@ -59,11 +65,16 @@ public://set
     {
         Position = position;
     }
+    void SetAngle(DirectX::XMFLOAT3 angle)
+    {
+        Angle = angle;
+    }
 
 public://get
      DirectX::XMFLOAT4X4 Gettransform() { return transform; }
      DirectX::XMFLOAT3 Getscale() { return Scale; }
      DirectX::XMFLOAT3 GetPosition() { return Position; }
+     DirectX::XMFLOAT3 GetAngle() { return Angle; }
 };
 class RenderComp
 {
@@ -93,7 +104,6 @@ public:
         animation::keyframe* getKeyFreame(float elapsedTime,bool loop)
         {
             animation::keyframe* keyframe = nullptr;
-            animationEnd = false;
             if (animation_clips.data())
             {
                 if (animation_clips.size() > 0)
@@ -106,7 +116,7 @@ public:
                     frame_index = static_cast<int>(animation_tick * animation.sampling_rate);
                     if (frame_index < 0)
                     {
-                        animationEnd = true;
+                        animationStart = true;
                         frame_index = 0;
                         animation_tick = 0;
                         
@@ -124,7 +134,7 @@ public:
                         else
                         {
                             animationEnd = true;
-                            frame_index = animation.sequence.size() - 1;
+                            frame_index = (int)animation.sequence.size() - 1;
                             animation_tick = (animation.sequence.size() - 1)/ animation.sampling_rate;
                         }
 
@@ -132,6 +142,7 @@ public:
                     }
                     else
                     {
+                      
                         if (!StopAnimation())
                             animation_tick += elapsedTime;
                     }
@@ -167,6 +178,7 @@ public:
         scene scene_view;
         bool stop_animation = false;//
         bool LoopAnimation = true;
+        bool animationStart = false;//animationの開始位置
         bool animationEnd = false;//animationの終端
         animation::keyframe* keyfreame = nullptr;
         std::vector<animation>animation_clips;

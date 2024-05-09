@@ -161,7 +161,7 @@ void Character::updateVerticalMove(float elapsedTime)
         Ray_ObjType type = Ray_ObjType::Stage;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
-        //’n–Ê”»’è4444444444444
+        //’n–Ê”»’è
         if (ince_ray.RayCast(start, end, hit, type))
         {
             position.y = hit.position.y+0.1f;
