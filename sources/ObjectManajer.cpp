@@ -99,6 +99,7 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
         gimic->SetPosition(pos);
         gimic->Set_MystageName(s_name_);
         gimic->SetGimicID(id);
+        gimic->SetScale({ 1.231f,1.f,1.f });
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::Goal:

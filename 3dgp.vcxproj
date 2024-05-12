@@ -211,6 +211,8 @@
     <ClCompile Include="sources\Lift_chain_Animatio_ndown.cpp" />
     <ClCompile Include="sources\Lift_Chain_P.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
+    <ClCompile Include="sources\scene_clear.cpp" />
+    <ClCompile Include="sources\Scene_Stage_Select.cpp" />
     <ClCompile Include="sources\stage1_3.cpp" />
     <ClCompile Include="sources\Switch_Gimic.cpp" />
     <ClCompile Include="sources\camera.cpp" />
@@ -245,7 +247,6 @@
     <ClCompile Include="sources\Stage1_1.cpp" />
     <ClCompile Include="sources\StageManajer.cpp" />
     <ClCompile Include="sources\static_mesh_batch.cpp" />
-    <ClCompile Include="sources\Syringe.cpp" />
     <ClCompile Include="sources\texture.cpp" />
     <ClCompile Include="sources\UI.cpp" />
     <ClCompile Include="sources\UIManajer.cpp" />
@@ -298,14 +299,15 @@
     <ClInclude Include="sources\Input\gamepad.h" />
     <ClInclude Include="sources\misc.h" />
     <ClInclude Include="sources\model.h" />
+    <ClInclude Include="sources\scene_clear.h" />
     <ClInclude Include="sources\scene_game.h" />
     <ClInclude Include="sources\scene_loading.h" />
     <ClInclude Include="sources\scene_management.h" />
+    <ClInclude Include="sources\Scene_Stage_Select.h" />
     <ClInclude Include="sources\scene_title.h" />
     <ClInclude Include="sources\Stage.h" />
     <ClInclude Include="sources\StageManager.h" />
     <ClInclude Include="sources\static_mesh_bacth.h" />
-    <ClInclude Include="sources\Syringe.h" />
     <ClInclude Include="sources\texture.h" />
     <ClInclude Include="sources\UI.h" />
     <ClInclude Include="sources\UIManajer.h" />

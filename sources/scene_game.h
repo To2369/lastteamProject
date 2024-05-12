@@ -63,6 +63,7 @@ private:
 	bool mouseMove = true;
 
 	DirectX::XMFLOAT3 camera_position{ 0.0f,24.0f, 0.0f };
+	std::unique_ptr<sprite>MaskSprite;
 private:
 	std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};
@@ -74,5 +75,7 @@ private:
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
 	float ms = 0;
+	bool Menu = false;
+	bool wasKeyPressed = false;
 	PlayerManager& plm = PlayerManager::Instance();
 };

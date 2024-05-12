@@ -106,6 +106,7 @@ void RenderComp::RenderCompGui()
             float sp = anim.animSpeed;
             InputFloat("AnimationSpeed", &sp);
             SliderFloat("Speed_param", &anim.animSpeed, -0.01f, 0.01f);
+            InputFloat("animation_tick", &anim.animation_tick);
             TreePop();
         }
         if (TreeNode("AnimationClip"))

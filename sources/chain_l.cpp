@@ -17,8 +17,8 @@ void Lift_chain_l::Update(float elapsedTime)
     XMFLOAT3 Position = gimic ? gimic->GetPosition() : XMFLOAT3(0.f, 0.f, 0.f);
     Position.x = transform->GetPosition().x;
     Position.z = transform->GetPosition().z;
-    Position.y +=1.3f;
-    //render->Color.w = 0;
+    Position.y +=1.5f;
+    render->Color.w = 0;
     if (gimic)
     {
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)

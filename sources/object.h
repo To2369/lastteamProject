@@ -25,10 +25,11 @@ enum class Obj_attribute
 };
 enum class StageName
 {
-    Tutolial,
-    stage1_1,
+  
+    stage1_1=0,
     stage1_2,
-    null,
+    stage1_3,
+    null=-1,
 };
 enum class Gimic_Type
 {

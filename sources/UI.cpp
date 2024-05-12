@@ -12,7 +12,8 @@ using namespace DirectX;
 #endif
 
 #include "Graphics/graphics.h"
-
+#include"scene_management.h"
+#include"variable_management_class_for_hit_test.h"
 CanBas::CanBas(std::vector<std::unique_ptr<UI>>& uis)
 {
 
@@ -20,7 +21,16 @@ CanBas::CanBas(std::vector<std::unique_ptr<UI>>& uis)
     {
         Uis.push_back(move(uis[i]));
     }
-   
+   // random_value = rand();
+}
+
+CanBas::CanBas(std::vector<std::unique_ptr<UI>>& uis, std::string canbasID_)
+{
+    for (int i = 0; i < uis.size(); i++)
+    {
+        Uis.push_back(move(uis[i]));
+    }
+    canbasID = canbasID_;
 }
 
 CanBas::~CanBas()
@@ -33,6 +43,7 @@ void CanBas::Update(float elapsedTime)
     for (auto& ui : Uis)
     {
         ui->SetCanBasPosition(MainPos);
+        ui->Update(elapsedTime);
     }
 }
 
@@ -44,9 +55,11 @@ void CanBas::Render(RenderContext* rc)
     }
 }
 
+
 void CanBas::Gui()
 {
     using namespace ImGui;
+    //PushID(random_value);
     if (ImGui::CollapsingHeader("Canbas", ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (TreeNode("CanbasPos"))
@@ -66,6 +79,28 @@ void CanBas::Gui()
                 ui->Gui();
             }
         }
+    }
+    if (TreeNode("Mouse"))
+    {
+        POINT cursor;
+        GetCursorPos(&cursor);
+        XMFLOAT2 cursorPos{ static_cast<float>(cursor.x),static_cast<float>(cursor.y) };
+        InputFloat("mouse.x", &cursorPos.x);
+        InputFloat("mouse.y", &cursorPos.y);
+    }
+    /*
+    InputFloat("Window.x", &winPos.x);
+    InputFloat("Window.y", &winPos.y);*/
+}
+
+void CanBas::ResultInfo()
+{
+    for (auto& ui : Uis)
+    {
+        OutputDebugStringA(to_string(ui->GetPosition().x).c_str()); OutputDebugStringA("\n");
+        OutputDebugStringA(to_string(ui->GetPosition().x).c_str()); OutputDebugStringA("\n");
+        OutputDebugStringA(to_string(ui->GetPosition().x).c_str()); OutputDebugStringA("\n");
+
     }
 }
 
@@ -90,17 +125,48 @@ UI::UI(ID3D11Device*device,const wchar_t* filename, DirectX::XMFLOAT2 scale, Dir
     Scale = scale;
     Pos = pos;
     random_value = rand();
+   
+ 
 }
 
 
 
+void UI::Update(float elapsedTime)
+{
+    if (Ismouse)
+    {
+
+        if (Color.w > 1)
+            hanten = !hanten;
+        if (Color.w < 0.4f)
+            hanten = !hanten;
+
+        if (hanten)
+            Color.w += Color_alpha*2;
+        else
+            Color.w -= Color_alpha*2;
+       
+    }
+    else
+    {
+        Color.w = 1;
+    }
+    Ismouse = false;
+
+}
+
 void UI::Render(RenderContext* rc)
 {
     Graphics& graphics = Graphics::Instance();
-    XMFLOAT3 sp_pos;
+    
     XMVECTOR UC_pos=XMVectorSubtract(XMLoadFloat2(&Pos),XMLoadFloat2(&canbasPos));
-    XMStoreFloat3(&sp_pos, UC_pos);
-    Ui->render(graphics.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y);
+   
+    XMStoreFloat2(&sp_pos, UC_pos);
+   
+    Ui->render(graphics.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y,
+        Color.x,Color.y,Color.z,Color.w,
+        0);
+   
 }
 
 void UI::Gui()
@@ -117,38 +183,36 @@ void UI::Gui()
         if (TreeNode("Position"))
         {
           
-            SliderFloat3("Pos.x", &Pos.x, gui_param.Min.x, gui_param.Max.x);
-            SliderFloat3("Pos.y", &Pos.y, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Pos.x", &Pos.x, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Pos.y", &Pos.y, gui_param.Min.x, gui_param.Max.x);
             
             TreePop();
         }
         if (TreeNode("Scale"))
         {
-            SliderFloat3("Scale.x", &Scale.x, gui_param.Min.x, gui_param.Max.x);
-            SliderFloat3("Scale.y", &Scale.y, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Scale.x", &Scale.x, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Scale.y", &Scale.y, gui_param.Min.x, gui_param.Max.x);
             TreePop();
         }
-    }
-    if (CollapsingHeader("MoveParam"))
-    {
         if (TreeNode("Move_Position"))
         {
             XMFLOAT2 pos_gui{};
-            SliderFloat3("Pos_Gui.x", &pos_gui.x, gui_param.Min.x, gui_param.Max.x);
-            SliderFloat3("Pos_Gui.y", &pos_gui.y, gui_param.Min.x, gui_param.Max.x);
-            Pos.x += pos_gui.x;
-            Pos.y += pos_gui.y;
+            SliderFloat("Pos_Gui.x", &pos_gui.x, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Pos_Gui.y", &pos_gui.y, gui_param.Min.x, gui_param.Max.x);
+            Pos.x += pos_gui.x * 3;
+            Pos.y += pos_gui.y * 3;
             TreePop();
         }
         if (TreeNode("Move_Scale"))
         {
             XMFLOAT2 scale_gui{};
-            SliderFloat3("Scale_Gui.x", &scale_gui.x, gui_param.Min.x, gui_param.Max.x);
-            SliderFloat3("Scale_Gui.y", &scale_gui.y, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Scale_Gui.x", &scale_gui.x, gui_param.Min.x, gui_param.Max.x);
+            SliderFloat("Scale_Gui.y", &scale_gui.y, gui_param.Min.x, gui_param.Max.x);
             Scale.x += scale_gui.x;
             Scale.y += scale_gui.y;
             TreePop();
         }
     }
+    InputFloat4("Color",&Color.x);
     PopID();
 }

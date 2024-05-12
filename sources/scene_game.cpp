@@ -15,6 +15,8 @@ extern ImWchar glyphRangesJapanese[];
 #endif
 #include"UIManajer.h"
 #include "Graphics/graphics.h"
+#include"scene_loading.h"
+#include"scene_title.h"
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -73,7 +75,7 @@ void SceneGame::initialize()
 	{
 		//ステージのオブジェクト初期化
 		StageManager& ince = StageManager::incetance();
-		ince.Initialize_GameStage(StageName::stage1_2, graphics.GetDevice());
+		ince.Initialize_GameStage(ince.GetStageName(), graphics.GetDevice());
 	}
 	/*Debug_ParameterObj = make_unique<DropBox_Road>(device);
 	Debug_ParameterObj->SetPosition({1.f, 0.8f, 0.5f});*/
@@ -86,6 +88,43 @@ void SceneGame::initialize()
 		uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
 		framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+	}
+	//MenuUI生成
+	{
+		vector<unique_ptr<UI>>UIs;
+		UIManager& ince = UIManager::incetance();
+		wstring filenam = filepath::UI_Bottun_Other_Path_Wstring + L"continue.png";
+		XMFLOAT2 scale{ 391.f * 0.7f,157.f };
+		unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({533.364f,134.103f});
+		ui->SetID(UI_StringID::MenuContinue);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+		filenam = filepath::UI_Bottun_Other_Path_Wstring+L"Ritrai.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 533.364f,338.952f });
+		ui->SetID(UI_StringID::MenuRitrai);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+		filenam = filepath::UI_Bottun_Other_Path_Wstring + L"GibuUp.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 533.364f,542.577f });
+		ui->SetID(UI_StringID::MenuGibuUp);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		ince.UI_move(move(UIs));
+		ince.CreateCanbas(UI_StringID::Menu);
+		UIs.clear();
+
+		//MaskSprite = make_unique<sprite>();
+
 	}
 }
 
@@ -113,7 +152,78 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 void SceneGame::update(float elapsed_time)
 
 {
+	UIManager& ince = UIManager::incetance();
+	if (GetAsyncKeyState('K') & 0x8000) // 'K'キーが押されたかどうかを確認
+	{
+		if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
+		{
+			Menu = !Menu;
+		}
+		wasKeyPressed = true; // wasKeyPressedをtrueに設定
+	}
+	else
+	{
+		wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
+	}
+	if (Menu)
+	{
+		int canbascount = ince.GetCanBassCount();
+		for (int i = 0; i < canbascount; i++)
+		{
+			CanBas* can = ince.GetCanbas(i);
+			int uicount = can->GetUICount();
+			for (int j = 0; j < uicount; j++)
+			{
+				UI* ui = can->GetUI(j);
+				if (ui->GetHanteiFlag())
+				{
+					if (ui->GetID() == UI_StringID::MenuContinue)
+					{
 
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+						{
+							ui->SetIsMouse(true);
+							if (GetAsyncKeyState(VK_LBUTTON))
+							{
+
+								Menu = false;
+							}
+						}
+					}
+					if (ui->GetID() == UI_StringID::MenuRitrai)
+					{
+
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+						{
+							ui->SetIsMouse(true);
+							if (GetAsyncKeyState(VK_LBUTTON))
+							{
+
+								StageManager::incetance().SetStageName(StageName::stage1_1);
+								SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+							}
+						}
+					}
+					if (ui->GetID() == UI_StringID::MenuGibuUp)
+					{
+
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+						{
+							ui->SetIsMouse(true);
+							if (GetAsyncKeyState(VK_LBUTTON))
+							{
+
+								
+								SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+							}
+						}
+					}
+				}
+			}
+		}
+		ince.Update(elapsed_time);
+		return;
+	}
 
 	gamepad& pad = gamepad::Instance();
 	VMCFHT ince_ray = VMCFHT::instance();
@@ -152,23 +262,6 @@ void SceneGame::update(float elapsed_time)
 			moveVec.z *= moveSpeed * elapsed_time;
 			camera_position.x += moveVec.x;
 			camera_position.z += moveVec.z;
-			/*if (Debug_ParameterObj->GetPlayerStopFlag())
-			{
-				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position,vec,moveVec))
-				{
-					int a = 0;
-				}
-				else
-				{
-					camera_position.x += moveVec.x;
-					camera_position.z += moveVec.z;
-				}
-			}
-			else
-			{
-			   camera_position.x += moveVec.x;
-			   camera_position.z += moveVec.z;
-			}*/
 		}
 
 
@@ -193,48 +286,11 @@ void SceneGame::update(float elapsed_time)
 			moveVec.z *= moveSpeed * elapsed_time;
 			camera_position.x += moveVec.x;
 			camera_position.z += moveVec.z;
-			/*if (Debug_ParameterObj->GetPlayerStopFlag())
-			{
-				if (Ray_vs_kabe(ince_ray, Debug_ParameterObj, camera_position, vec, moveVec))
-				{
-
-				}
-				else
-				{
-					camera_position.x += moveVec.x;
-					camera_position.z += moveVec.z;
-				}
-			}
-			else
-			{
-				camera_position.x += moveVec.x;
-				camera_position.z += moveVec.z;
-			}*/
-
-
+			
 		}
 	}
 
-	{
-		{
-			/*Camera& camera = Camera::instance();
-			XMFLOAT3 front = camera.GetFront();
-			ince_ray.update(camera_position, front);
-			int count = ince_o.Get_GameObjCount();
-			for (int i = 0; i < count; i++)
-			{
-				Object* obj = ince_o.Get_GameObject(i);
-
-				collision_mesh& mesh = *obj->GetModel()->Get_RaycastCollition();
-				XMFLOAT4X4 transform = obj->GetTransform();
-				if (ince_ray.raycast(mesh, transform, result_intersection, 1.f))
-				{
-					rayflag = true;
-				}
-
-			}*/
-		}
-	}
+	
 
 
 	//プレイヤー更新処理
@@ -294,7 +350,7 @@ void SceneGame::update(float elapsed_time)
 	}
 	Goal_navi->Update(elapsed_time);
 	//マウスカーソル操作変更
-	if (GetKeyState('4') & 0x01)
+	if (GetAsyncKeyState('4') & 0x8000)
 	{
 		mouseMove = !mouseMove;
 	}
@@ -316,7 +372,7 @@ void SceneGame::update(float elapsed_time)
 			static_cast<int>(setCursorWindow.y)
 		);
 	}
-
+	
 
 }
 
@@ -506,12 +562,12 @@ void SceneGame::render(float elapsed_time)
 
 		}
 
-
+		ince_ui.Gui();
 
 		ImGui::End();
 		StageManager::incetance().Gui(graphics.GetDevice(), &rc);
-		Objectmanajer::incetance().Gui(graphics.GetDevice());
-		PlayerManager::Instance().DrawDebugGui();
+		//Objectmanajer::incetance().Gui(graphics.GetDevice());
+		//PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
 
 #endif // !DEBUG
@@ -524,8 +580,13 @@ void SceneGame::render(float elapsed_time)
 	GetAsyncKeyState(VK_RBUTTON);
 	//UI描画
 	{
+		
+		ince_ui.Render(&rc,UI_StringID::SceneGameUI);
+		if (Menu)
+		{
 
-		ince_ui.Render(&rc);
+			ince_ui.Render(&rc, UI_StringID::Menu);
+		}
 	}
 
 	
@@ -535,6 +596,7 @@ void SceneGame::finalize()
 {
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
+	UIManager::incetance().Clear();
 	Debug_ParameterObj = nullptr;
 	//プレイヤー終了化
 	PlayerManager::Instance().Clear();

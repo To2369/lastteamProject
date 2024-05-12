@@ -110,7 +110,7 @@ public:
                 {
                     int clip_index{ 0 };
                     int frame_index{ 0 };
-                    static float animation_tick{ 0 };
+                   
 
                     animation& animation{ animation_clips.at(clip_index) };
                     frame_index = static_cast<int>(animation_tick * animation.sampling_rate);
@@ -183,7 +183,7 @@ public:
         animation::keyframe* keyfreame = nullptr;
         std::vector<animation>animation_clips;
         float animSpeed = 0;
-       
+        float animation_tick{ 0 };
      
     };
      Animation anim;

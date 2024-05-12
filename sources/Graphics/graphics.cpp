@@ -27,6 +27,7 @@ void acquire_high_performance_adapter(IDXGIFactory6* dxgi_factory6, IDXGIAdapter
 Graphics::Graphics()
 {
 	HWND hwnd = GetActiveWindow();
+	
 	// インスタンス設定
 	_ASSERT_EXPR(instance == nullptr, "already instantiated");
 	instance = this;

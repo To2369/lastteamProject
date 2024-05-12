@@ -36,15 +36,14 @@ public:
 	ImGuiRenderer* GetImguiRenderer() { return imguiRenderer.get(); }
 
 	SIZE GetWindowSize() { return framebuffer_dimensions; }
-
+	
 	fullscreen_quad* GetBitBlockTransfer() { return bit_block_transfer.get(); }
-
+	
 public:
 	void renderinit();
 
 private:
 	static Graphics* instance;
-
 private:
 	SIZE framebuffer_dimensions;
 
@@ -79,7 +78,6 @@ private:
 
 	RECT windowed_rect;
 	DWORD windowed_style;
-
 	void create_swap_chain(IDXGIFactory6* dxgi_factory6);
 	void create_states();
 

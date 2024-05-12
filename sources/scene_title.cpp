@@ -2,9 +2,16 @@
 #include "camera.h"
 #include "scene_game.h"
 #include "scene_loading.h"
+#include"Scene_Stage_Select.h"
 #include "Input/gamepad.h"
 #include "Graphics/graphics.h"
-
+#include"UIManajer.h"
+using namespace std;
+SceneTitle::~SceneTitle()
+{
+	UIManager& ince = UIManager::incetance();
+	ince.Clear();
+}
 void SceneTitle::initialize()
 {
 	Graphics& graphics = Graphics::Instance();
@@ -41,6 +48,30 @@ void SceneTitle::initialize()
 	if (GetAsyncKeyState(VK_LBUTTON))
 	{
 	}
+	vector<unique_ptr<UI>>UIs;
+	wstring filenam = filepath::UI_Bottun_Other_Path_Wstring + L"StartButton.png";
+	unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(),filenam.c_str());
+	ui->SetScale({ 391.f,157.f});
+	ui->SetPosition({855.179f,257.898f});
+	ui->SetID(UI_StringID::Start);
+	ui->SetHanteiFlag(true);
+	UIs.push_back(move(ui));
+	ui = nullptr;
+
+	filenam = filepath::UI_Bottun_Other_Path_Wstring +L"EndButton.png";
+	ui = make_unique<UI>(graphics.GetDevice(),filenam.c_str());
+	ui->SetScale({ 391.f,157.f });
+	ui->SetPosition({855.179f,514.467});
+	ui->SetID(UI_StringID::End);
+	ui->SetHanteiFlag(true);
+	UIs.push_back(move(ui));
+	ui = nullptr;
+
+	UIManager& ince = UIManager::incetance();
+	ince.UI_move(move(UIs));
+	ince.CreateCanbas();
+	UIs.clear();
+
 }
 
 void SceneTitle::update(float elapsed_time)
@@ -49,12 +80,54 @@ void SceneTitle::update(float elapsed_time)
 	camera_controller->AddAngle({ pad.thumb_state_ry() * 2.0f * elapsed_time,-pad.thumb_state_rx() * 2.0f * elapsed_time,0 });
 	camera_controller->SetAngle({ 0.0f,-0.0f,0.0f });
 	camera_controller->Update(elapsed_time);
-	if (GetAsyncKeyState(VK_LBUTTON))
-	{
-		SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
-	}
+	UIManager& ince = UIManager::incetance();
+	
+	
+		//UIManager& ince=UIManager::incetance();
+		int canbascount = ince.GetCanBassCount();
+		for (int i = 0; i < canbascount; i++)
+		{
+			CanBas* can = ince.GetCanbas(i);
+			int uicount = can->GetUICount();
+			for (int j = 0; j < uicount; j++)
+			{
+				UI* ui = can->GetUI(j);
+				if (ui->GetHanteiFlag())
+				{
+					if (ui->GetID() == UI_StringID::Start)
+					{
+						UIManager& ince = UIManager::incetance();
+					
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
+						{
+							ui->SetIsMouse(true);
+							if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+							{
+								if (!wasKeyPressed)
+								{
+									SceneManagement::instance().SceneChange(
+										new SceneLoading(new Scene_Stage_Serect));
+								}
+								wasKeyPressed = true; // wasKeyPressedをtrueに設定
+
+							}
+							else wasKeyPressed = false; // wasKeyPressedをtrueに設定
+
+						}
+					}
+					if (ui->GetID() == UI_StringID::End)
+					{
+
+					}
+				}
+			}
+		}
+		ince.Update(elapsed_time);
+		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
+	
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
+	ince.Gui();
 	ImGui::End();
 #endif
 }
@@ -77,7 +150,7 @@ void SceneTitle::render(float elapsed_time)
 	rc.view = Camera::instance().GetView();
 	rc.projection = Camera::instance().GetProjection();
 	rc.lightDirection = light_direction;
-
+	rc.device = graphics.GetDevice();
 	DirectX::XMMATRIX VP = DirectX::XMMatrixMultiply(DirectX::XMLoadFloat4x4(&rc.view), DirectX::XMLoadFloat4x4(&rc.projection));
 	DirectX::XMStoreFloat4x4(&scene_data->data.view_projection, VP);
 
@@ -96,6 +169,8 @@ void SceneTitle::render(float elapsed_time)
 
 	//オブジェクト描画
 	{
+		UIManager& ince = UIManager::incetance();
+		ince.Render(&rc);
 
 	}
 

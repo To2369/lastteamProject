@@ -64,7 +64,7 @@ public:
     int GetStageCount() { return (int)Stages.size(); }
     void Gui(ID3D11Device* device, RenderContext* rc);
     //ステージ選択したときにセットする
-    void SetStage(StageName n) { s_name = n; }
+    void SetStageName(StageName n) { s_name = n; }
 
     void Set_CreateObject_Thred(ObjType t, ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
     {
@@ -128,7 +128,7 @@ public:
     Static_ObjType GetCreateStaticObjeType() { return CreateStaticObjeType; }
     Chain_Type GetCreateChain() { return CreateChainType; }
     ObjType Get_debug_type() { return debug_type_set_pos; }
-
+    StageName GetStageName() { return s_name; }
     void SetMode(DebugMode m) { mode = m; }
     void SetCreateObjeFlag(ObjType t) { CreateObjeType = t; }
     static void CreateObject(ObjType type, ID3D11Device* device, Intersection in);

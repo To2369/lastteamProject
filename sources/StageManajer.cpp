@@ -25,10 +25,10 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	XMFLOAT3 pos{};
 	switch (name)
 	{
-	case StageName::Tutolial:
-		break;
 	case StageName::stage1_1:
 	{
+		PlayerManager& ince_p = PlayerManager::Instance();
+		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
 		obj_Manager.Initialize(name, ObjType::heavy, device, {
 
 			  -1.037836f,
@@ -112,11 +112,11 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			Rigister(move(stage));
 		}
 		obj_Manager.Initialize(name, Gimic_Type::Door, device, {
-		 -1.515878f,
-		 1.275631f,
-		 -0.925332f
+		 -1.490f,
+		 0.636f,
+		 -0.925f
 			}, "kabe");
-		ince_UI.CreateUI(device);
+		ince_UI.CreateGameSceneUI(device);
 	}
 		break;
 	case StageName::stage1_2:
@@ -131,7 +131,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{1.751f,10.619f,-0.020f},
 				"num1",
-			    {1.751f,8.14f,-0.020f});
+			    {1.751f,8.532f,-0.020f});
 			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
 				{ 1.747f,10.255f,-0.965f },
 				"num1",
@@ -144,7 +144,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				
 			);
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{1.727651f,10.038761f,-0.499f,},
+				{ 1.728f,10.038761f,-0.499f,},
 				    "num1",
 				{0.000000f,-1.620995f,0.000000f});
 			
@@ -171,7 +171,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				{ 0.f,-1.6f,0.f });
 
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -3.411f,7.915f,-0.474f, },
+				{ -3.324f,10.145f,-0.474, },
 				"num2",
 				{ 0.000000f,-1.620995f,0.000000f });
 
@@ -211,10 +211,12 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
 		Rigister(move(stage));
-
+		ince_UI.CreateGameSceneUI(device);
 	}
 	break;
+	case StageName::stage1_3:
 
+		break;
 	case StageName::null:
 		break;
 	default:

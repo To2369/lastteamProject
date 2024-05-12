@@ -107,11 +107,11 @@ void Character::jump(float speed)
 void Character::updateVelocity(float elapsedTime)
 {
     //垂直速度更新処理
- //   updateVerticalVelocity(elapsedTime);
+    updateVerticalVelocity(elapsedTime);
     updateHorizontalVelocity(elapsedTime);
 
     //垂直移動更新処理
-   // updateVerticalMove(elapsedTime);
+    updateVerticalMove(elapsedTime);
     updateHorizontalMove(elapsedTime);
 
 }

@@ -12,6 +12,7 @@
 #include "Graphics/graphics.h"
 #include"scene_management.h"
 #include"scene_title.h"
+#include"scene_clear.h"
 Goal::Goal(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
@@ -30,7 +31,7 @@ void Goal::Update(float elapsedTime)
     }
     if (Goal_Flag)
     {
-        SceneManagement::instance().SceneChange(new SceneTitle);
+        SceneManagement::instance().SceneChange(new Scene_Clear);
     }
     UpdateTransform();
 }

@@ -1,11 +1,27 @@
 #include "UIManajer.h"
 #include"objectManajer.h"
+#include <scene_management.h>
 using namespace DirectX;
 using namespace std;
-void UIManager::CreateUI(ID3D11Device* device)
+
+void UIManager::CreateCanbas()
+{
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(UIs));
+    CanBass.push_back(move(can));
+    UIs.clear();
+}
+
+void UIManager::CreateCanbas(std::string id)
+{
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(UIs),id);
+    CanBass.push_back(move(can));
+    UIs.clear();
+}
+
+void UIManager::CreateGameSceneUI(ID3D11Device* device)
 {
     ObjectTypes.clear();
-    GetStage_objectTypes();
+    GetStageObjectTypes();
     int count = ObjectTypes.size();
     
     XMFLOAT2 Scale;
@@ -56,7 +72,7 @@ void UIManager::CreateUI(ID3D11Device* device)
         ui.push_back(make_unique<UI>(device, reinterpret_cast<const wchar_t*>(filename), Scale,slidPos));
     }
    
-    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui));
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui),UI_StringID::SceneGameUI);
     CanBass.push_back(move(can));
     ui.clear();
 
@@ -68,7 +84,57 @@ void UIManager::Gui()
         canbas->Gui();
     }
 }
-void UIManager::GetStage_objectTypes()
+
+bool UIManager::Mouse_VS_UI(DirectX::XMFLOAT2 SP_POS, D3D11_TEXTURE2D_DESC& SP_desc)
+{
+    POINT cursor;
+    GetCursorPos(&cursor);
+    XMFLOAT2 cursorPos{ static_cast<float>(cursor.x),static_cast<float>(cursor.y) };
+    SceneManagement& ince = SceneManagement::instance();
+
+
+    //XMFLOAT2 winPos = { static_cast<float>(windowRect.left),static_cast<float>(windowRect.top) };
+    XMFLOAT2 winPos = { static_cast<float>(ince.GetWindowPosition().x),static_cast<float>(ince.GetWindowPosition().y) };
+    float LeftPos, RightPos, DownPos, UpPos;
+    LeftPos = SP_POS.x + winPos.x;
+    RightPos = SP_POS.x + SP_desc.Width + winPos.x;
+    DownPos = SP_POS.y + SP_desc.Height + winPos.y + 30.f;
+    UpPos = SP_POS.y + winPos.y + 30.f;
+    if (cursorPos.x > LeftPos &&
+        cursorPos.x < RightPos &&
+        cursorPos.y<DownPos &&
+        cursorPos.y>UpPos)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool UIManager::Mouse_VS_UI(DirectX::XMFLOAT2 SP_POS, XMFLOAT2 Scale)
+{
+    POINT cursor;
+    GetCursorPos(&cursor);
+    XMFLOAT2 cursorPos{ static_cast<float>(cursor.x),static_cast<float>(cursor.y) };
+    SceneManagement& ince = SceneManagement::instance();
+
+
+    //XMFLOAT2 winPos = { static_cast<float>(windowRect.left),static_cast<float>(windowRect.top) };
+    XMFLOAT2 winPos = { static_cast<float>(ince.GetWindowPosition().x),static_cast<float>(ince.GetWindowPosition().y) };
+    float LeftPos, RightPos, DownPos, UpPos;
+    LeftPos = SP_POS.x + winPos.x;
+    RightPos = SP_POS.x + Scale.x + winPos.x+20.f;
+    DownPos = SP_POS.y + Scale.y + winPos.y + 30.f;
+    UpPos = SP_POS.y + winPos.y + 30.f;
+    if (cursorPos.x > LeftPos &&
+        cursorPos.x < RightPos &&
+        cursorPos.y<DownPos &&
+        cursorPos.y>UpPos)
+    {
+        return true;
+    }
+    return false;
+}
+void UIManager::GetStageObjectTypes()
 {
     Objectmanajer& ince_o = Objectmanajer::incetance();
     int count = ince_o.Get_GameObjCount();
@@ -112,3 +178,15 @@ void UIManager::Render(RenderContext* rc)
         canbas->Render(rc);
     }
 }
+
+void UIManager::Render(RenderContext* rc, std::string id)
+{
+    for (auto& canbas : CanBass)
+    {
+        if (id == canbas->GetCanbasID())
+        {
+            canbas->Render(rc);
+        }
+    }
+}
+

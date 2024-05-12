@@ -223,9 +223,6 @@
     <ClCompile Include="sources\stage1_3.cpp">
       <Filter>Sources\Stages\GameStage</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Syringe.cpp">
-      <Filter>Sources\Player</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Graphics\graphics.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
@@ -249,6 +246,12 @@
     </ClCompile>
     <ClCompile Include="sources\Lift_chain_Animatio_ndown.cpp">
       <Filter>Sources\objects\Lift_chain</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Scene_Stage_Select.cpp">
+      <Filter>Sources\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\scene_clear.cpp">
+      <Filter>Sources\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -414,9 +417,6 @@
     <ClInclude Include="sources\Stage.h">
       <Filter>Headers\stages</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Syringe.h">
-      <Filter>Headers\Player</Filter>
-    </ClInclude>
     <ClInclude Include="sources\Graphics\graphics.h">
       <Filter>Graphics</Filter>
     </ClInclude>
@@ -425,6 +425,12 @@
     </ClInclude>
     <ClInclude Include="sources\Comp.h">
       <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Scene_Stage_Select.h">
+      <Filter>Headers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\scene_clear.h">
+      <Filter>Headers\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@ void SceneLoading::render(float elapsed_time)
     D3D11_VIEWPORT viewport;
     UINT num_viewports{ 1 };
     graphics.GetDeviceContext()->RSGetViewports(&num_viewports, &viewport);
-
+    
 }
 
 void SceneLoading::finalize()

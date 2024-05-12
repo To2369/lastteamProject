@@ -14,10 +14,12 @@ Gimic* BaseChain::LiftCheck()
             if (obj->GetIsLift() == ObjType::heavy || obj->GetIsLift() == ObjType::Super_heavy)
             {
                 this->render->anim.animSpeed = -this->render->anim.animSpeed;
+               
             }
             else if (obj->GetIsLift() == ObjType::cution || obj->GetIsLift() == ObjType::Super_cution)
             {
                 this->render->anim.animSpeed = +this->render->anim.animSpeed;
+                
             }
             return obj;
         }
