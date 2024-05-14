@@ -23,10 +23,10 @@ void CameraController::Update(float elapsedTime)
 	DirectX::XMStoreFloat3(&front, Front);
 
 	//位置からどの方向にターゲットがいるか
-	DirectX::XMFLOAT3 target;
-	target.x = eye.x - front.x;
-	target.y = eye.y - front.y;
-	target.z = eye.z - front.z;
+	DirectX::XMFLOAT3 eye;
+	eye.x = target.x - front.x * range;
+	eye.y = target.y - front.y * range;
+	eye.z = target.z - front.z * range;
 
 	//カメラの視点と注視点を設定
 	Camera::instance().SetLookAt(eye, target, DirectX::XMFLOAT3(0, 1, 0));

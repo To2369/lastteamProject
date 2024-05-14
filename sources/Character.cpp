@@ -3,13 +3,14 @@
 #include"Mathf.h"
 #include <objectManajer.h>
 #include"variable_management_class_for_hit_test.h"
+#include"camera_controller.h"
 using namespace DirectX;
 //行列更新処理
 void Character::UpdateTransform()
 {
     //スケール行列を作成
     DirectX::XMMATRIX S = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
-
+    DirectX::XMMATRIX SS = DirectX::XMMatrixScaling(Sscale.x, Sscale.y, Sscale.z);
     //回転行列を作成
     DirectX::XMMATRIX X = DirectX::XMMatrixRotationX(angle.x);
     DirectX::XMMATRIX Y = DirectX::XMMatrixRotationY(angle.y);
@@ -25,7 +26,7 @@ void Character::UpdateTransform()
     DirectX::XMMATRIX ST = DirectX::XMMatrixTranslation(Sposition.x, Sposition.y, Sposition.z);
     //３つの行列を組み合わせ、ワールド行列を作成
     DirectX::XMMATRIX W = S * R * T;
-    DirectX::XMMATRIX SW = S * SR * ST;
+    DirectX::XMMATRIX SW = SS * SR * ST;
     // 計算したワールド行列を transform に取り出す
     DirectX::XMStoreFloat4x4(&transform, W);
     DirectX::XMStoreFloat4x4(&Stransform, SW);
@@ -46,54 +47,54 @@ void Character::move(float vx, float vz, float speed)
 //旋回処理
 void Character::turn(float elapsedTime, float vx, float vz, float speed)
 {
-    speed *= elapsedTime;
+    //speed *= elapsedTime;
 
-    //進むべき進行ベクトルがゼロの阿合は旋回処理の必要なし
-    float length = sqrtf(vx * vx + vz * vz);
-    if (length < 0.001f)
-    {
-        return;
-    }
+    ////進むべき進行ベクトルがゼロの阿合は旋回処理の必要なし
+    //float length = sqrtf(vx * vx + vz * vz);
+    //if (length < 0.001f)
+    //{
+    //    return;
+    //}
 
-    //進行ベクトルと単位ベクトル化
-    vx /= length;
-    vz /= length;
+    ////進行ベクトルと単位ベクトル化
+    //vx /= length;
+    //vz /= length;
 
-    //前方向ベクトルのXZ成分を取得し単位ベクトル化
-    float frontX = transform._31;   //前方向ベクトルのX成分
-    float frontZ = transform._33;   //前方向ベクトルのZ成分
-    float frontLength = sqrtf(frontX * frontX + frontZ * frontZ);
-    if (frontLength > 0.0f)
-    {
-        frontX /= frontLength;
-        frontZ /= frontLength;
-    }
+    ////前方向ベクトルのXZ成分を取得し単位ベクトル化
+    //float frontX = transform._31;   //前方向ベクトルのX成分
+    //float frontZ = transform._33;   //前方向ベクトルのZ成分
+    //float frontLength = sqrtf(frontX * frontX + frontZ * frontZ);
+    //if (frontLength > 0.0f)
+    //{
+    //    frontX /= frontLength;
+    //    frontZ /= frontLength;
+    //}
 
-    //左右チェックのための外積計算
-    float cross = (frontZ * vx) - (frontX * vz);
+    ////左右チェックのための外積計算
+    //float cross = (frontZ * vx) - (frontX * vz);
 
-    //回転角を求めるため、2つの単位ベクトルの内積を計算する
-    //2つのベクトルの内積値は-1.0~1.0で表現されます.
-    float dot = (frontX * vx) + (frontZ * vz);
+    ////回転角を求めるため、2つの単位ベクトルの内積を計算する
+    ////2つのベクトルの内積値は-1.0~1.0で表現されます.
+    //float dot = (frontX * vx) + (frontZ * vz);
 
-    //2つのベクトルが重なった時、回転速度は0.0fになる
-    float rot = (1.0f - dot);
+    ////2つのベクトルが重なった時、回転速度は0.0fになる
+    //float rot = (1.0f - dot);
 
-    //あまり離れすぎると回転速度が早くなりすぎるのでspeed以上の回転速度にはならないよう制限
-    if (rot > speed)
-    {
-        rot = speed;
-    }
+    ////あまり離れすぎると回転速度が早くなりすぎるのでspeed以上の回転速度にはならないよう制限
+    //if (rot > speed)
+    //{
+    //    rot = speed;
+    //}
 
-    //外積が正の場合は右回転、負の場合は左回転
-    if (cross < 0.0f)
-    {
-        angle.y -= rot;
-    }
-    else
-    {
-        angle.y += rot;
-    }
+    ////外積が正の場合は右回転、負の場合は左回転
+    //if (cross < 0.0f)
+    //{
+    //    angle.y -= rot;
+    //}
+    //else
+    //{
+    //    angle.y += rot;
+    //}
 }
 
 //ジャンプ処理
@@ -158,11 +159,12 @@ void Character::updateVerticalMove(float elapsedTime)
         XMFLOAT3 end{ position };
         end.y -= 0.1f;
         HitResult hit;
-        Ray_ObjType type = Ray_ObjType::Stage;
+        Ray_ObjType type = Ray_ObjType::Static_objects;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
+        Ray_ObjType type4 = Ray_ObjType::Stage;
         //地面判定
-        if (ince_ray.RayCast(start, end, hit, type))
+        if (ince_ray.RayCast(start, end, hit, type))//静的オブジェクト
         {
             position.y = hit.position.y+0.1f;
             velocity.y = 0.0f;
@@ -233,6 +235,24 @@ void Character::updateVerticalMove(float elapsedTime)
             slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
             
         }
+        else if (ince_ray.RayCast(start, end, hit, type4))//ステージ
+        {
+
+            position.y = hit.position.y + 0.1f;
+            velocity.y = 0.0f;
+            normal = hit.normal;
+            //着地した
+            if (!groundedFlag)
+            {
+                OnLanding();
+            }
+            groundedFlag = true;
+
+            //傾斜率の計算
+            float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+            slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+
+        }
         else
         {
             //空中に浮いている
@@ -273,7 +293,7 @@ void Character::updateHorizontalVelocity(float elapsedTime)
         //空中にいるときは摩擦力を減少
         if (!groundedFlag)
         {
-            friction* airControl;
+            friction*= airControl;
         }
 
         if (length > friction)

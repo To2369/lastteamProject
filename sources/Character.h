@@ -90,6 +90,7 @@ protected:
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 Sangle = { 0,0,0 };            //回転(注射器用)
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
+    DirectX::XMFLOAT3 Sscale = { 1,1,1 };            //拡大縮小(注射器用)
     DirectX::XMFLOAT4 color = { 1,1,1,1 };          //色
     DirectX::XMFLOAT4 Scolor = { 1,1,1,1 };          //色(注射器用)
     //姿勢行列
@@ -123,7 +124,7 @@ protected:
     float acceleration = 1.0f;                      //加速度
     float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.1f;                        //空中制御用係数
+    float airControl = 0.0001f;                        //空中制御用係数
     bool extractFlag = false;                       //オブジェクトの属性抽出できるか
     ObjType playerType = ObjType::null;
     //斜めの時間制限
