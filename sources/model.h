@@ -393,10 +393,11 @@ private:
 public://’Ç‰Á
 
 	animation::keyframe* kefreame=nullptr;
-	animation::keyframe* getKeyFreame(float elapsedTime);
+	animation::keyframe* getKeyFreame(float elapsedTime, int anime_index);
 	bool StopAnimation();
-	bool stop_animation = false;//
+	bool stop_animation = true;//
 	unique_ptr<collision_mesh> thisRay_vs_partner;
 	collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
 	const scene& GetScene_View() { return scene_view; }
+	bool animation_End = false;
 };

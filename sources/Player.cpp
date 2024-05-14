@@ -42,7 +42,7 @@ bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, co
 Player::Player(ID3D11Device* device)
 {
     model = std::make_unique<Model>(device, filename, true);
-    Smodel= std::make_unique<Model>(device, Sfilename, true);
+    Smodel = std::make_unique<Model>(device, Sfilename, Sfilename, true);
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
     scale = { scale_fcator, scale_fcator, scale_fcator };
     color = {0,0,0,0};
@@ -77,12 +77,14 @@ void Player::update(float elapsedTime)
     //抽出注入
     ExtractionAttribute(elapsedTime);
 
-    Smodel->kefreame = Smodel->getKeyFreame(elapsedTime);
+    Smodel->kefreame = Smodel->getKeyFreame(elapsedTime,1);
     Smodel->update_animation(*Smodel->kefreame);
 
     ////ワールド行列の更新
     UpdateTransform();
    
+    Smodel->kefreame = Smodel->getKeyFreame(elapsedTime, 1);
+
     gamepad& gamePad = gamepad::Instance();
     if (GetKeyState('L'))
     {
@@ -92,17 +94,38 @@ void Player::update(float elapsedTime)
         position.x = 0;
         position.z = 0;
     }
+    if (GetAsyncKeyState('U') & 0x8000) // 'K'キーが押されたかどうかを確認
+    {
+        if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
+        {
 
+            XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+            XMFLOAT3 camerafront{ Camera::instance().GetFront() };
+
+            cameraeye.z += camerafront.z * 0.2f;
+            cameraeye.x += camerafront.x * 0.2f;
+            cameraeye.y = position.y + 0.05f;
+            Smodel->stop_animation = false;
+            Smodel->animation_End = false;
+            Sposition = cameraeye;
+
+            Scolor = { 1,1,1,1 };
+        }
+        wasKeyPressed = true; // wasKeyPressedをtrueに設定
+    }
+    else
+    {
+        wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
+    }
     if (GetKeyState('P'))
     {
-        color = {1,1,1,1};
+        color = { 1,1,1,1 };
         isHand = true;
     }
 
-    if (GetKeyState('Q'))
+    if (Smodel->animation_End)
     {
-        color = { 1,1,1,1 };
-        
+        Scolor = { 0,0,0,0 };
     }
 }
 

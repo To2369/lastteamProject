@@ -52,6 +52,12 @@ public:
     //‰ñ“]İ’è
     void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; };
 
+    //‰ñ“]æ“¾
+    const DirectX::XMFLOAT3 GetSAngle()const { return Sangle; };
+
+    //‰ñ“]İ’è
+    void SetSAngle(const DirectX::XMFLOAT3& Sangle) { this->Sangle = Sangle; };
+
     //ƒXƒP[ƒ‹İ’è
     const DirectX::XMFLOAT3 GetScale()const { return scale; };
 

@@ -345,6 +345,14 @@ void SceneGame::update(float elapsed_time)
 		if (camera_angle.x < minAngle)camera_angle.x = minAngle;
 		if (camera_angle.x > maxAngle)camera_angle.x = maxAngle;
 
+		DirectX::XMFLOAT3 Sangle;		//ƒJƒƒ‰‚Ì‰ñ“]Šp•Û‘¶
+		//•Û‘¶‚µ‚½‰ñ“]Šp‚ð’ŽËŠíŠp“x‚É“ü‚ê‚é‚½‚ßˆê’Uƒ‰ƒWƒAƒ“‚©‚çŠp“x‚É•ÏŠ·
+		Sangle.x = 0;
+		Sangle.y = DirectX::XMConvertToRadians(camera_angle.y);
+		Sangle.z = 0;
+		//’ŽËŠí‚ÌŠp“x‚É“ü‚ê‚é
+		pl->SetSAngle(Sangle);
+
 		camera_controller->Update(elapsed_time);
 
 	}
