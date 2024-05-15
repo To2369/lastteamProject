@@ -52,6 +52,12 @@ public:
     //回転設定
     void SetAngle(const DirectX::XMFLOAT3& angle) { this->angle = angle; };
 
+    //回転取得
+    const DirectX::XMFLOAT3 GetSAngle()const { return Sangle; };
+
+    //回転設定
+    void SetSAngle(const DirectX::XMFLOAT3& Sangle) { this->Sangle = Sangle; };
+
     //スケール設定
     const DirectX::XMFLOAT3 GetScale()const { return scale; };
 
@@ -84,6 +90,7 @@ protected:
     DirectX::XMFLOAT3 angle = { 0,0,0 };            //回転
     DirectX::XMFLOAT3 Sangle = { 0,0,0 };            //回転(注射器用)
     DirectX::XMFLOAT3 scale = { 1,1,1 };            //拡大縮小
+    DirectX::XMFLOAT3 Sscale = { 1,1,1 };            //拡大縮小(注射器用)
     DirectX::XMFLOAT4 color = { 1,1,1,1 };          //色
     DirectX::XMFLOAT4 Scolor = { 1,1,1,1 };          //色(注射器用)
     //姿勢行列
@@ -117,7 +124,7 @@ protected:
     float acceleration = 1.0f;                      //加速度
     float maxMoveSpeed = 5.0f;                      //最大速度
     DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.1f;                        //空中制御用係数
+    float airControl = 0.0001f;                        //空中制御用係数
     bool extractFlag = false;                       //オブジェクトの属性抽出できるか
     ObjType playerType = ObjType::null;
     //斜めの時間制限

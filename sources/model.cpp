@@ -517,14 +517,14 @@ void Model::create_com_objects(ID3D11Device* device, const char* fbx_filename)
 	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
 }
 
-animation::keyframe* Model::getKeyFreame(float elapsedTime)
+animation::keyframe* Model::getKeyFreame(float elapsedTime,int anime_index)
 {
 	animation::keyframe* keyframe=nullptr;
 	if (animation_clips.data())
 	{
 		if (animation_clips.size() > 0)
 		{
-			int clip_index{ 0 };
+			int clip_index{ anime_index };
 			int frame_index{ 0 };
 			static float animation_tick{ 0 };
 
@@ -534,6 +534,8 @@ animation::keyframe* Model::getKeyFreame(float elapsedTime)
 			{
 				frame_index = 0;
 				animation_tick = 0;
+				animation_End = true;
+				stop_animation = true;
 			}
 			else
 			{

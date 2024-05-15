@@ -43,9 +43,11 @@ bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, co
 Player::Player(ID3D11Device* device)
 {
     model = std::make_unique<Model>(device, filename, true);
-    Smodel= std::make_unique<Model>(device, Sfilename, true);
+    Smodel = std::make_unique<Model>(device, Sfilename, Sfilename, true);
     const float scale_fcator = 0.01f;	//モデルが大きいのでスケール調整
+    const float Sscale_fcator = 0.005f;
     scale = { scale_fcator, scale_fcator, scale_fcator };
+    Sscale = { Sscale_fcator,Sscale_fcator,Sscale_fcator };
     color = {0,0,0,0};
     isHand = false;
     radius = 0.1f;
@@ -78,12 +80,10 @@ void Player::update(float elapsedTime)
     //抽出注入
     ExtractionAttribute(elapsedTime);
 
-    Smodel->kefreame = Smodel->getKeyFreame(elapsedTime);
-    Smodel->update_animation(*Smodel->kefreame);
-
+    pullpushAnime(elapsedTime);
     ////ワールド行列の更新
     UpdateTransform();
-   
+
     gamepad& gamePad = gamepad::Instance();
     if (GetKeyState('L'))
     {
@@ -93,17 +93,25 @@ void Player::update(float elapsedTime)
         position.x = 0;
         position.z = 0;
     }
+    //if (GetAsyncKeyState('U') & 0x8000) // 'K'キーが押されたかどうかを確認
+    //{
+    //    if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
+    //    {
 
+    //        
+
+    //       
+    //    }
+    //    //wasKeyPressed = true; // wasKeyPressedをtrueに設定
+    //}
+    //else
+    //{
+    //    wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
+    //}
     if (GetKeyState('P'))
     {
-        color = {1,1,1,1};
-        isHand = true;
-    }
-
-    if (GetKeyState('Q'))
-    {
         color = { 1,1,1,1 };
-        
+        isHand = true;
     }
 }
 
@@ -135,7 +143,16 @@ void Player::render(RenderContext* rc)
     graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
 
+void Player::updateSyringepos()
+{
+    XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+    XMFLOAT3 camerafront{ Camera::instance().GetFront() };
 
+    cameraeye.z += camerafront.z * 0.2f;
+    cameraeye.x += camerafront.x * 0.2f;
+    cameraeye.y = position.y + 0.05f;
+    Sposition = cameraeye;
+}
 //操作移動
 void Player::inputMove(float elapsedTime)
 {
@@ -254,7 +271,8 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                    {
                                        obj->SetVelotyXZ({ 0,0 });
                                    }
-                    position.x = outsphere.Spherepos.x;
+                   
+                    position.x = outsphere.Spherepos.x - 0.06f;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
                     angle.y = DirectX::XMConvertToRadians(270);
@@ -275,7 +293,8 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                {
                                    obj->SetVelotyXZ({ 0,0 });
                                }
-                    position.x = outsphere.Spherepos.x;
+                   
+                     position.x = outsphere.Spherepos.x + 0.06f;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(90);
                     color = { 1,1,1,1 };
@@ -297,7 +316,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                              obj->SetVelotyXZ({ 0,0 });
                             }
                     position.x = outsphere.Spherepos.x;
-                    position.z = outsphere.Spherepos.z;
+                    position.z = outsphere.Spherepos.z - 0.06f;
                     angle.y = DirectX::XMConvertToRadians(180);
                     color = { 1,1,1,1 };
                     break;
@@ -316,7 +335,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                  obj->SetVelotyXZ({ 0,0 });
                              }
                     position.x = outsphere.Spherepos.x;
-                    position.z = outsphere.Spherepos.z;
+                    position.z = outsphere.Spherepos.z + 0.06f;
                     color = { 1,1,1,1 };
                     angle.y = DirectX::XMConvertToRadians(0);
                     isHand = true;
@@ -359,14 +378,17 @@ void Player::ExtractionAttribute(float elapsedTime)
             //抽出
             if (gamePad.button_state(gamepad::button::b))
             {
+                updateSyringepos();
                 playerType = obj->Get_Original_Objtype(0);
+                pullType = true;
                 break;
             }
             //注入
             if (GetKeyState('J'))
             {
+                updateSyringepos();
                 obj->Set_attribute(playerType, 0);
-
+                pushType = true;
                 break;
             }
         }
@@ -376,13 +398,17 @@ void Player::ExtractionAttribute(float elapsedTime)
             //抽出
             if (gamePad.button_state(gamepad::button::b))
             {
+                updateSyringepos();
                 playerType = obj->Get_Original_Objtype(0);
+                pullType = true;
                 break;
             }
             //注入
             if (GetKeyState('J'))
             {
+                updateSyringepos();
                 obj->Set_attribute(playerType, 0);
+                pushType = true;
                 break;
             }
         }
@@ -391,5 +417,36 @@ void Player::ExtractionAttribute(float elapsedTime)
     if (GetKeyState('K'))
     {
         playerType = Obj_attribute::null;
+    }
+}
+
+void Player::pullpushAnime(float elapsedTime)
+{
+    if (pullType)
+    {
+        Scolor = { 1,1,1,1 };
+        Smodel->kefreame = Smodel->getKeyFreame(elapsedTime, Sanime::pull);
+        Smodel->update_animation(*Smodel->kefreame);
+        if (Smodel->animation_End)
+        {
+            pullType = false;
+        }
+    }
+    else if (pushType)
+    {
+        Scolor = { 1,1,1,1 };
+        Smodel->kefreame = Smodel->getKeyFreame(elapsedTime, Sanime::push);
+        Smodel->update_animation(*Smodel->kefreame);
+        if (Smodel->animation_End)
+        {
+            pushType = false;
+        }
+    }
+    else
+    {
+        Scolor = { 0,0,0,0 };
+        Smodel->animation_End = false;
+        Smodel->stop_animation = false;
+        Sposition = { 5000,5000,5000 };
     }
 }

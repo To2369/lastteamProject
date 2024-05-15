@@ -24,6 +24,7 @@ private:
     //入力値から移動ベクトルを取得
     DirectX::XMFLOAT3 getMoveVec() const;
 public:
+    void updateSyringepos();
 
     //ジャンプ入力処理
     void inputJump();
@@ -32,6 +33,8 @@ public:
     void CollisionPlayerVsGimics(float elapsedTime);
 
     void ExtractionAttribute(float elapsedTime);
+
+    void pullpushAnime(float elapsedTime);
 protected:
     //着地したときに呼び出される
     void OnLanding()override;
@@ -39,7 +42,7 @@ private:
     std::unique_ptr<Model> model;
     std::unique_ptr<Model> Smodel;          //注射器用
     const char* filename = ".\\Resources\\Character\\Hand\\hand.fbx";
-    const char* Sfilename = ".\\Resources\\Character\\Syringe\\syringe_m.fbx";      //注射器用
+    const char* Sfilename = ".\\Resources\\Character\\Syringe\\syringe_M.fbx";      //注射器用
 
     //移動スピード
     float moveSpeed = 1.0f;
@@ -48,16 +51,27 @@ private:
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     //ジャンプ力
-    float jumpSpeed = 1.0f;
+    float jumpSpeed = 0.8f;
 
     //ジャンプ回数
     int jumpCount = 0;
 
     //ジャンプ制限
-    int jumpLimit = 2;
+    int jumpLimit = 1;
 
     //プレイヤーの手出現フラグ
     bool isHand = true;
 
     float elapsedTime_ = 0;
+
+    bool wasKeyPressed = false;
+
+    bool pullType = false;
+    bool pushType = false;
+    enum Sanime
+    {
+        wait,
+        pull,
+        push,
+    };
 };

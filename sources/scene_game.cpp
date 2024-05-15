@@ -330,13 +330,13 @@ void SceneGame::update(float elapsed_time)
 		DirectX::XMFLOAT3 target = pl->GetPosition();
 		if (GetKeyState('3') & 0x01)
 		{
-			target.y += 0.1f;
+			target.y += 0.05f;
 		}
 		else
 		{
 			target.y += 0.5f;
 		}
-		camera_controller->SetEye(target);
+		camera_controller->SetTarget(target);
 		if (mouseMove)
 			camera_controller->SetAngle(camera_angle);
 
@@ -345,6 +345,19 @@ void SceneGame::update(float elapsed_time)
 		if (camera_angle.x < minAngle)camera_angle.x = minAngle;
 		if (camera_angle.x > maxAngle)camera_angle.x = maxAngle;
 
+		DirectX::XMFLOAT3 Sangle;		//ƒJƒƒ‰‚Ì‰ñ“]Šp•Û‘¶
+		//•Û‘¶‚µ‚½‰ñ“]Šp‚ð’ŽËŠíŠp“x‚É“ü‚ê‚é‚½‚ßˆê’Uƒ‰ƒWƒAƒ“‚©‚çŠp“x‚É•ÏŠ·
+		Sangle.x = 0;
+		Sangle.y = DirectX::XMConvertToRadians(180 + camera_angle.y);
+		Sangle.z = 0;
+		//•Û‘¶‚µ‚½‰ñ“]Šp‚ðƒvƒŒƒCƒ„[Šp“x‚É“ü‚ê‚é‚½‚ßˆê’Uƒ‰ƒWƒAƒ“‚©‚çŠp“x‚É•ÏŠ·
+		DirectX::XMFLOAT3 plangle = pl->GetAngle();
+		plangle.x = 0;
+		plangle.y = DirectX::XMConvertToRadians(camera_angle.y);
+		plangle.z = 0;
+		//’ŽËŠí‚ÌŠp“x‚É“ü‚ê‚é
+		pl->SetSAngle(Sangle);
+		pl->SetAngle(plangle);
 		camera_controller->Update(elapsed_time);
 
 	}
