@@ -23,6 +23,7 @@ Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_)
     
     Gimic_type = Gimic_Type::Lift;
     type_ = Gimic::LiftType::LEFT;
+    SetisLift(ObjType::heavy);
 }
 void Lift::Update(float elapsedTime)
 {

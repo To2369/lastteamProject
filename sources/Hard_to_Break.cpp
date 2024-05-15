@@ -17,6 +17,15 @@ Hard_to_Break::Hard_to_Break(ID3D11Device* device)
     moveobjectFlag = true;
 }
 
+Hard_to_Break::Hard_to_Break(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::cution, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+    moveobjectFlag = true;
+}
+
 Hard_to_Break::~Hard_to_Break()
 {
 
@@ -24,6 +33,11 @@ Hard_to_Break::~Hard_to_Break()
 
 void Hard_to_Break::Update(float elapsedTime)
 {
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);
@@ -49,6 +63,15 @@ Super_hard_to_Break::Super_hard_to_Break(ID3D11Device* device)
     moveobjectFlag = true;
 }
 
+Super_hard_to_Break::Super_hard_to_Break(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Super_cution, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+    moveobjectFlag = true;
+}
+
 Super_hard_to_Break::~Super_hard_to_Break()
 {
 
@@ -56,7 +79,11 @@ Super_hard_to_Break::~Super_hard_to_Break()
 
 void Super_hard_to_Break::Update(float elapsedTime)
 {
-
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);

@@ -100,6 +100,7 @@ public:
     bool GetMoveObjectFlag()const { return moveobjectFlag; };
     bool GetIsWall() const{ return isWall;}
     bool GetIsObject()const { return isObject; }
+    bool GetStatic_Objflag() { return static_ObjFlag; }
 public:
     void InvisibleWall_VS_Object();
     void SetMoveObjectFlag(bool f) { moveobjectFlag = f; }
@@ -119,6 +120,7 @@ public:
     void Set_isGimic_UpPosNow(bool f) { isGimic_UpPosNow = f; }
     void Set_GimicType(string g) { GetBootGimicType_ID = g; }
     void SetIsWall(bool f) { isWall = f; }
+    void SetStatic_Objflag(bool f) { static_ObjFlag = f; }
 public:
     enum class SphereAttribute
     {
@@ -204,7 +206,7 @@ protected:
     };
     std::unique_ptr<Model> model;
 private:
-
+    bool static_ObjFlag = false;
     bool isWall = false;
     std::string GetBootGimicType_ID = "null";
     bool isGimic_UpPosNow = false; //いま自分がギミックの上の方のバウンディングボックスにあったってるかどうか,ギミックに対してでしか使わない

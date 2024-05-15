@@ -58,39 +58,39 @@ void Scene_Clear::initialize()
 	//uiê∂ê¨
 	{
 		vector<unique_ptr<UI>>UIs;
-		wstring filenam = filepath::UI_Bottun_Other_Path_Wstring + L"ClearLogo.png";
+		wstring filenam = failepath::UI_Bottun_Other_Path_Wstring + L"ClearLogo.png";
 		unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		DirectX::XMFLOAT2 scale{ 391.f,254.f };
 		ui->SetScale(scale);
 		ui->SetPosition({453.141f,0.f});
-		ui->SetID(UI_StringID::ClearClearLogo);
+		ui->SetID(UI_StringID::Clear_Id::ClearClearLogo);
 		ui->SetHanteiFlag(false);
 		UIs.push_back(move(ui));
 		ui = nullptr;
 
-		filenam = filepath::UI_Bottun_Other_Path_Wstring + L"NextStage.png";
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"NextStage.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({443.762f,460.044f });
-		ui->SetID(UI_StringID::ClearNextStage);
+		ui->SetID(UI_StringID::Clear_Id::ClearNextStage);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
 
-		filenam = filepath::UI_Bottun_Other_Path_Wstring + L"StageSelectButton.png";
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"StageSelectButton.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({873.201f,460.044f});
-		ui->SetID(UI_StringID::ClearStageSelect);
+		ui->SetID(UI_StringID::Clear_Id::ClearStageSelect);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
 
-		filenam = filepath::UI_Bottun_Other_Path_Wstring + L"TitleButton.png";
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"TitleButton.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({17.316f,460.044f });
-		ui->SetID(UI_StringID::ClearTitle);
+		ui->SetID(UI_StringID::Clear_Id::ClearTitle);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
@@ -108,6 +108,8 @@ void Scene_Clear::update(float elapsed_time)
 
 
 	//UIManager& ince=UIManager::incetance();
+	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+	bool isKKeyPressed = (keyState & 0x8000) != 0;
 	int canbascount = ince.GetCanBassCount();
 	for (int i = 0; i < canbascount; i++)
 	{
@@ -119,84 +121,67 @@ void Scene_Clear::update(float elapsed_time)
 			if (ui->GetHanteiFlag())
 			{
 				UIManager& ince = UIManager::incetance();
-				if (ui->GetID() == UI_StringID::ClearNextStage)
+				if (ui->GetID() == UI_StringID::Clear_Id::ClearNextStage)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
-						{
-							if (!wasKeyPressed)
+						if (isKKeyPressed && !wasKeyPressed) {
+						
+							StageManager& ince_st = StageManager::incetance();
+							for (StageName i = ince_st.GetStageName(); i != StageName::null;
+								i = static_cast<StageName>(static_cast<int>(i) + 1))
 							{
-							
-								StageManager& ince_st = StageManager::incetance();
-								for (StageName i = ince_st.GetStageName(); i != StageName::null;
-									i = static_cast<StageName>(static_cast<int>(i) + 1))
+								if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
 								{
-									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
-									{
-										ince_st.SetStageName(i);
-										break;
-									}
-									if (ince_st.GetStageName() == StageName::stage1_3)
-									{
-
-									}
+									ince_st.SetStageName(i);
+									break;
 								}
-							/*	SceneManagement::instance().SceneChange(
-									new SceneLoading(new SceneGame));*/
+								if (ince_st.GetStageName() == StageName::stage1_3)
+								{
+
+								}
 							}
-							wasKeyPressed = true; // wasKeyPressedÇtrueÇ…ê›íË
-
+						/*	SceneManagement::instance().SceneChange(
+								new SceneLoading(new SceneGame));*/
 						}
-						else wasKeyPressed = false; // wasKeyPressedÇtrueÇ…ê›íË
-
 					}
 				}
-				if (ui->GetID() == UI_StringID::ClearStageSelect)
+				if (ui->GetID() == UI_StringID::Clear_Id::ClearStageSelect)
 				{
 
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+						
+						if (isKKeyPressed && !wasKeyPressed) 
 						{
-							if (!wasKeyPressed)
-							{
-							/*	SceneManagement::instance().SceneChange(
-									new SceneLoading(new Scene_Stage_Serect));*/
-							}
-							wasKeyPressed = true; // wasKeyPressedÇtrueÇ…ê›íË
-
+							SceneManagement::instance().SceneChange(
+								new SceneLoading(new Scene_Stage_Serect));
 						}
-						else wasKeyPressed = false; // wasKeyPressedÇtrueÇ…ê›íË
-
+						
 					}
 				}
-				if (ui->GetID() == UI_StringID::ClearTitle)
+				if (ui->GetID() == UI_StringID::Clear_Id::ClearTitle)
 				{
 
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
-						{
-							if (!wasKeyPressed)
-							{
-								/*SceneManagement::instance().SceneChange(
-									new SceneLoading(new SceneTitle));*/
-							}
-							wasKeyPressed = true; // wasKeyPressedÇtrueÇ…ê›íË
-
-						}
-						else wasKeyPressed = false; // wasKeyPressedÇtrueÇ…ê›íË
-
+					
+				    	if (isKKeyPressed && !wasKeyPressed) 
+				    	{
+				    		SceneManagement::instance().SceneChange(
+				    			new SceneLoading(new SceneTitle));
+				    	}
+				    
 					}
 				}
 			}
 		}
 	}
+	wasKeyPressed = isKKeyPressed;//ç°âÒÉLÅ[Ç™âüÇ≥ÇÍÇΩÇ©Ç«Ç§Ç©ÇéüâÒÇ≈égÇ§ÇΩÇﬂÇ…ì¸ÇÍÇƒÇ®Ç≠
 	ince.Update(elapsed_time);
 	//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 

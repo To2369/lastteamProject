@@ -22,6 +22,16 @@ Heavy::Heavy(ID3D11Device* device)
     moveobjectFlag = true;
 }
 
+Heavy::Heavy(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::heavy, ObjType::null);
+
+    //Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 1.f;
+    moveobjectFlag = true;
+}
+
 Heavy::~Heavy()
 {
 
@@ -29,6 +39,11 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     oldPosition = Position;
     
     Return_orijinal_ObjType(elapsedTime);
@@ -141,12 +156,27 @@ Super_Heavy::Super_Heavy(ID3D11Device* device)
     moveobjectFlag = true;
 }
 
+Super_Heavy::Super_Heavy(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Super_heavy, ObjType::null);
+
+    //Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+    moveobjectFlag = true;
+}
+
 Super_Heavy::~Super_Heavy()
 {
 }
 
 void Super_Heavy::Update(float elapsedTime)
 {
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     oldPosition = Position;
 
     Return_orijinal_ObjType(elapsedTime);

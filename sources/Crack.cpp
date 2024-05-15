@@ -18,6 +18,16 @@ Crack::Crack(ID3D11Device* device)
     UpdateTransform();
 }
 
+Crack::Crack(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Super_heavy, ObjType::Crack);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+
+    UpdateTransform();
+}
+
 void Crack::Update(float elapsedTime)
 {
     color = InitColor();

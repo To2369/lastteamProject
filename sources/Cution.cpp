@@ -22,6 +22,14 @@ Cution::Cution(ID3D11Device* device)
     Scale.x = Scale.y = Scale.z = 1.f;
 }
 
+Cution::Cution(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::cution, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 1.f;
+}
+
 Cution::~Cution()
 {
 
@@ -29,6 +37,11 @@ Cution::~Cution()
 
 void Cution::Update(float elapsedTime)
 {
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime*0.9f;
     PlayerManager& ince_pl = PlayerManager::Instance();
@@ -37,7 +50,6 @@ void Cution::Update(float elapsedTime)
     XMFLOAT3 outpos;
     if (ince_o.Sphere_VS_Player(pl->GetPosition(), pl->getRadius(), this->Position, this->radius, outpos))
     {
-        
         pl->SetPosition(outpos);
     }
     {
@@ -58,9 +70,7 @@ void Cution::Update(float elapsedTime)
                 Position.y = hit.position.y + 0.1f;
 
             }
-
         }
-
     }
     RayCastGround();
     ObjType_effect(elapsedTime);
@@ -89,13 +99,25 @@ Super_Cution::Super_Cution(ID3D11Device* device)
 
 }
 
+Super_Cution::Super_Cution(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Super_cution, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 1.f;
+}
+
 Super_Cution::~Super_Cution()
 {
 }
 
 void Super_Cution::Update(float elapsedTime)
 {
-
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime*0.7f;
     PlayerManager& ince_pl = PlayerManager::Instance();

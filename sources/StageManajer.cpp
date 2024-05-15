@@ -29,13 +29,13 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
-		obj_Manager.Initialize(name, ObjType::heavy, device, {
+		obj_Manager.Initialize(ObjType::heavy, device,false,{
 
 			  -1.037836f,
 			   1.747557f,
 			  -0.430794f
 			});
-		obj_Manager.Initialize(name, ObjType::cution, device, {
+		obj_Manager.Initialize(ObjType::cution,device,true, {
 			 -1.336630f,
 			 1.747557f,
 			  0.460227f
@@ -129,85 +129,131 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 		{
 
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{1.751f,10.619f,-0.020f},
+				{4.252f,7.290f,-0.020f},
 				"num1",
-			    {1.751f,8.532f,-0.020f});
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ 1.747f,10.255f,-0.965f },
-				"num1",
-				{0.f,-1.6f,0.f}
-			);
+			    {4.252f,5.154f,-0.020f});
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ 1.723f,10.549f,-0.913f },
-				"num1", 
-				{0.f,-1.6f,0.f}
-				
+				{ 4.30f,7.287f,-0.948f },
+				"num1",
+				{ 0.f,-1.6f,0.f }
+
 			);
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ 4.247f,6.944f,-0.941f },
+				"num1",
+				{0.f,-1.6f,0.f}
+			);
+			
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ 1.728f,10.038761f,-0.499f,},
+				{ 4.208444f,0,-0.432f,},
 				    "num1",
 				{0.000000f,-1.620995f,0.000000f});
-			
+		
 			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ 1.763f,10.295f,-0.502f,},
+				{ 4.208f,7.794f,-0.432f,},
 				"num1",
 				{0.000000f,-1.590007f,0.000000f});
 
 		}
 		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -3.365620f,8.575950f,0.012832f },
+				{ -0.891f,5.178f,0.113f },
 				"num2",
-				{ -3.365620f,6.615f,0.012832f });
-
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ -3.367943f,8.174998f,-0.905344f },
-				"num2",
-				{ 0.f,-1.6f,0.f });
+				{ -0.891f,3.089f,0.113f });
 
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ -3.367943f,8.494998f,-0.905344f },
+				{ -0.839f,5.218f,-0.929f },
+				"num2",
+				{ 0.f,1.6f,0.f });
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ -0.851f,4.808f,-0.914f },
 				"num2",
 				{ 0.f,-1.6f,0.f });
-
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -3.324f,10.145f,-0.474, },
+				{ -0.860f,0.f,-0.440, },
 				"num2",
 				{ 0.000000f,-1.620995f,0.000000f });
 
 			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ -3.349821f,8.225961f,-0.474288f, },
+				{ -0.871f,5.644f,-0.440f, },
 				"num2",
 				{ 0.000000f,-1.590007f,0.000000f });
 
 		}
+		
 		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -2.588f,3.156f,-0.945f },
-				"num4",
-				{ -2.538f,1.032f,-0.945f});
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ -2.548887f,2.812f,-0.013175f },
-				"num4",
-				{ 0.f,1.6f,0.f }
-			);
+				{ -5.158f,1.562f,-0.945f },
+				"num3",
+				{ -5.158f,-0.574f,-0.945f});
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ -2.548887f,3.13f,-0.013175f },
-				"num4",
+				{ -5.096f,1.555f,-0.013f },
+				"num3",
+				{ 0.f,-1.6f,0.f }
+			);
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ -5.157f,1.180f,-0.013f },
+				"num3",
 				{ 0.f,1.6f,0.f }
 			);
+		
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -2.569f,2.565580f,-0.482558f },
-				"num4",
+				{ -5.110f,0.f,-0.483f },
+				"num3",
 				{ 0.000000f,1.6f,0.000000f });
 
 			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ -2.569f,2.845580f, -0.482558f },
-				"num4",
+				{ -5.158f,2.025f, -0.492f },
+				"num3",
 				{ 0.000000f,1.6f,0.000000f });
 
 		}
 
+		
+     	{
+			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+				{ -0.008f,-0.600f,-0.932f },
+				"num3",
+				{ -0.008f,-2.707f,-0.932f});
+			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+				{ -0.002f,-0.573f,-0.013f },
+				"num3",
+				{ 0.f,-1.6f,0.f }
+			);
+			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+				{ -0.009f,-0.944f,-0.013f },
+				"num3",
+				{ 0.f,1.6f,0.f }
+			);
+
+			obj_Manager.Initialize(Chain_Type::lift_chain_L,
+				{ -0.019f,0.f,-0.483f },
+				"num3",
+				{ 0.000000f,1.6f,0.000000f });
+
+			obj_Manager.Initialize(Chain_Type::lift_chain_S,
+				{ -0.004f,-0.120f, -0.492f },
+				"num3",
+				{ 0.000000f,1.6f,0.000000f });
+
+		}
+		{
+
+			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(),ObjType::heavy,device,false,
+				{
+				 1.966055f,
+				 8.532003f,
+				 -0.002939f
+				});
+		/*	obj_Manager.Initialize(name,ObjType::heavy,device,
+				{
+
+
+
+				})*/
+
+
+		}
 		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
 		Rigister(move(stage));

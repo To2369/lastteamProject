@@ -61,7 +61,7 @@ public:
     //void BaseChainGUI();
     void Gui()override;
 private:
-    const char* filename = ".\\resources\\stage3\\rihuto_P.fbx";
+    const char* filename = ".\\resources\\stage3\\rihutoP.fbx";
    // const char* filename = ".\\resources\\stage3\\C_L2.fbx";
 
 };

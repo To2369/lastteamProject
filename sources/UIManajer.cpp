@@ -72,9 +72,58 @@ void UIManager::CreateGameSceneUI(ID3D11Device* device)
         ui.push_back(make_unique<UI>(device, reinterpret_cast<const wchar_t*>(filename), Scale,slidPos));
     }
    
-    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui),UI_StringID::SceneGameUI);
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui),UI_StringID::CanbasID::SceneGameUI);
     CanBass.push_back(move(can));
     ui.clear();
+
+}
+void UIManager::CreateUI(ID3D11Device* device,ObjType type,vector<unique_ptr<UI>>&uis)
+{
+    wstring filename = L"";
+    XMFLOAT2 Scale;
+    switch (type)
+    {
+    case Obj_attribute::cution:
+        filename = L".\\resources\\UI\\Attribute(cution).png";
+        Scale = { 1280.f / 11.f,720.f / 11.f };
+        break;
+    case Obj_attribute::Super_cution:
+        filename = L".\\resources\\UI\\Attribute(super_cution).png";
+        Scale = { 222.f / 10.f,247.f / 10.f };
+        break;
+    case Obj_attribute::heavy:
+        filename = L".\\resources\\UI\\Attribute(heavy).png";
+        Scale = { 1280.f / 10.f,720.f / 10.f };
+        break;
+    case Obj_attribute::Super_heavy:
+        filename = L".\\resources\\UI\\Attribute(super_heavy).png";
+        Scale = { 222.f / 10.f,247.f / 10.f };
+        break;
+    case Obj_attribute::Fragile:
+        filename = L".\\resources\\UI\\Attribute(fragile).png";
+        Scale = { 1280.f / 10.f,720.f / 10.f };
+        break;
+    case Obj_attribute::Super_fragile:
+        filename = L".\\resources\\UI\\Attribute(super_fragile).png";
+        Scale = { 222.f / 10.f,247.f / 10.f };
+
+        break;
+    case Obj_attribute::Hard_to_Break:
+        filename = L".\\resources\\UI\\Attribute(ŒÅ).png";
+        Scale = { 222.f / 10.f,247.f / 10.f };
+
+        break;
+    case Obj_attribute::Super_hard_to_Break:
+        filename = L".\\resources\\UI\\’´ŒÅ.png";
+        Scale = { 222.f / 10.f,247.f / 10.f };
+        break;
+    }
+  
+    unique_ptr<UI>ui;
+    XMFLOAT2 pos{500.f,400.f};
+    ui = make_unique<UI>(device, filename.c_str(), Scale, pos);
+    uis.push_back(move(ui));
+
 
 }
 void UIManager::Gui()
@@ -177,6 +226,7 @@ void UIManager::Render(RenderContext* rc)
     {
         canbas->Render(rc);
     }
+   
 }
 
 void UIManager::Render(RenderContext* rc, std::string id)

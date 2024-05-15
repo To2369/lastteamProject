@@ -15,7 +15,8 @@ public:
         static Objectmanajer ince;
         return ince;
     }
-    void Initialize(StageName s_name_, ObjType type_name, ID3D11Device* device, XMFLOAT3 pos = { 0,0,0 });
+    void Initialize( ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos);
+    void Initialize(const char* filename, ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos = { 0,0,0 });
     void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
     void Initialize(Chain_Type type, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 angle = {});
     template <typename T>

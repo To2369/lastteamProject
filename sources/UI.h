@@ -7,25 +7,39 @@
 namespace UI_StringID
 {
     //scene title ui id
-    static std::string Start = "Start";
-    static std::string End   = "End";
+    namespace Title_ID
+    {
+        static std::string Start = "Start";
+        static std::string End = "End";
+    };
     //scene stage select ui id
-    static std::string Stage1 = "Stage1";
-    static std::string Stage2 = "Stage2";
-    static std::string Stage3 = "Stage3";
+    namespace StageSelect_ID
+    {
+        static std::string Stage1 = "Stage1";
+        static std::string Stage2 = "Stage2";
+        static std::string Stage3 = "Stage3";
+    };
     //scene game menu ui id
-    static std::string MenuRitrai = "MenuRitrai";
-    static std::string MenuContinue = "MenuContinue";
-    static std::string MenuGibuUp = "MenuGibuUp";
+    namespace Menu_Id
+    {
+        static std::string MenuRitrai = "MenuRitrai";
+        static std::string MenuContinue = "MenuContinue";
+        static std::string MenuGibuUp = "MenuGibuUp";
+    };
     //scene clear ui id
-    static std::string ClearClearLogo = "Clear_ClearLogo";
-    static std::string ClearTitle = "ClearTitle";
-    static std::string ClearStageSelect = "ClearStageSelectButton";
-    static std::string ClearNextStage = "ClearNextStage";
+    namespace Clear_Id
+    {
+        static std::string ClearClearLogo = "Clear_ClearLogo";
+        static std::string ClearTitle = "ClearTitle";
+        static std::string ClearStageSelect = "ClearStageSelectButton";
+        static std::string ClearNextStage = "ClearNextStage";
+    };
     //scene game canbasID
-    static std::string SceneGameUI = "SceneGameUI";
-    static std::string Menu = "Menu";
-    
+    namespace CanbasID
+    {
+        static std::string SceneGameUI = "SceneGameUI";
+        static std::string Menu = "Menu";
+    };
 
 };
 class UI;
@@ -46,6 +60,7 @@ public:
     int GetUICount() { return Uis.size(); }
     std::string GetCanbasID() { return canbasID; }
     UI* GetUI(int i) { return Uis[i].get(); }
+    void UIClear();
 private:
     std::string canbasID = "";
     DirectX::XMFLOAT2 MainPos{};

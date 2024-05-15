@@ -77,5 +77,6 @@ private:
 	float ms = 0;
 	bool Menu = false;
 	bool wasKeyPressed = false;
+	bool wasKeyPressedMenu = false;
 	PlayerManager& plm = PlayerManager::Instance();
 };

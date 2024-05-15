@@ -16,13 +16,26 @@ Fragile::Fragile(ID3D11Device* device)
 
 }
 
+Fragile::Fragile(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Fragile, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+    moveobjectFlag = true;
+}
+
 Fragile::~Fragile()
 {
 }
 
 void Fragile::Update(float elapsedTime)
 {
-
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime;
@@ -54,6 +67,15 @@ Super_fragile::Super_fragile(ID3D11Device* device)
     moveobjectFlag = true;
 }
 
+Super_fragile::Super_fragile(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    initialaize_Set_attribute(ObjType::Super_fragile, ObjType::null);
+    //  Position = { 0,0,0 };
+    Scale.x = Scale.y = Scale.z = 10.f;
+    moveobjectFlag = true;
+}
+
 Super_fragile::~Super_fragile()
 {
 
@@ -61,7 +83,11 @@ Super_fragile::~Super_fragile()
 
 void Super_fragile::Update(float elapsedTime)
 {
-
+    if (GetStatic_Objflag())
+    {
+        UpdateTransform();
+        return;
+    }
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime;

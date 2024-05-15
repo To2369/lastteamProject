@@ -5,6 +5,7 @@ class Fragile :public Object
 
 public:
     Fragile(ID3D11Device* device);
+    Fragile(ID3D11Device* device, const char* filename_);
     ~Fragile()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
@@ -20,6 +21,7 @@ class Super_fragile :public Object
 
 public:
     Super_fragile(ID3D11Device* device);
+    Super_fragile(ID3D11Device* device,const char*filename_);
     ~Super_fragile()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;

@@ -13,7 +13,7 @@
 #include <algorithm>
 using namespace std;
 using namespace DirectX;
-void Objectmanajer::Initialize(StageName s_name_, ObjType type_name, ID3D11Device* device, XMFLOAT3 pos)
+void Objectmanajer::Initialize( ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos)
 {
     unique_ptr<Object> obj;
 
@@ -22,55 +22,46 @@ void Objectmanajer::Initialize(StageName s_name_, ObjType type_name, ID3D11Devic
     case Obj_attribute::cution:
         obj = make_unique<Cution>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_cution:
         obj = make_unique<Super_Cution>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::heavy:
         obj = make_unique<Heavy>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_heavy:
         obj = make_unique<Super_Heavy>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Fragile:
         obj = make_unique<Fragile>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_fragile:
         obj = make_unique<Super_fragile>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Hard_to_Break:
         obj = make_unique<Hard_to_Break>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_hard_to_Break:
         obj = make_unique<Super_hard_to_Break>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     case Obj_attribute::Crack:
         obj = make_unique<Crack>(device);
         obj->SetPosition({ pos });
-        obj->Set_MystageName(s_name_);
         Rigister_obj(move(obj));
         break;
     default:
@@ -80,6 +71,64 @@ void Objectmanajer::Initialize(StageName s_name_, ObjType type_name, ID3D11Devic
     }
 
 
+}
+
+void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos)
+{
+    unique_ptr<Object> obj;
+
+    switch (type_name)
+    {
+    case Obj_attribute::cution:
+        obj = make_unique<Cution>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Super_cution:
+        obj = make_unique<Super_Cution>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::heavy:
+        obj = make_unique<Heavy>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Super_heavy:
+        obj = make_unique<Super_Heavy>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Fragile:
+        obj = make_unique<Fragile>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Super_fragile:
+        obj = make_unique<Super_fragile>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Hard_to_Break:
+        obj = make_unique<Hard_to_Break>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Super_hard_to_Break:
+        obj = make_unique<Super_hard_to_Break>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    case Obj_attribute::Crack:
+        obj = make_unique<Crack>(device,filename);
+        obj->SetPosition({ pos });
+        Rigister_obj(move(obj));
+        break;
+    default:
+        obj = make_unique<stage_OBJ>(device);
+        Rigister_obj(move(obj));
+        break;
+    }
 }
 
 void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id, XMFLOAT3 endpos)
@@ -121,7 +170,7 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
         gimic->SetEndPos(endpos);
         gimic->Set_MystageName(s_name_);
         gimic->SetGimicID(id);
-        gimic->SetAngle({ 0.f,-1.6f,0.f });
+        gimic->SetAngle({ 0.f,0.f,0.f });
         Rigister_Gimic(move(gimic));
         break;
     case Gimic_Type::null:

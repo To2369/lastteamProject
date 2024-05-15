@@ -253,6 +253,15 @@
     <ClCompile Include="sources\scene_clear.cpp">
       <Filter>Sources\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Stage1_5.cpp">
+      <Filter>Sources\Stages\GameStage</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Stage.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\MoveWall.cpp">
+      <Filter>Sources\objects\gimic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

@@ -46,30 +46,30 @@ void Scene_Stage_Serect::initialize()
 	}
 
 	vector<unique_ptr<UI>>UIs;
-	wstring filenam = filepath::UI_Path_Wstring + L"select_stage1.png";
+	wstring filenam = failepath::UI_Path_Wstring + L"select_stage1.png";
 	XMFLOAT2 scale{ 404.495f*0.7f,575.645f };
 	unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
 	ui->SetPosition({101.901f,53.211f});
-	ui->SetID(UI_StringID::Stage1);
+	ui->SetID(UI_StringID::StageSelect_ID::Stage1);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
 
-	filenam = filepath::UI_Path_Wstring + L"select_stage2.png";
+	filenam = failepath::UI_Path_Wstring + L"select_stage2.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
 	ui->SetPosition({519.975f,53.612f});
-	ui->SetID(UI_StringID::Stage2);
+	ui->SetID(UI_StringID::StageSelect_ID::Stage2);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
 
-	filenam = filepath::UI_Path_Wstring + L"select_stage3.png";
+	filenam = failepath::UI_Path_Wstring + L"select_stage3.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
 	ui->SetPosition({916.103f,53.211f});
-	ui->SetID(UI_StringID::Stage3);
+	ui->SetID(UI_StringID::StageSelect_ID::Stage3);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -77,7 +77,7 @@ void Scene_Stage_Serect::initialize()
 
 	UIManager& ince = UIManager::incetance();
 	ince.UI_move(move(UIs));
-	ince.CreateCanbas(UI_StringID::Menu);
+	ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 	UIs.clear();
 }
 
@@ -97,7 +97,8 @@ void Scene_Stage_Serect::update(float elapsedTime)
 	UIManager& ince = UIManager::incetance();
 	
 	StageManager& ince_st = StageManager::incetance();
-	//UIManager& ince=UIManager::incetance();
+	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+	bool isKKeyPressed = (keyState & 0x8000) != 0;
 	int canbascount = ince.GetCanBassCount();
 	for (int i = 0; i < canbascount; i++)
 	{
@@ -108,69 +109,54 @@ void Scene_Stage_Serect::update(float elapsedTime)
 			UI* ui = can->GetUI(j);
 			if (ui->GetHanteiFlag())
 			{
-				if (ui->GetID() == UI_StringID::Stage1)
+				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage1)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+						if (isKKeyPressed && !wasKeyPressed)
 						{
-						
 							ince_st.SetStageName(StageName::stage1_1);
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
-							wasKeyPressed = true; // wasKeyPressedをtrueに設定
-
-						}
-						else
-						{
-							wasKeyPressed = false;// キーが押されていない場合はwasKeyPressedをfalseに設定
 						}
 					}
 				}
-				if (ui->GetID() == UI_StringID::Stage2)
+				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage2)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+						if (isKKeyPressed && !wasKeyPressed) 
 						{
 						
 							ince_st.SetStageName(StageName::stage1_2);
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
-							wasKeyPressed = true; 
 						}
-						else
-						{
-							wasKeyPressed = false;
-
-						}
+						
 					}
 				}
-				if (ui->GetID() == UI_StringID::Stage3)
+				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage3)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 					{
 						ui->SetIsMouse(true);
-						if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+						if (isKKeyPressed && !wasKeyPressed) 
 						{
 							
 							ince_st.SetStageName(StageName::stage1_3);
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
-							wasKeyPressed = true;
+							
 						}
-						else
-						{
-							wasKeyPressed = false;
-
-						}
+						
 					}
 				}
 			}
 		}
 	}
+	wasKeyPressed = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
 	ince.Update(elapsedTime);
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");

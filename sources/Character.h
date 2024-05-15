@@ -26,7 +26,7 @@ private:
     void updateHorizontalMove(float elapsedTime);
 protected:
     //ˆÚ“®ˆ—
-    void move(float vx, float vz, float speed);
+    void Move(float vx, float vz, float speed);
 
     //ù‰ñˆ—
     void turn(float elapsedTime, float vx, float vz, float speed);

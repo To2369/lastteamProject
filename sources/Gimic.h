@@ -198,3 +198,16 @@ private:
     vector<Model::mesh>meshes;
 
 };
+
+class Move_Wall :public Gimic
+{
+public:
+    Move_Wall(ID3D11Device* device);
+    ~Move_Wall();
+public:
+    void Update(float elapsedTime)override;
+    void Render(RenderContext* rc)override;
+
+
+
+};

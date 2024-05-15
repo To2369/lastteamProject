@@ -32,8 +32,9 @@ void Character::UpdateTransform()
 }
 
 //移動処理
-void Character::move(float vx, float vz, float speed)
+void Character::Move(float vx, float vz, float speed)
 {
+   
     // 移動方向ベクトルを決定
     direction.x = vx;
     direction.z = vz;
@@ -107,11 +108,11 @@ void Character::jump(float speed)
 void Character::updateVelocity(float elapsedTime)
 {
     //垂直速度更新処理
-    updateVerticalVelocity(elapsedTime);
+   // updateVerticalVelocity(elapsedTime);
     updateHorizontalVelocity(elapsedTime);
 
     //垂直移動更新処理
-    updateVerticalMove(elapsedTime);
+    //updateVerticalMove(elapsedTime);
     updateHorizontalMove(elapsedTime);
 
 }

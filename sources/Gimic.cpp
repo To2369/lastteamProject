@@ -100,3 +100,4 @@ void Gimic::FallDown(float MaxAngle,float speed)
     }
     Angle.x = XMConvertToRadians(-falldownAngle);
 }
+

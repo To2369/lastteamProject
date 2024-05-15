@@ -93,34 +93,34 @@ void SceneGame::initialize()
 	{
 		vector<unique_ptr<UI>>UIs;
 		UIManager& ince = UIManager::incetance();
-		wstring filenam = filepath::UI_Bottun_Other_Path_Wstring + L"continue.png";
+		wstring filenam = failepath::UI_Bottun_Other_Path_Wstring + L"continue.png";
 		XMFLOAT2 scale{ 391.f * 0.7f,157.f };
 		unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({533.364f,134.103f});
-		ui->SetID(UI_StringID::MenuContinue);
+		ui->SetID(UI_StringID::Menu_Id::MenuContinue);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
-		filenam = filepath::UI_Bottun_Other_Path_Wstring+L"Ritrai.png";
+		filenam = failepath::UI_Bottun_Other_Path_Wstring+L"Ritrai.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({ 533.364f,338.952f });
-		ui->SetID(UI_StringID::MenuRitrai);
+		ui->SetID(UI_StringID::Menu_Id::MenuRitrai);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
-		filenam = filepath::UI_Bottun_Other_Path_Wstring + L"GibuUp.png";
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"GibuUp.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({ 533.364f,542.577f });
-		ui->SetID(UI_StringID::MenuGibuUp);
+		ui->SetID(UI_StringID::Menu_Id::MenuGibuUp);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
 
 		ince.UI_move(move(UIs));
-		ince.CreateCanbas(UI_StringID::Menu);
+		ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 		UIs.clear();
 
 		//MaskSprite = make_unique<sprite>();
@@ -165,8 +165,11 @@ void SceneGame::update(float elapsed_time)
 	{
 		wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
 	}
+	
 	if (Menu)
 	{
+		SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+		bool isKKeyPressed = (keyState & 0x8000) != 0;
 		int canbascount = ince.GetCanBassCount();
 		for (int i = 0; i < canbascount; i++)
 		{
@@ -177,42 +180,37 @@ void SceneGame::update(float elapsed_time)
 				UI* ui = can->GetUI(j);
 				if (ui->GetHanteiFlag())
 				{
-					if (ui->GetID() == UI_StringID::MenuContinue)
+					if (ui->GetID() == UI_StringID::Menu_Id::MenuContinue)
 					{
 
 						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 						{
 							ui->SetIsMouse(true);
-							if (GetAsyncKeyState(VK_LBUTTON))
-							{
-
+							if (isKKeyPressed && !wasKeyPressedMenu) {
 								Menu = false;
 							}
 						}
 					}
-					if (ui->GetID() == UI_StringID::MenuRitrai)
+					if (ui->GetID() == UI_StringID::Menu_Id::MenuRitrai)
 					{
 
 						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 						{
 							ui->SetIsMouse(true);
-							if (GetAsyncKeyState(VK_LBUTTON))
-							{
+							if (isKKeyPressed && !wasKeyPressedMenu) {
 
 								StageManager::incetance().SetStageName(StageName::stage1_1);
 								SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 							}
 						}
 					}
-					if (ui->GetID() == UI_StringID::MenuGibuUp)
+					if (ui->GetID() == UI_StringID::Menu_Id::MenuGibuUp)
 					{
 
 						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
 						{
 							ui->SetIsMouse(true);
-							if (GetAsyncKeyState(VK_LBUTTON))
-							{
-
+							if (isKKeyPressed && !wasKeyPressedMenu) {
 								
 								SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 							}
@@ -220,7 +218,9 @@ void SceneGame::update(float elapsed_time)
 					}
 				}
 			}
+
 		}
+		wasKeyPressedMenu = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
 		ince.Update(elapsed_time);
 		return;
 	}
@@ -581,11 +581,11 @@ void SceneGame::render(float elapsed_time)
 	//UI描画
 	{
 		
-		ince_ui.Render(&rc,UI_StringID::SceneGameUI);
+		ince_ui.Render(&rc,UI_StringID::CanbasID::SceneGameUI);
 		if (Menu)
 		{
 
-			ince_ui.Render(&rc, UI_StringID::Menu);
+			ince_ui.Render(&rc, UI_StringID::CanbasID::Menu);
 		}
 	}
 

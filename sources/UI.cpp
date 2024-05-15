@@ -104,6 +104,11 @@ void CanBas::ResultInfo()
     }
 }
 
+void CanBas::UIClear()
+{
+    Uis.clear();
+}
+
 
 UI::UI(ID3D11Device*device,const wchar_t* filename, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT2 pos)
 {
@@ -162,11 +167,11 @@ void UI::Render(RenderContext* rc)
     XMVECTOR UC_pos=XMVectorSubtract(XMLoadFloat2(&Pos),XMLoadFloat2(&canbasPos));
    
     XMStoreFloat2(&sp_pos, UC_pos);
-   
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
     Ui->render(graphics.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y,
         Color.x,Color.y,Color.z,Color.w,
         0);
-   
+    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
 
 void UI::Gui()

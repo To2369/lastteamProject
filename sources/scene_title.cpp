@@ -49,24 +49,36 @@ void SceneTitle::initialize()
 	{
 	}
 	vector<unique_ptr<UI>>UIs;
-	wstring filenam = filepath::UI_Bottun_Other_Path_Wstring + L"StartButton.png";
-	unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(),filenam.c_str());
-	ui->SetScale({ 391.f,157.f});
-	ui->SetPosition({855.179f,257.898f});
-	ui->SetID(UI_StringID::Start);
+	wstring filenam = L"";
+	unique_ptr<UI>ui;
+	XMFLOAT2 scale{264.928f,101.677f};
+
+	filenam = failepath::UI_Path_Wstring + L"TitleBack.png";
+	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+	ui->SetScale({ 1280.f,720.f });
+	ui->SetPosition({});
+	ui->SetID(UI_StringID::Title_ID::End);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
 
-	filenam = filepath::UI_Bottun_Other_Path_Wstring +L"EndButton.png";
-	ui = make_unique<UI>(graphics.GetDevice(),filenam.c_str());
-	ui->SetScale({ 391.f,157.f });
-	ui->SetPosition({855.179f,514.467});
-	ui->SetID(UI_StringID::End);
+	filenam = failepath::UI_Bottun_Other_Path_Wstring + L"StartButton.png";
+	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+	ui->SetScale(scale);
+	ui->SetPosition({ 898.248f,365.087 });
+	ui->SetID(UI_StringID::Title_ID::Start);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
 
+	filenam = failepath::UI_Bottun_Other_Path_Wstring + L"EndButton.png";
+	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+	ui->SetScale(scale);
+	ui->SetPosition({ 898.248f,550.694 });
+	ui->SetID(UI_StringID::Title_ID::End);
+	ui->SetHanteiFlag(true);
+	UIs.push_back(move(ui));
+	ui = nullptr;
 	UIManager& ince = UIManager::incetance();
 	ince.UI_move(move(UIs));
 	ince.CreateCanbas();
@@ -81,7 +93,8 @@ void SceneTitle::update(float elapsed_time)
 	camera_controller->SetAngle({ 0.0f,-0.0f,0.0f });
 	camera_controller->Update(elapsed_time);
 	UIManager& ince = UIManager::incetance();
-	
+	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+	bool isKKeyPressed = (keyState & 0x8000) != 0;
 	
 		//UIManager& ince=UIManager::incetance();
 		int canbascount = ince.GetCanBassCount();
@@ -94,34 +107,30 @@ void SceneTitle::update(float elapsed_time)
 				UI* ui = can->GetUI(j);
 				if (ui->GetHanteiFlag())
 				{
-					if (ui->GetID() == UI_StringID::Start)
+					if (ui->GetID() == UI_StringID::Title_ID::Start)
 					{
 						UIManager& ince = UIManager::incetance();
 					
 						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
 						{
 							ui->SetIsMouse(true);
-							if (GetAsyncKeyState(VK_LBUTTON) & 0x8000)
+							if (isKKeyPressed && !wasKeyPressed)
 							{
-								if (!wasKeyPressed)
-								{
-									SceneManagement::instance().SceneChange(
-										new SceneLoading(new Scene_Stage_Serect));
-								}
-								wasKeyPressed = true; // wasKeyPressed‚ğtrue‚Éİ’è
-
+							    SceneManagement::instance().SceneChange(
+									new SceneLoading(new Scene_Stage_Serect));
 							}
-							else wasKeyPressed = false; // wasKeyPressed‚ğtrue‚Éİ’è
+							
 
 						}
 					}
-					if (ui->GetID() == UI_StringID::End)
+					if (ui->GetID() == UI_StringID::Title_ID::End)
 					{
 
 					}
 				}
 			}
 		}
+		wasKeyPressed = isKKeyPressed;//¡‰ñƒL[‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚©‚ğŸ‰ñ‚Åg‚¤‚½‚ß‚É“ü‚ê‚Ä‚¨‚­
 		ince.Update(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 	
