@@ -15,6 +15,7 @@ extern ImWchar glyphRangesJapanese[];
 #endif
 #include"UIManajer.h"
 #include "Graphics/graphics.h"
+#include "Graphics/shader.h"
 #include"scene_loading.h"
 #include"scene_title.h"
 //
@@ -52,7 +53,7 @@ void SceneGame::initialize()
 	camera.SetPerspectiveFov(
 		DirectX::XMConvertToRadians(90),
 		x / y,
-		0.1f,
+		0.05f,
 		1000.0f
 	);
 	camera_controller = std::make_unique<CameraController>();
@@ -88,6 +89,7 @@ void SceneGame::initialize()
 		uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
 		framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+		graphics.SetPixelShader(0, "shader\\outline_ps.cso");
 	}
 	//MenuUI¶¬
 	{
@@ -589,7 +591,21 @@ void SceneGame::render(float elapsed_time)
 	scene_data->deactivate(graphics.GetDeviceContext());
 	parametric_constant->deactivate(graphics.GetDeviceContext());
 	framebuffers[0]->deactivate(graphics.GetDeviceContext());
+
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
+	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
+
+#if 1
+	ID3D11ShaderResourceView* srvs[]
+	{
+		framebuffers[0]->shader_resource_views[0].Get(),	//color map
+		framebuffers[0]->shader_resource_views[1].Get()		//depth map
+	};
+
+	graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), srvs, 0, _countof(srvs), graphics.GetPixelShader(0));
+#else
 	graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
+#endif
 	GetAsyncKeyState(VK_RBUTTON);
 	//UI•`‰æ
 	{

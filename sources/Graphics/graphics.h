@@ -39,9 +39,12 @@ public:
 	
 	fullscreen_quad* GetBitBlockTransfer() { return bit_block_transfer.get(); }
 	
+	ID3D11PixelShader* GetPixelShader(int at) { return pixel_shader[at].Get(); }
+
+	void SetPixelShader(int at, const char* cso_name);
+
 public:
 	void renderinit();
-
 private:
 	static Graphics* instance;
 private:
@@ -71,6 +74,8 @@ private:
 	std::unique_ptr<fullscreen_quad> bit_block_transfer;
 
 	std::unique_ptr<ImGuiRenderer> imguiRenderer = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader[8];
 
 	BOOL fullscreen_mode{ FALSE };
 	BOOL vsync{ FALSE };

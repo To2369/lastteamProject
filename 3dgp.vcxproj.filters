@@ -520,6 +520,9 @@
     <FxCompile Include="hlsl\debug_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="hlsl\outline_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="sources\Resource.rc">

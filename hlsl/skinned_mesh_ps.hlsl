@@ -8,8 +8,7 @@ float4 main(VS_OUT pin) : SV_TARGET
 {
 	float4 color = texture_maps[0].Sample(sampler_states[ANISOTROPIC], pin.texcoord);
 	float alpha = color.a;
-	
-    //return color;
+    return color * pin.color;
 #if 0
 	//Inverse ganma process
 	const float GANMA = 2.2;
@@ -30,5 +29,4 @@ float4 main(VS_OUT pin) : SV_TARGET
 	float3 V = normalize(camera_position.xyz - pin.world_position.xyz);
 	float3 specular = pow(max(0, dot(N, normalize(V + L))), 128);
 	return float4(diffuse /* + specular*/, alpha) * pin.color;
-	//return 
 }

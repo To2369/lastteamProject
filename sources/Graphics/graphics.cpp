@@ -1,5 +1,6 @@
 #include "graphics.h"
 #include "misc.h"
+#include "shader.h"
 
 #include "scene_management.h"
 
@@ -65,6 +66,11 @@ Graphics::Graphics()
 
 Graphics::~Graphics()
 {
+}
+
+void Graphics::SetPixelShader(int at, const char* cso_name)
+{
+	create_ps_from_cso(device.Get(), cso_name, pixel_shader[at].GetAddressOf());
 }
 
 void Graphics::renderinit()
