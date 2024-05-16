@@ -39,63 +39,10 @@ void Character::Move(float vx, float vz, float speed)
     // 移動方向ベクトルを決定
     direction.x = vx;
     direction.z = vz;
-    velocity.x = vx;
-    velocity.z = vz;
+    //velocity.x = vx;
+    //velocity.z = vz;
     // 最大速度設定
     maxMoveSpeed = speed;
-}
-
-//旋回処理
-void Character::turn(float elapsedTime, float vx, float vz, float speed)
-{
-    //speed *= elapsedTime;
-
-    ////進むべき進行ベクトルがゼロの阿合は旋回処理の必要なし
-    //float length = sqrtf(vx * vx + vz * vz);
-    //if (length < 0.001f)
-    //{
-    //    return;
-    //}
-
-    ////進行ベクトルと単位ベクトル化
-    //vx /= length;
-    //vz /= length;
-
-    ////前方向ベクトルのXZ成分を取得し単位ベクトル化
-    //float frontX = transform._31;   //前方向ベクトルのX成分
-    //float frontZ = transform._33;   //前方向ベクトルのZ成分
-    //float frontLength = sqrtf(frontX * frontX + frontZ * frontZ);
-    //if (frontLength > 0.0f)
-    //{
-    //    frontX /= frontLength;
-    //    frontZ /= frontLength;
-    //}
-
-    ////左右チェックのための外積計算
-    //float cross = (frontZ * vx) - (frontX * vz);
-
-    ////回転角を求めるため、2つの単位ベクトルの内積を計算する
-    ////2つのベクトルの内積値は-1.0~1.0で表現されます.
-    //float dot = (frontX * vx) + (frontZ * vz);
-
-    ////2つのベクトルが重なった時、回転速度は0.0fになる
-    //float rot = (1.0f - dot);
-
-    ////あまり離れすぎると回転速度が早くなりすぎるのでspeed以上の回転速度にはならないよう制限
-    //if (rot > speed)
-    //{
-    //    rot = speed;
-    //}
-
-    ////外積が正の場合は右回転、負の場合は左回転
-    //if (cross < 0.0f)
-    //{
-    //    angle.y -= rot;
-    //}
-    //else
-    //{
-    //    angle.y += rot;
-    //}
 }
 
 //ジャンプ処理
@@ -283,7 +230,6 @@ void Character::updateVerticalMove(float elapsedTime)
 //水平速度更新処理
 void Character::updateHorizontalVelocity(float elapsedTime)
 {
-#if 1
     // 速度に力が加わっていたら（0 じゃなかったら）減速処理を行う
     float length = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     if (length > 0.0f)
@@ -355,75 +301,13 @@ void Character::updateHorizontalVelocity(float elapsedTime)
             }
         }
     }
-#endif
-  
+    direction.x = 0;
+    direction.z = 0;
 }
 
 //水平移動更新処理
 void Character::updateHorizontalMove(float elapsedTime)
 {
-#if 0//透真
-    float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
-    if (velocityLengthXZ > 0.0f)
-    {
-        //計算用の移動後の速度
-        float moveX = velocity.x * elapsedTime;
-        float moveZ = velocity.z * elapsedTime;
-
-        HitResult hit;
-        XMFLOAT3 start{ position.x,position.y+1.0f,position.z };
-        XMFLOAT3 end{ position.x + moveX,position.y+1.0f,position.z + moveZ };
-        Ray_ObjType type = Ray_ObjType::DaynamicObjects;
-        VMCFHT& ins_ray = VMCFHT::instance();
-        Objectmanajer& objMgr = Objectmanajer::incetance();
-        int count = objMgr.Get_GameObjCount();
-        for (int i = 0; i < count; i++)
-        {
-            Object* obj = objMgr.Get_GameObject(i);
-            Object::SphereQuadPlacement spherePos;
-            if (ins_ray.RayCast(start, end, hit, type))
-            {
-
-                //壁までのベクトル
-                DirectX::XMVECTOR Start = DirectX::XMLoadFloat3(&start);
-                DirectX::XMVECTOR End = DirectX::XMLoadFloat3(&end);
-                DirectX::XMVECTOR Vec = DirectX::XMVectorSubtract(End, Start);
-
-                //壁の法線
-                DirectX::XMVECTOR Normal = DirectX::XMLoadFloat3(&hit.normal);
-
-                //入射ベクトルを法線に射影
-                DirectX::XMVECTOR Dot = DirectX::XMVector3Dot(DirectX::XMVectorNegate(Vec), Normal);
-
-                //補正位置の計算
-                DirectX::XMVECTOR CollectPosition = DirectX::XMVectorMultiplyAdd(Normal, Dot, End);
-                DirectX::XMFLOAT3 collectPosition;//p
-                DirectX::XMStoreFloat3(&collectPosition, CollectPosition);
-                HitResult hit2;
-                if (!ins_ray.RayCast(start, end, hit2, type))
-                {
-                    //壁ずる方向で壁に当たらなかったら補正位置に移動
-                    position.x = collectPosition.x;
-                    position.z = collectPosition.z;
-                    break;
-                }
-                else
-                {
-                    position.x = hit2.position.x;
-                    position.z = hit2.position.z;
-                    break;
-                }
-            }
-            else
-            {
-                // 移動処理
-                position.x += moveX;
-                position.z += moveZ;
-                break;
-            }
-        }
-    }
-#else
     float velocityLengthXZ = sqrtf(velocity.x * velocity.x + velocity.z * velocity.z);
     if (velocityLengthXZ > 0.0f)
     {
@@ -560,5 +444,4 @@ void Character::updateHorizontalMove(float elapsedTime)
         }
 
     }
-#endif
 }

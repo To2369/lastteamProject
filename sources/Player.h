@@ -44,6 +44,7 @@ private:
     const char* filename = ".\\Resources\\Character\\Hand\\hand.fbx";
     const char* Sfilename = ".\\Resources\\Character\\Syringe\\syringe_M.fbx";      //注射器用
 
+    DirectX::XMFLOAT3 resetPosition = {};       //ステージから落下した際に初期位置に戻す
     //移動スピード
     float moveSpeed = 1.0f;
 

@@ -28,9 +28,6 @@ protected:
     //移動処理
     void Move(float vx, float vz, float speed);
 
-    //旋回処理
-    void turn(float elapsedTime, float vx, float vz, float speed);
-
     //ジャンプ処理
     void jump(float speed);
 
@@ -119,12 +116,12 @@ protected:
 
     bool groundedFlag = false;
 
-    float friction = 0.5f;                          //摩擦力
+    float friction = 1.3f;                          //摩擦力
 
-    float acceleration = 1.0f;                      //加速度
-    float maxMoveSpeed = 5.0f;                      //最大速度
-    DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向
-    float airControl = 0.0001f;                        //空中制御用係数
+    float acceleration = 2.0f;                      //加速度
+    float maxMoveSpeed = 3.0f;                      //最大速度
+    DirectX::XMFLOAT3 direction = { 0,0,0 };        //移動方向w
+    float airControl = 0.3f;                        //空中制御用係数
     bool extractFlag = false;                       //オブジェクトの属性抽出できるか
     ObjType playerType = ObjType::null;
     //斜めの時間制限

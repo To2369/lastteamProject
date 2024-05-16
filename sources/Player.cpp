@@ -51,7 +51,8 @@ Player::Player(ID3D11Device* device)
     color = {0,0,0,0};
     isHand = false;
     radius = 0.1f;
-    Sposition = { 0,23,0 };
+    Sposition = { 0,1000,0 };
+    resetPosition = position;
 }
 
 //デストラクタ
@@ -85,13 +86,16 @@ void Player::update(float elapsedTime)
     UpdateTransform();
 
     gamepad& gamePad = gamepad::Instance();
-    if (GetKeyState('L'))
+    if (position.y<-20)
     {
+        velocity.x = 0;
         velocity.y = 0;
-        position.y = 1;
-        velocity.y = 0;
-        position.x = 0;
-        position.z = 0;
+        velocity.z = 0;
+        direction.x = 0;
+        direction.z = 0;
+        position.x = resetPosition.x;
+        position.y = resetPosition.y+5;
+        position.z = resetPosition.z;
     }
     //if (GetAsyncKeyState('U') & 0x8000) // 'K'キーが押されたかどうかを確認
     //{
@@ -161,11 +165,8 @@ void Player::inputMove(float elapsedTime)
 
     Move(moveVec.x, moveVec.z, this->moveSpeed);
 
-    //旋回処理
-    turn(elapsedTime, moveVec.x, moveVec.z, this->turnSpeed);
-
     //進行ベクトルがゼロベクトルでない場合は入力された
-    moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f;
+    //moveVec.x != 0.0f || moveVec.y != 0.0f || moveVec.z != 0.0f;
 }
 
 //入力値から移動ベクトルを取得
@@ -178,8 +179,8 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 
     //カメラ方向を取得
     Camera& camera = Camera::instance();
-    const DirectX::XMFLOAT3 cameraFront = camera.GetFront();//camera->getFront();
-    const DirectX::XMFLOAT3 cameraRight = camera.GetRight();
+    const DirectX::XMFLOAT3& cameraFront = camera.GetFront();//camera->getFront();
+    const DirectX::XMFLOAT3& cameraRight = camera.GetRight();
 
 
     //カメラ右方向ベクトルをXZ単位ベクトルに変換
@@ -200,14 +201,14 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
     float cameraFrontLength = sqrtf(cameraFrontX * cameraFrontX + cameraFrontZ * cameraFrontZ);
     if (cameraFrontLength < 0.0f)
     {
-        cameraFrontX = cameraFrontX / cameraFrontLength;
-        cameraFrontZ = cameraFrontZ / cameraFrontLength;
+        cameraFrontX /= cameraFrontLength;
+        cameraFrontZ /= cameraFrontLength;
     }
 
     //垂直入力値をカメラ前方向に反映し、水平方向をカメラ右方向に反映し進行ベクトルを計算する
     DirectX::XMFLOAT3 vec;
-    vec.x = cameraFrontX * ay + cameraRightX * ax;
-    vec.z = cameraFrontZ * ay + cameraRightZ * ax;
+    vec.x = (cameraRightX * ax) + (cameraFrontX * ay);
+    vec.z = (cameraRightZ * ax) + (cameraFrontZ * ay);
 
     //Y軸方向には移動しない
     vec.y = 0.0f;
@@ -219,7 +220,7 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 void Player::inputJump()
 {
     gamepad& gamePad = gamepad::Instance();
-    if (gamePad.button_state(gamepad::button::a))
+    if (gamePad.button_state(gamepad::button::a))//(スペースキー,Aボタン)
     {
         //ジャンプ回数制限
         if (jumpCount < jumpLimit)
@@ -250,7 +251,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         //衝突判定
         Object::ResultSphereQuadPlacement outsphere;
 
-        if (GetKeyState(' '))//supaceキー
+        if (GetKeyState(' '))//(右クリック、LBボタン)
         {
             if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
             {
@@ -375,7 +376,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         Object* obj = objMgr.Get_GameObject(i);
         if (ince_ray.RayCast(start, end, hit, type2))
         {
-            //抽出
+            //抽出(左クリック、RBボタン)
             if (gamePad.button_state(gamepad::button::b))
             {
                 updateSyringepos();
@@ -383,7 +384,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 pullType = true;
                 break;
             }
-            //注入
+            //注入(左クリック、RBボタン)
             if (GetKeyState('J'))
             {
                 updateSyringepos();
@@ -395,7 +396,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         //円柱と
         else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
-            //抽出
+            //抽出(左クリック、RBボタン)
             if (gamePad.button_state(gamepad::button::b))
             {
                 updateSyringepos();
@@ -403,7 +404,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 pullType = true;
                 break;
             }
-            //注入
+            //注入(左クリック、RBボタン)
             if (GetKeyState('J'))
             {
                 updateSyringepos();
