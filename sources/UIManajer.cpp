@@ -13,7 +13,7 @@ void UIManager::CreateCanbas()
 
 void UIManager::CreateCanbas(std::string id)
 {
-    unique_ptr<CanBas>can = make_unique<CanBas>(move(UIs),id);
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(UIs), id);
     CanBass.push_back(move(can));
     UIs.clear();
 }
@@ -22,62 +22,62 @@ void UIManager::CreateGameSceneUI(ID3D11Device* device)
 {
     ObjectTypes.clear();
     GetStageObjectTypes();
-    int count = ObjectTypes.size();
-    
+    int count = static_cast<int>(ObjectTypes.size());
+
     XMFLOAT2 Scale;
     vector<unique_ptr<UI>>ui;
     for (int i = 0; i < count; i++)
     {
-        wchar_t* filename=L"";
+        wchar_t* filename = L"";
         switch (ObjectTypes[i])
         {
-          case Obj_attribute::cution:
-              filename = L".\\resources\\UI\\Attribute(cution).png";
-              Scale = { 1280.f/11.f,720.f/11.f };
-              break;
-          case Obj_attribute::Super_cution:
-              filename = L".\\resources\\UI\\Attribute(super_cution).png";
-              Scale = { 222.f / 10.f,247.f / 10.f };
-              break;
-          case Obj_attribute::heavy:
-              filename = L".\\resources\\UI\\Attribute(heavy).png";
-              Scale = { 1280.f / 10.f,720.f / 10.f };
-              break;
-          case Obj_attribute::Super_heavy:
-              filename = L".\\resources\\UI\\Attribute(super_heavy).png";
-              Scale = { 222.f / 10.f,247.f / 10.f };
-              break;
-          case Obj_attribute::Fragile:
-              filename = L".\\resources\\UI\\Attribute(fragile).png";
-              Scale = { 1280.f / 10.f,720.f / 10.f };
-              break;
-          case Obj_attribute::Super_fragile:
-              filename = L".\\resources\\UI\\Attribute(super_fragile).png";
-              Scale = { 222.f / 10.f,247.f / 10.f };
+        case Obj_attribute::cution:
+            filename = L".\\resources\\UI\\Attribute(cution).png";
+            Scale = { 1280.f / 11.f,720.f / 11.f };
+            break;
+        case Obj_attribute::Super_cution:
+            filename = L".\\resources\\UI\\Attribute(super_cution).png";
+            Scale = { 222.f / 10.f,247.f / 10.f };
+            break;
+        case Obj_attribute::heavy:
+            filename = L".\\resources\\UI\\Attribute(heavy).png";
+            Scale = { 1280.f / 10.f,720.f / 10.f };
+            break;
+        case Obj_attribute::Super_heavy:
+            filename = L".\\resources\\UI\\Attribute(super_heavy).png";
+            Scale = { 222.f / 10.f,247.f / 10.f };
+            break;
+        case Obj_attribute::Fragile:
+            filename = L".\\resources\\UI\\Attribute(fragile).png";
+            Scale = { 1280.f / 10.f,720.f / 10.f };
+            break;
+        case Obj_attribute::Super_fragile:
+            filename = L".\\resources\\UI\\Attribute(super_fragile).png";
+            Scale = { 222.f / 10.f,247.f / 10.f };
 
-              break;
-          case Obj_attribute::Hard_to_Break:
-              filename = L".\\resources\\UI\\Attribute(ŒÅ).png";
-              Scale = { 222.f / 10.f,247.f / 10.f };
+            break;
+        case Obj_attribute::Hard_to_Break:
+            filename = L".\\resources\\UI\\Attribute(ŒÅ).png";
+            Scale = { 222.f / 10.f,247.f / 10.f };
 
-              break;
-          case Obj_attribute::Super_hard_to_Break:
-              filename = L".\\resources\\UI\\’´ŒÅ.png";
-              Scale = { 222.f / 10.f,247.f / 10.f };
+            break;
+        case Obj_attribute::Super_hard_to_Break:
+            filename = L".\\resources\\UI\\’´ŒÅ.png";
+            Scale = { 222.f / 10.f,247.f / 10.f };
 
-              break;
+            break;
         }
-       
+
         XMFLOAT2 slidPos{ 100.f * i,0.f };
-        ui.push_back(make_unique<UI>(device, reinterpret_cast<const wchar_t*>(filename), Scale,slidPos));
+        ui.push_back(make_unique<UI>(device, reinterpret_cast<const wchar_t*>(filename), Scale, slidPos));
     }
-   
-    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui),UI_StringID::CanbasID::SceneGameUI);
+
+    unique_ptr<CanBas>can = make_unique<CanBas>(move(ui), UI_StringID::CanbasID::SceneGameUI);
     CanBass.push_back(move(can));
     ui.clear();
 
 }
-void UIManager::CreateUI(ID3D11Device* device,ObjType type,vector<unique_ptr<UI>>&uis)
+void UIManager::CreateUI(ID3D11Device* device, ObjType type, vector<unique_ptr<UI>>& uis)
 {
     wstring filename = L"";
     XMFLOAT2 Scale;
@@ -118,9 +118,9 @@ void UIManager::CreateUI(ID3D11Device* device,ObjType type,vector<unique_ptr<UI>
         Scale = { 222.f / 10.f,247.f / 10.f };
         break;
     }
-  
+
     unique_ptr<UI>ui;
-    XMFLOAT2 pos{500.f,400.f};
+    XMFLOAT2 pos{ 500.f,400.f };
     ui = make_unique<UI>(device, filename.c_str(), Scale, pos);
     uis.push_back(move(ui));
 
@@ -171,7 +171,7 @@ bool UIManager::Mouse_VS_UI(DirectX::XMFLOAT2 SP_POS, XMFLOAT2 Scale)
     XMFLOAT2 winPos = { static_cast<float>(ince.GetWindowPosition().x),static_cast<float>(ince.GetWindowPosition().y) };
     float LeftPos, RightPos, DownPos, UpPos;
     LeftPos = SP_POS.x + winPos.x;
-    RightPos = SP_POS.x + Scale.x + winPos.x+20.f;
+    RightPos = SP_POS.x + Scale.x + winPos.x + 20.f;
     DownPos = SP_POS.y + Scale.y + winPos.y + 30.f;
     UpPos = SP_POS.y + winPos.y + 30.f;
     if (cursorPos.x > LeftPos &&
@@ -190,8 +190,8 @@ void UIManager::GetStageObjectTypes()
     for (int i = 0; i < count; i++)
     {
         Object* obj = ince_o.Get_GameObject(i);
-        ObjType type=obj->Get_Original_Objtype(0);
-        if (type!= ObjType::null&&type!=ObjType::Crack)
+        ObjType type = obj->Get_Original_Objtype(0);
+        if (type != ObjType::null && type != ObjType::Crack)
         {
             ObjectTypes.push_back(type);
         }
@@ -205,6 +205,9 @@ void UIManager::GetStageObjectTypes()
             if (ObjectTypes[i] == ObjectTypes[j])
             {
                 ObjectTypes.erase(ObjectTypes.begin() + j);
+                i = 0;
+                j = 0;
+                count = static_cast<int>(ObjectTypes.size());
             }
 
         }
@@ -226,7 +229,7 @@ void UIManager::Render(RenderContext* rc)
     {
         canbas->Render(rc);
     }
-   
+
 }
 
 void UIManager::Render(RenderContext* rc, std::string id)

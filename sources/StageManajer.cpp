@@ -29,13 +29,13 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
-		obj_Manager.Initialize(ObjType::heavy, device,false,{
+		obj_Manager.Initialize(ObjType::heavy, device, false, {
 
 			  -1.037836f,
 			   1.747557f,
 			  -0.430794f
 			});
-		obj_Manager.Initialize(ObjType::cution,device,true, {
+		obj_Manager.Initialize(ObjType::cution, device, true, {
 			 -1.336630f,
 			 1.747557f,
 			  0.460227f
@@ -118,20 +118,20 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			}, "kabe");
 		ince_UI.CreateGameSceneUI(device);
 	}
-		break;
+	break;
 	case StageName::stage1_2:
 	{
 		PlayerManager& ince_p = PlayerManager::Instance();
-		ince_p.GetPlayer(0)->SetPosition({4.713f,11.f,-0.564f});
+		ince_p.GetPlayer(0)->SetPosition({ 3.702f,-3.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_2,
 			Gimic_Type::Goal, device,
-			{5.273017f,10.479757f,-0.595079f});
+			{ 7.577f,7.223f,-0.535f });
 		{
 
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{4.252f,7.290f,-0.020f},
+				{ 4.252f,7.290f,-0.020f },
 				"num1",
-			    {4.252f,5.154f,-0.020f});
+				{ 4.252f,5.154f,-0.020f });
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
 				{ 4.30f,7.287f,-0.948f },
 				"num1",
@@ -141,25 +141,36 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
 				{ 4.247f,6.944f,-0.941f },
 				"num1",
-				{0.f,-1.6f,0.f}
+				{ 0.f,-1.6f,0.f }
 			);
-			
-			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ 4.208444f,0,-0.432f,},
-				    "num1",
-				{0.000000f,-1.620995f,0.000000f});
-		
-			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ 4.208f,7.794f,-0.432f,},
-				"num1",
-				{0.000000f,-1.590007f,0.000000f});
 
+			obj_Manager.Initialize(Chain_Type::lift_chain_L,
+				{ 4.304f,0,-0.432f, },
+				"num1",
+				{ 0.000000f,-1.620995f,0.000000f });
+
+			obj_Manager.Initialize(Chain_Type::lift_chain_S,
+				{ 4.208f,7.794f,-0.432f, },
+				"num1",
+				{ 0.000000f,-1.590007f,0.000000f });
+			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				{
+				 1.879f,
+				 5.094f,
+				-1.005f
+				});
+			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				{
+				4.421f,
+				 8.920f,
+				-0.061f
+				});
 		}
 		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -0.891f,5.178f,0.113f },
+				{ -0.891f,5.178f,0.012f },
 				"num2",
-				{ -0.891f,3.089f,0.113f });
+				{ -0.891f,3.089f,0.012f });
 
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
 				{ -0.839f,5.218f,-0.929f },
@@ -178,14 +189,26 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				{ -0.871f,5.644f,-0.440f, },
 				"num2",
 				{ 0.000000f,-1.590007f,0.000000f });
+			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				{
+				 -2.073f,
+				2.986f,
+				-1.005f
+				});
+			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				{
+				-0.747f,
+				6.347f,
+				0.093f
+				});
 
 		}
-		
+
 		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{ -5.158f,1.562f,-0.945f },
 				"num3",
-				{ -5.158f,-0.574f,-0.945f});
+				{ -5.158f,-0.574f,-0.945f });
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
 				{ -5.096f,1.555f,-0.013f },
 				"num3",
@@ -196,7 +219,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				"num3",
 				{ 0.f,1.6f,0.f }
 			);
-		
+
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
 				{ -5.110f,0.f,-0.483f },
 				"num3",
@@ -206,54 +229,59 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				{ -5.158f,2.025f, -0.492f },
 				"num3",
 				{ 0.000000f,1.6f,0.000000f });
-
+			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				{
+				 -3.076f,
+				-0.486f,
+				-0.581f
+				});
+			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				{
+				-5.284f,
+				2.f,
+				-1.016f
+				});
 		}
-
-		
-     	{
+		{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{ -0.008f,-0.600f,-0.932f },
-				"num3",
-				{ -0.008f,-2.707f,-0.932f});
+				"num4",
+				{ -0.008f,-2.707f,-0.932f });
 			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
 				{ -0.002f,-0.573f,-0.013f },
-				"num3",
+				"num4",
 				{ 0.f,-1.6f,0.f }
 			);
 			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
 				{ -0.009f,-0.944f,-0.013f },
-				"num3",
+				"num4",
 				{ 0.f,1.6f,0.f }
 			);
 
 			obj_Manager.Initialize(Chain_Type::lift_chain_L,
 				{ -0.019f,0.f,-0.483f },
-				"num3",
+				"num4",
 				{ 0.000000f,1.6f,0.000000f });
 
 			obj_Manager.Initialize(Chain_Type::lift_chain_S,
 				{ -0.004f,-0.120f, -0.492f },
-				"num3",
+				"num4",
 				{ 0.000000f,1.6f,0.000000f });
-
-		}
-		{
-
-			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(),ObjType::heavy,device,false,
+			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
 				{
-				 1.966055f,
-				 8.532003f,
-				 -0.002939f
+				 2.397f,
+				-2.823f,
+				-1.227f
 				});
-		/*	obj_Manager.Initialize(name,ObjType::heavy,device,
+			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
 				{
-
-
-
-				})*/
-
+				-0.093f,
+				-0.393f,
+				-0.961f
+				});
 
 		}
+
 		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
 		Rigister(move(stage));
@@ -365,6 +393,7 @@ void StageManager::Result_Object_Info(Object& obj)
 			break;
 		case ObjType::null:
 			return "null";
+			break;
 		case ObjType::Crack:
 			return"Crack";
 			break;
@@ -421,7 +450,7 @@ void StageManager::Result_Gimic_Info(Gimic& obj)
 		};
 
 	string s = typeList(obj.Get_GimicType());
-	
+
 
 	OutputDebugStringA(s.c_str());
 	obj.ResultInfo();
@@ -609,7 +638,7 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 			case Chain_Type::null:
 				return "null";
 				break;
-			
+
 			}
 			return "";
 		};
@@ -646,7 +675,7 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 		}
 		DebugMode_MouseRayCast(mode, device);
 	}
-	
+
 	else if (mode == DebugMode::Create_Object)
 	{
 		auto p = [](debugType type) {
@@ -742,8 +771,8 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 
 
 			}
-			if (CreateGimicType != Gimic_Type::null && 
-				CreateObjeType != ObjType::null && 
+			if (CreateGimicType != Gimic_Type::null &&
+				CreateObjeType != ObjType::null &&
 				CreateStaticObjeType != Static_ObjType::null)
 			{
 				CreateStaticObjeType = Static_ObjType::null;
@@ -1018,7 +1047,7 @@ void StageManager::CreateLiftChain(Chain_Type type, ID3D11Device* device, Inters
 		break;
 	case Chain_Type::null:
 		break;
-	
+
 	}
 	obj->GetTransformComp()->SetPosition(in.intersection_position);
 	obj->SetID(id);
@@ -1171,7 +1200,7 @@ void StageManager::Object_Info()
 			if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
 			{
 				ImGui::SliderFloat("Obgect_Camera_Length:", &objLength, 1.3f, 5.f);
-				
+
 				Debug_ParameterObj->Gui();
 			}
 		}
@@ -1200,7 +1229,7 @@ void StageManager::Object_Info()
 				}
 			}
 		}
-		
+
 		if (Debug_ParameterObj && !Debug_ParameterObj->GetDestroyObje())
 		{
 			Debug_ParameterObj->Gui();
@@ -1220,7 +1249,7 @@ void StageManager::Object_Info()
 				collision_mesh* mesh = obj->GetRenderComp()->GetModel()->Get_RaycastCollition();
 
 				XMFLOAT4X4 transform = obj->GetTransformComp()->Gettransform();
-				if (VMCFHT::instance().raycast(*mesh,transform,result_intersection))
+				if (VMCFHT::instance().raycast(*mesh, transform, result_intersection))
 				{
 					Debug_ParameterChain = obj;
 					break;
@@ -1250,7 +1279,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 	VMCFHT::instance().update(scene_data.view_projection, scene_data.camera_position);
 
 	result_intersection = {};
-	int stage_count = Stages.size();
+	int stage_count = static_cast<int>(Stages.size());
 
 	switch (o_or_g)
 	{
@@ -1357,7 +1386,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 		for (int i = 0; i < stage_count; i++)
 		{
 			Object* stage_ = GetStages(i);
-			
+
 
 			if (VMCFHT::instance().raycast(*stage_->GetModel()->Get_RaycastCollition(), stage_->GetTransform(), result_intersection))
 			{
@@ -1368,9 +1397,9 @@ void StageManager::Create_Object(ID3D11Device* device)
 					if (GetCreateChain() != Chain_Type::null && Object_CreateFlag)
 					{
 						//result_intersection.intersection_position.y += 0.9f;
-						
+
 						{
-							Set_CreateLiftChain_Thred(GetCreateChain(), device, result_intersection,ID);
+							Set_CreateLiftChain_Thred(GetCreateChain(), device, result_intersection, ID);
 						}
 						DeleteThred();
 						break;

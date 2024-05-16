@@ -125,10 +125,8 @@ void Player::render(RenderContext* rc)
     DebugRenderer& debugRenderer = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     Graphics& graphics = Graphics::Instance();
     UIManager& ince_ui=UIManager::incetance();
-    if(isHand)	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
-    else	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
-
-    model->render(Graphics::Instance().GetDeviceContext(), transform, 0, color);
+    if(isHand)  model->render(Graphics::Instance().GetDeviceContext(), transform, 0, color);
+  
     Smodel->render(Graphics::Instance().GetDeviceContext(), Stransform, elapsedTime_, { Scolor });
     if (playerType != ObjType::null)
     {

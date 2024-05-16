@@ -34,7 +34,7 @@ float4 main(VS_OUT pin) : SV_TARGET
     }
     
     depth2 /= 8.0f;
-    if (abs(depth2 - depth) > 0.01005f)
+    if (abs(depth2 - depth) > 0.00105f)
     {
         //return g_texture[0].Sample(g_sampler[LINEAR], pin.texcoord);
 

@@ -322,11 +322,11 @@ void SceneGame::update(float elapsed_time)
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
 		cursorPos = SceneManagement::instance().GetCursorPosition();
 
-		//camera_angle.y += (setCursorWindow.x - cursorPos.x) * -sensi;
-		//camera_angle.x += (setCursorWindow.y - cursorPos.y) * sensi;
-
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
-		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;
+		camera_angle.x += (currentCursorPos.y - cursorPos.y) * sensi;
+
+		/*camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
+		camera_angle.x += (currentCursorPos.y - cursorPos.y) * -sensi;*/
 
 		Player* pl = PlayerManager::Instance().GetPlayer(0);
 		DirectX::XMFLOAT3 target = pl->GetPosition();
