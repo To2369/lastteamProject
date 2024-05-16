@@ -6,6 +6,8 @@ namespace failepath
     
    static wstring UI_Path_Wstring = L".\\resources\\UI\\";//UIまでのパス
    static wstring UI_Bottun_Other_Path_Wstring = L".\\resources\\UI\\Bottun_Other\\";//Bottun_Otherまでのパス
+   static wstring UI_Mask_Path_Wstring = L".\\resources\\UI\\Mask\\";//Bottun_Otherまでのパス
+   static wstring UI_Player_Property = L".\\resources\\UI\\player_property\\"; //player_propertyまでのパス
    namespace Stage_failepath
    {
        static string  Stage1_Path = ".\\resources\\Stage1\\";//stage1までのパス
@@ -52,11 +54,13 @@ public:
     void CreateCanbas(std::string id);
     void CreateGameSceneUI(ID3D11Device*device);
     void CreateUI(ID3D11Device*device,ObjType type, vector<unique_ptr<UI>>& uis);
+    void CreateUI(ID3D11Device*device,std::wstring filename,ObjType type,std::string id ,vector<unique_ptr<UI>>& uis);
     
     void Gui();
     void Update(float elapsedTime);
     void Render(RenderContext* rc);
     void Render(RenderContext* rc,std::string id);
+    void Render(RenderContext* rc, std::string canbas_id, std::string ui_id);
     //uiのvectoをこのマネージャーにある、UIsに移動させる
     void UI_move(vector<unique_ptr<UI>>ui) { UIs=move(ui); }
     /// <summary>

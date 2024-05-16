@@ -8,6 +8,14 @@ Lift_chain_P::Lift_chain_P()
     render->Color = {1,1,1,1};
 }
 
+Lift_chain_P::Lift_chain_P(const char* filename_)
+{
+    transform = make_unique<TransformComp>();
+    render = make_unique<RenderComp>(filename_, Graphics::Instance());
+    MyType = Chain_Type::lift_P_Not_Animation;
+    render->Color = { 1,1,1,1 };
+}
+
 void Lift_chain_P::Update(float elapsedTime)
 {
     Gimic* gimic = LiftCheck();

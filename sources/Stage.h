@@ -42,15 +42,15 @@ private:
     const char* filename = ".\\resources\\stage3\\stage1_3.fbx";
 };
 
-class Stage3 :public Stage
+class Stage_1_3 :public Stage
 {
 public:
-    Stage3(ID3D11Device*device);
-    ~Stage3();
+    Stage_1_3(ID3D11Device*device);
+    ~Stage_1_3();
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
 private:
-    const char* filename = ".\\resources\\stage3\\stage1_3.fbx";
+    const char* filename = ".\\resources\\stage5\\stage1_5.fbx";
 
 };
 

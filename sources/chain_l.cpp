@@ -10,6 +10,14 @@ Lift_chain_l::Lift_chain_l()
   
 }
 
+Lift_chain_l::Lift_chain_l(const char* filename_)
+{
+    transform = make_unique<TransformComp>();
+    //render = make_unique<RenderComp>(filename, Graphics::Instance(),filenames);
+    render = make_unique<RenderComp>(filename_, Graphics::Instance());
+    MyType = Chain_Type::lift_chain_L;
+}
+
 void Lift_chain_l::Update(float elapsedTime)
 {
     

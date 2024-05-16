@@ -27,6 +27,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 	case StageName::stage1_1:
 	{
+	
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
 		obj_Manager.Initialize(ObjType::heavy, device, false, {
@@ -289,7 +290,12 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	}
 	break;
 	case StageName::stage1_3:
-
+	{
+		unique_ptr<Stage>stage = make_unique<Stage_1_3>(device);
+		stage->SetPosition({ 0.f, 0.0f, -0.0f });
+		Rigister(move(stage));
+		ince_UI.CreateGameSceneUI(device);
+	}
 		break;
 	case StageName::null:
 		break;

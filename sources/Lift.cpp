@@ -25,6 +25,20 @@ Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_)
     type_ = Gimic::LiftType::LEFT;
     SetisLift(ObjType::heavy);
 }
+Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true, 0.0f);
+    Baria_Wall = make_unique<Model>(device, box_filename, true, 0.0f);
+    Position = pos_;
+    BoxPosition = Position;
+    StartPos = pos_;
+    BoxScale = { 55.655f,1.f,52.694f };
+    initialaize_Set_attribute(ObjType::null, ObjType::null);
+
+    Gimic_type = Gimic_Type::Lift;
+    type_ = Gimic::LiftType::LEFT;
+    SetisLift(ObjType::heavy);
+}
 void Lift::Update(float elapsedTime)
 {
     oldWorldTransform = BoxTransform;

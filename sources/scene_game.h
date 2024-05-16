@@ -75,8 +75,11 @@ private:
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
 	float ms = 0;
-	bool Menu = false;
+	bool Menu_ = false;
 	bool wasKeyPressed = false;
+	bool wasKeyPressed_mouse = false;
 	bool wasKeyPressedMenu = false;
 	PlayerManager& plm = PlayerManager::Instance();
+	bool ClearScreen(float elapsedTime);
+	bool Menu(float elapsedTime);
 };

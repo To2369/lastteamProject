@@ -53,6 +53,22 @@ Player::Player(ID3D11Device* device)
     radius = 0.1f;
     Sposition = { 0,1000,0 };
     resetPosition = position;
+
+    Graphics& graphics = Graphics::Instance();
+    UIManager& ince_ui = UIManager::incetance();
+    //ui作成
+    {
+        
+        vector<unique_ptr<UI>>uis;
+        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"karu.png",ObjType::cution,"cution", uis);
+        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"chookaru.png",ObjType::Super_cution, "Super_cution", uis);
+        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"juu.png",ObjType::heavy,"heavy", uis);
+        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"choojuu.png",ObjType::Super_heavy,"Super_heavy", uis);
+        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"nai.png",ObjType::null,"null", uis);
+        ince_ui.UI_move(move(uis));
+        ince_ui.CreateCanbas(UI_StringID::CanbasID::Player);
+    }
+    
 }
 
 //デストラクタ
@@ -124,17 +140,10 @@ void Player::render(RenderContext* rc)
 {
     DebugRenderer& debugRenderer = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     Graphics& graphics = Graphics::Instance();
-    UIManager& ince_ui=UIManager::incetance();
     if(isHand)  model->render(Graphics::Instance().GetDeviceContext(), transform, 0, color);
   
     Smodel->render(Graphics::Instance().GetDeviceContext(), Stransform, elapsedTime_, { Scolor });
-    if (playerType != ObjType::null)
-    {
-        vector<unique_ptr<UI>>uis;
-        ince_ui.CreateUI(graphics.GetDevice(),playerType,uis);
-        ince_ui.UI_move(move(uis));
-        ince_ui.CreateCanbas("Player_Canbas");
-    }
+    
 
 
 
@@ -446,6 +455,6 @@ void Player::pullpushAnime(float elapsedTime)
         Scolor = { 0,0,0,0 };
         Smodel->animation_End = false;
         Smodel->stop_animation = false;
-        Sposition = { 5000,5000,5000 };
+        Sposition = { FLT_MAX,FLT_MAX,FLT_MAX};
     }
 }

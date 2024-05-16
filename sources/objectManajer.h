@@ -18,6 +18,7 @@ public:
     void Initialize( ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos);
     void Initialize(const char* filename, ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos = { 0,0,0 });
     void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
+    void Initialize(const char* filename, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
     void Initialize(Chain_Type type, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 angle = {});
     template <typename T>
     void Initialize_Static_Object(std::unique_ptr<T> obj)
@@ -67,8 +68,6 @@ public:
     Gimic* Select_GetGimic(Gimic_Type type)
     {
         int count = static_cast<int>(game_Gimics.size());
-       
-       
         for (int i = 0; i < count; i++)
         {
             

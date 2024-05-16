@@ -19,6 +19,15 @@ Switch::Switch(ID3D11Device* device)
     MyObjeFlagType = ObjType::heavy;
 }
 
+Switch::Switch(ID3D11Device* device, const char* filename_)
+{
+    initialaize_Set_attribute(ObjType::null, ObjType::null);
+    model = make_unique<Model>(device, filename_, true);
+    Scale = { 1.452999f,3.456001f, 0.930000f };
+    Gimic_type = Gimic_Type::Switch;
+    MyObjeFlagType = ObjType::heavy;
+}
+
 void Switch::Update(float elapsedTime)
 {
 

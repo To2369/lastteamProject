@@ -24,6 +24,16 @@ Door::Door(ID3D11Device* device)
     UpdateTransform();
 }
 
+Door::Door(ID3D11Device* device, const char* filename_)
+{
+    initialaize_Set_attribute(ObjType::Super_hard_to_Break, ObjType::null); 
+    model = make_unique<Model>(device, filename_,true);
+    Scale = { 1,1,1 };
+    Gimic_type = Gimic_Type::Door;
+    MyGimicFlagType = Gimic_Type::Switch;
+    UpdateTransform();
+}
+
 void Door::Update(float elapsedTime)
 {
     elapsedtime_ = elapsedTime;

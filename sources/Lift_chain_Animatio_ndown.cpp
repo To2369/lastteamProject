@@ -9,6 +9,15 @@ Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown()
     MyType = Chain_Type::lift_P_Animatio_ndown;
 }
 
+Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown(const char* filename_)
+{
+    filenames.push_back(filename_);
+    transform = make_unique<TransformComp>();
+    render = make_unique<RenderComp>(filename_, Graphics::Instance(), filenames);
+    render->anim.LoopAnimation = false;
+    MyType = Chain_Type::lift_P_Animatio_ndown;
+}
+
 void Lift_chain_Animatio_ndown::ResultInfo()
 {
     BaseChain::ResultInfo();

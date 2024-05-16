@@ -57,8 +57,8 @@ void SceneTitle::initialize()
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale({ 1280.f,720.f });
 	ui->SetPosition({});
-	ui->SetID(UI_StringID::Title_ID::End);
-	ui->SetHanteiFlag(true);
+	ui->SetID(UI_StringID::UI_ID::Title_ID::Back);
+	ui->SetHanteiFlag(false);
 	UIs.push_back(move(ui));
 	ui = nullptr;
 
@@ -66,7 +66,7 @@ void SceneTitle::initialize()
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
 	ui->SetPosition({ 898.248f,365.087 });
-	ui->SetID(UI_StringID::Title_ID::Start);
+	ui->SetID(UI_StringID::UI_ID::Title_ID::Start);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -75,7 +75,7 @@ void SceneTitle::initialize()
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
 	ui->SetPosition({ 898.248f,550.694 });
-	ui->SetID(UI_StringID::Title_ID::End);
+	ui->SetID(UI_StringID::UI_ID::Title_ID::End);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -107,9 +107,8 @@ void SceneTitle::update(float elapsed_time)
 				UI* ui = can->GetUI(j);
 				if (ui->GetHanteiFlag())
 				{
-					if (ui->GetID() == UI_StringID::Title_ID::Start)
+					if (ui->GetID() == UI_StringID::UI_ID::Title_ID::Start)
 					{
-						UIManager& ince = UIManager::incetance();
 					
 						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
 						{
@@ -123,9 +122,16 @@ void SceneTitle::update(float elapsed_time)
 
 						}
 					}
-					if (ui->GetID() == UI_StringID::Title_ID::End)
+					if (ui->GetID() == UI_StringID::UI_ID::Title_ID::End)
 					{
-
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
+						{
+							ui->SetIsMouse(true);
+							if (isKKeyPressed && !wasKeyPressed)
+							{
+								PostQuitMessage(0);//é¿çsèIóπ
+							}
+						}
 					}
 				}
 			}

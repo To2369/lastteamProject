@@ -6,39 +6,50 @@
 
 namespace UI_StringID
 {
-    //scene title ui id
-    namespace Title_ID
+    namespace UI_ID
     {
-        static std::string Start = "Start";
-        static std::string End = "End";
-    };
-    //scene stage select ui id
-    namespace StageSelect_ID
-    {
-        static std::string Stage1 = "Stage1";
-        static std::string Stage2 = "Stage2";
-        static std::string Stage3 = "Stage3";
-    };
-    //scene game menu ui id
-    namespace Menu_Id
-    {
-        static std::string MenuRitrai = "MenuRitrai";
-        static std::string MenuContinue = "MenuContinue";
-        static std::string MenuGibuUp = "MenuGibuUp";
-    };
-    //scene clear ui id
-    namespace Clear_Id
-    {
-        static std::string ClearClearLogo = "Clear_ClearLogo";
-        static std::string ClearTitle = "ClearTitle";
-        static std::string ClearStageSelect = "ClearStageSelectButton";
-        static std::string ClearNextStage = "ClearNextStage";
+        //scene title ui id
+        namespace Title_ID
+        {
+            static std::string Start = "Start";
+            static std::string End = "End";
+            static std::string Back = "Back";
+        };
+        //scene stage select ui id
+        namespace StageSelect_ID
+        {
+            static std::string Stage1 = "Stage1";
+            static std::string Stage2 = "Stage2";
+            static std::string Stage3 = "Stage3";
+        };
+        //scene game menu ui id
+        namespace Menu_Id
+        {
+            static std::string MenuRitrai = "MenuRitrai";
+            static std::string MenuContinue = "MenuContinue";
+            static std::string MenuGibuUp = "MenuGibuUp";
+        };
+        //scene clear ui id
+        namespace Clear_Id
+        {
+            static std::string ClearClearLogo = "Clear_ClearLogo";
+            static std::string ClearTitle = "ClearTitle";
+            static std::string ClearStageSelect = "ClearStageSelectButton";
+            static std::string ClearNextStage = "ClearNextStage";
+        };
+        namespace Mask_Id
+        {
+            static std::string Black = "Black";
+        };
     };
     //scene game canbasID
     namespace CanbasID
     {
         static std::string SceneGameUI = "SceneGameUI";
         static std::string Menu = "Menu";
+        static std::string GameClear = "GameClear";
+        static std::string Mask = "Mask";
+        static std::string Player = "Player";
     };
 
 };
@@ -51,6 +62,7 @@ public:
     ~CanBas();
     void Update(float elapsedTime);
     void Render(RenderContext* rc);
+    void Render(RenderContext* rc,std::string ui_id);
     void SetOrijinPos(DirectX::XMFLOAT2 pos) { MainPos = pos; };
     void SetCanbasID(std::string id) { canbasID = id; }
     const DirectX::XMFLOAT2 GetOrijinPos()const{ return MainPos; };
@@ -71,7 +83,7 @@ private:
 class UI
 {
 public:
-    UI(ID3D11Device* device, const wchar_t* filename, DirectX::XMFLOAT2 scale={}, DirectX::XMFLOAT2 pos={});
+    UI(ID3D11Device* device, const wchar_t* filename, DirectX::XMFLOAT2 scale = {}, DirectX::XMFLOAT2 pos = {});
     ~UI() {};
     void Update(float elapsedTime);
     void Render(RenderContext* rc);
@@ -83,6 +95,7 @@ public:
     void SetHanteiFlag(bool f) { hanteiflag = f; }
     void SetIsMouse(bool f) { Ismouse = f; }
     void SetID(std::string id) { ID = id; }
+    void SetColor(DirectX::XMFLOAT4 color) { Color = color; };
 public:
     DirectX::XMFLOAT2 GetPosition() { return sp_pos; }
     std::string GetID() { return ID; }

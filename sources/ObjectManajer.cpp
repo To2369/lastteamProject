@@ -180,6 +180,10 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
     }
 }
 
+void Objectmanajer::Initialize(const char* filename, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id, XMFLOAT3 endpos)
+{
+}
+
 void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id,XMFLOAT3 angle)
 {
     unique_ptr<BaseChain> obj;

@@ -26,6 +26,16 @@ DropBox_Road::DropBox_Road(ID3D11Device* device)
     color = { 1.f,1.f,1.f,1.f };
 
 }
+DropBox_Road::DropBox_Road(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    Baria_Wall = make_unique<Model>(device, filename, true);
+    initialaize_Set_attribute(ObjType::null, ObjType::null);
+    Gimic_type = Gimic_Type::Drop_Road;
+    Scale = { 10.f,10.f,10.f };
+    color = { 1.f,1.f,1.f,1.f };
+
+}
 void DropBox_Road::Update(float elapsedTime)
 {
 

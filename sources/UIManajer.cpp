@@ -126,6 +126,18 @@ void UIManager::CreateUI(ID3D11Device* device, ObjType type, vector<unique_ptr<U
 
 
 }
+void UIManager::CreateUI(ID3D11Device* device,std::wstring filename, ObjType type, std::string id, vector<unique_ptr<UI>>& uis)
+{
+   
+   
+    XMFLOAT2 Scale;
+    unique_ptr<UI>ui;
+    XMFLOAT2 pos{ 1200.f,600.f };
+    ui = make_unique<UI>(device, filename.c_str(), Scale, pos);
+    ui->SetScale({static_cast<float>(ui->GetTexture2DDesc().Width)/3.f,static_cast<float>(ui->GetTexture2DDesc().Height)/4.f });
+    ui->SetID(id);
+    uis.push_back(move(ui));
+}
 void UIManager::Gui()
 {
     for (auto& canbas : CanBass)
@@ -239,6 +251,17 @@ void UIManager::Render(RenderContext* rc, std::string id)
         if (id == canbas->GetCanbasID())
         {
             canbas->Render(rc);
+        }
+    }
+}
+
+void UIManager::Render(RenderContext* rc, std::string canbas_id, std::string ui_id)
+{
+    for (auto& canbas : CanBass)
+    {
+        if (canbas_id == canbas->GetCanbasID())
+        {
+            canbas->Render(rc,ui_id);
         }
     }
 }

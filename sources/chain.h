@@ -30,6 +30,7 @@ class Lift_chain_s:public BaseChain//ƒ`ƒF[ƒ“‚ª’Z‚¢‚â‚Â
 {
 public:
     Lift_chain_s();
+    Lift_chain_s(const char*filename_);
     ~Lift_chain_s()override{};
 public:
     void Update(float elapsedTme)override;
@@ -43,6 +44,7 @@ class Lift_chain_l:public BaseChain//ƒ`ƒF[ƒ“‚ª’·‚¢‚â‚Â
 {
 public:
     Lift_chain_l();
+    Lift_chain_l(const char* filename_);
     ~Lift_chain_l()override {};
     void Update(float elapsedTime)override;
     void Gui()override;
@@ -56,6 +58,7 @@ class Lift_chain_P :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚éAƒAƒjƒ[ƒV
 {
 public:
     Lift_chain_P();
+    Lift_chain_P(const char*filename_);
     ~Lift_chain_P()override {};
     void Update(float elapsedTime)override;
     //void BaseChainGUI();
@@ -70,6 +73,7 @@ class Lift_chain_Animatio_ndown :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚
 {
 public:
     Lift_chain_Animatio_ndown();
+    Lift_chain_Animatio_ndown(const char*filename_);
     ~Lift_chain_Animatio_ndown()override { filenames.clear(); };
     void ResultInfo()override;
     void Update(float elapsedTime)override;

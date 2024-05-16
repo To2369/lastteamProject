@@ -36,6 +36,8 @@ public:
     bool GetBootFlag()const { return bootFlag; }//今のところDoorクラスに対してしか使っていない
     void SetBootFlag(bool f) { bootFlag=f; }//今のところDoorクラスに対してしか使っていない
 public:
+    bool Get_GoalFlag()const { return Goal_Flag; }//goalにしか使っていない
+public:
     //liftにしか使わない
     enum class LiftType
     {
@@ -57,6 +59,7 @@ protected:
     string ID;
     bool bootFlag;
     bool switchFlag = false;
+    bool Goal_Flag = false;
     void Gimic_effect(Gimic_Type type);
     //ドアギミックが動く時の処理(回転したい角度,回転速度)
     void FallDown(float MaxAngle,float speed);
@@ -83,6 +86,7 @@ class Switch :public Gimic
 {
 public:
     Switch(ID3D11Device* device);
+    Switch(ID3D11Device* device,const char*filename_);
     ~Switch()override {
 
     };
@@ -101,6 +105,7 @@ class Door :public Gimic
 {
 public:
     Door(ID3D11Device* device);
+    Door(ID3D11Device* device,const char* filename_);
     ~Door()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
@@ -113,7 +118,7 @@ public:
 
 
 private:
-    Switch* switch_ = nullptr;
+   
     const char* filename = ".\\resources\\stage1\\syashintate.fbx";
     float elapsedtime_;
     float falldownCount = 0;
@@ -123,18 +128,15 @@ class Goal :public Gimic
 {
 public:
     Goal(ID3D11Device* device);
+    Goal(ID3D11Device* device, const char* filename_);
     ~Goal()override {}
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gui()override;
     
     bool GoalInPosition();
-public:
-    bool Get_GoalFlag()const { return Goal_Flag; }
-
 private:
     float radius = 0.1f;
-    bool Goal_Flag = false;
     const char* filename = ".\\resources\\ground.fbx";
   
 };
@@ -143,6 +145,7 @@ class DropBox_Road :public Gimic
 {
 public:
     DropBox_Road(ID3D11Device* device);
+    DropBox_Road(ID3D11Device* device,const char* filename_);
     ~DropBox_Road()override {
 
     };
@@ -176,6 +179,7 @@ class Lift :public Gimic
 {
 public:
     Lift(ID3D11Device* device,XMFLOAT3 pos_);
+    Lift(ID3D11Device* device,XMFLOAT3 pos_,const char* filename_);
     ~Lift() {};
 public:
     void Update(float elapsedTime)override;
@@ -203,6 +207,7 @@ class Move_Wall :public Gimic
 {
 public:
     Move_Wall(ID3D11Device* device);
+    Move_Wall(ID3D11Device* device,const char* filename_);
     ~Move_Wall();
 public:
     void Update(float elapsedTime)override;

@@ -18,6 +18,7 @@ extern ImWchar glyphRangesJapanese[];
 #include "Graphics/shader.h"
 #include"scene_loading.h"
 #include"scene_title.h"
+#include"scene_stage_select.h"
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -100,7 +101,7 @@ void SceneGame::initialize()
 		unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({533.364f,134.103f});
-		ui->SetID(UI_StringID::Menu_Id::MenuContinue);
+		ui->SetID(UI_StringID::UI_ID::Menu_Id::MenuContinue);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
@@ -108,7 +109,7 @@ void SceneGame::initialize()
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({ 533.364f,338.952f });
-		ui->SetID(UI_StringID::Menu_Id::MenuRitrai);
+		ui->SetID(UI_StringID::UI_ID::Menu_Id::MenuRitrai);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
@@ -116,7 +117,7 @@ void SceneGame::initialize()
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 		ui->SetScale(scale);
 		ui->SetPosition({ 533.364f,542.577f });
-		ui->SetID(UI_StringID::Menu_Id::MenuGibuUp);
+		ui->SetID(UI_StringID::UI_ID::Menu_Id::MenuGibuUp);
 		ui->SetHanteiFlag(true);
 		UIs.push_back(move(ui));
 		ui = nullptr;
@@ -128,6 +129,66 @@ void SceneGame::initialize()
 		//MaskSprite = make_unique<sprite>();
 
 	}
+	//Clear_ui生成
+	{
+		vector<unique_ptr<UI>>UIs;
+		wstring filenam= L"";
+		unique_ptr<UI>ui;
+		DirectX::XMFLOAT2 scale{ 391.f,254.f };
+
+		filenam = failepath::UI_Mask_Path_Wstring + L"Black.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale({ 1920.f,1080.f });
+		ui->SetPosition({});
+		ui->SetID(UI_StringID::UI_ID::Mask_Id::Black);
+		ui->SetHanteiFlag(false);
+		ui->SetColor({ 1.f,1.f,1.f,0.4f });
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"ClearLogo.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 453.141f,0.f });
+		ui->SetID(UI_StringID::UI_ID::Clear_Id::ClearClearLogo);
+		ui->SetHanteiFlag(false);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"NextStage.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 443.762f,460.044f });
+		ui->SetID(UI_StringID::UI_ID::Clear_Id::ClearNextStage);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"StageSelectButton.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 873.201f,460.044f });
+		ui->SetID(UI_StringID::UI_ID::Clear_Id::ClearStageSelect);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"TitleButton.png";
+		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+		ui->SetScale(scale);
+		ui->SetPosition({ 17.316f,460.044f });
+		ui->SetID(UI_StringID::UI_ID::Clear_Id::ClearTitle);
+		ui->SetHanteiFlag(true);
+		UIs.push_back(move(ui));
+		ui = nullptr;
+
+		
+		UIManager& ince = UIManager::incetance();
+		ince.UI_move(move(UIs));
+		ince.CreateCanbas(UI_StringID::CanbasID::GameClear);
+		UIs.clear();
+	}
+	
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -155,75 +216,13 @@ void SceneGame::update(float elapsed_time)
 
 {
 	UIManager& ince = UIManager::incetance();
-	if (GetAsyncKeyState('K') & 0x8000) // 'K'キーが押されたかどうかを確認
-	{
-		if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
-		{
-			Menu = !Menu;
-		}
-		wasKeyPressed = true; // wasKeyPressedをtrueに設定
-	}
-	else
-	{
-		wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
-	}
 	
-	if (Menu)
+	if (ClearScreen(elapsed_time))
 	{
-		SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
-		bool isKKeyPressed = (keyState & 0x8000) != 0;
-		int canbascount = ince.GetCanBassCount();
-		for (int i = 0; i < canbascount; i++)
-		{
-			CanBas* can = ince.GetCanbas(i);
-			int uicount = can->GetUICount();
-			for (int j = 0; j < uicount; j++)
-			{
-				UI* ui = can->GetUI(j);
-				if (ui->GetHanteiFlag())
-				{
-					if (ui->GetID() == UI_StringID::Menu_Id::MenuContinue)
-					{
-
-						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
-						{
-							ui->SetIsMouse(true);
-							if (isKKeyPressed && !wasKeyPressedMenu) {
-								Menu = false;
-							}
-						}
-					}
-					if (ui->GetID() == UI_StringID::Menu_Id::MenuRitrai)
-					{
-
-						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
-						{
-							ui->SetIsMouse(true);
-							if (isKKeyPressed && !wasKeyPressedMenu) {
-
-								StageManager::incetance().SetStageName(StageName::stage1_1);
-								SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
-							}
-						}
-					}
-					if (ui->GetID() == UI_StringID::Menu_Id::MenuGibuUp)
-					{
-
-						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
-						{
-							ui->SetIsMouse(true);
-							if (isKKeyPressed && !wasKeyPressedMenu) {
-								
-								SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
-							}
-						}
-					}
-				}
-			}
-
-		}
-		wasKeyPressedMenu = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
-		ince.Update(elapsed_time);
+		return;
+	}
+	else if (Menu(elapsed_time))
+	{
 		return;
 	}
 
@@ -609,11 +608,44 @@ void SceneGame::render(float elapsed_time)
 	GetAsyncKeyState(VK_RBUTTON);
 	//UI描画
 	{
+		ObjType type = PlayerManager::Instance().GetPlayer(0)->Getattribute();
+		auto id = [](ObjType type)
+			{
+				string str = "";
+				switch (type)
+				{
+				case ObjType::cution:
+					str = "cution";
+					return str;
+					break;
+				case ObjType::Super_cution:
+					str = "Super_cution";
+					return str;
+					break;
+				case ObjType::heavy:
+					str = "heavy";
+					return str;
+					break;
+				case ObjType::Super_heavy:
+					str = "Super_heavy";
+					return str;
+					break;
+				case ObjType::null:
+					str = "null";
+					return str;
+					break;
+				}
+				return str;
+			};
+		ince_ui.Render(&rc, UI_StringID::CanbasID::Player, id(type));
 		
-		ince_ui.Render(&rc,UI_StringID::CanbasID::SceneGameUI);
-		if (Menu)
+		ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
+		if (ClearScreen(elapsed_time))
 		{
-
+			ince_ui.Render(&rc, UI_StringID::CanbasID::GameClear);
+		}
+		else if (Menu(elapsed_time))
+		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::Menu);
 		}
 	}
@@ -638,6 +670,168 @@ void SceneGame::setFramebuffer()
 	uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
 	framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 	framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+}
+
+bool SceneGame::ClearScreen(float elapsedTime)
+{
+	Gimic*gimic = Objectmanajer::incetance().Select_GetGimic(Gimic_Type::Goal);
+	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+	bool isKKeyPressed = (keyState & 0x8000) != 0;
+	if (gimic->Get_GoalFlag())
+	{
+		UIManager& ince = UIManager::incetance();
+
+
+		//UIManager& ince=UIManager::incetance();
+		
+		int canbascount = ince.GetCanBassCount();
+		for (int i = 0; i < canbascount; i++)
+		{
+			CanBas* can = ince.GetCanbas(i);
+			int uicount = can->GetUICount();
+			for (int j = 0; j < uicount; j++)
+			{
+				UI* ui = can->GetUI(j);
+				if (ui->GetHanteiFlag())
+				{
+					if (ui->GetID() == UI_StringID::UI_ID::Clear_Id::ClearNextStage)
+					{
+
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
+						{
+							ui->SetIsMouse(true);
+							if (isKKeyPressed && !wasKeyPressed_mouse) {
+
+								StageManager& ince_st = StageManager::incetance();
+								for (StageName i = ince_st.GetStageName(); i != StageName::null;
+									i = static_cast<StageName>(static_cast<int>(i) + 1))
+								{
+									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
+									{
+										ince_st.SetStageName(i);
+										break;
+									}
+									if (ince_st.GetStageName() == StageName::stage1_3)
+									{
+										
+									}
+								}
+								
+							}
+						}
+					}
+					if (ui->GetID() == UI_StringID::UI_ID::Clear_Id::ClearStageSelect)
+					{
+
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
+						{
+							ui->SetIsMouse(true);
+
+							if (isKKeyPressed && !wasKeyPressed_mouse)
+							{
+								SceneManagement::instance().SceneChange(
+									new SceneLoading(new Scene_Stage_Serect));
+							}
+
+						}
+					}
+					if (ui->GetID() == UI_StringID::UI_ID::Clear_Id::ClearTitle)
+					{
+
+						if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetTexture2DDesc()))
+						{
+							ui->SetIsMouse(true);
+
+							if (isKKeyPressed && !wasKeyPressed_mouse)
+							{
+								SceneManagement::instance().SceneChange(
+									new SceneLoading(new SceneTitle));
+							}
+
+						}
+					}
+				}
+			}
+		}
+		ince.Update(elapsedTime);
+		return true;
+	}
+	wasKeyPressed_mouse = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
+	return false;
+}
+
+bool SceneGame::Menu(float elapsedTime)
+{
+	if (GetAsyncKeyState('K') & 0x8000) // 'K'キーが押されたかどうかを確認
+	{
+		if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
+		{
+			Menu_ = !Menu_;
+		}
+		wasKeyPressed = true; // wasKeyPressedをtrueに設定
+	}
+	else
+	{
+		wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
+	}
+	UIManager& ince = UIManager::incetance();
+	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
+	bool isKKeyPressed = (keyState & 0x8000) != 0;
+	int canbascount = ince.GetCanBassCount();
+	for (int i = 0; i < canbascount; i++)
+	{
+		CanBas* can = ince.GetCanbas(i);
+		int uicount = can->GetUICount();
+		for (int j = 0; j < uicount; j++)
+		{
+			UI* ui = can->GetUI(j);
+			if (ui->GetHanteiFlag())
+			{
+				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuContinue)
+				{
+
+					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+							Menu_ = false;
+						}
+					}
+				}
+				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuRitrai)
+				{
+
+					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+
+							StageManager::incetance().SetStageName(StageName::stage1_1);
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+						}
+					}
+				}
+				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuGibuUp)
+				{
+
+					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+						}
+					}
+				}
+			
+			}
+		}
+
+	}
+	wasKeyPressedMenu = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
+	ince.Update(elapsedTime);
+
+	return Menu_;
 }
 
 

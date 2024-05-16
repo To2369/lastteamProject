@@ -55,6 +55,15 @@ void CanBas::Render(RenderContext* rc)
     }
 }
 
+void CanBas::Render(RenderContext* rc, std::string ui_id)
+{
+    for (auto& ui : Uis)
+    {
+        if(ui->GetID()==ui_id)
+        ui->Render(rc);
+    }
+}
+
 
 void CanBas::Gui()
 {
@@ -154,6 +163,7 @@ void UI::Update(float elapsedTime)
     }
     else
     {
+        if(hanteiflag)
         Color.w = 1;
     }
     Ismouse = false;

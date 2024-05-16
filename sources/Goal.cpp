@@ -19,8 +19,13 @@ Goal::Goal(ID3D11Device* device)
     Gimic_type = Gimic_Type::Goal;
     Scale = { 0.05f,0.2f,0.05f };
     initialaize_Set_attribute(ObjType::null, ObjType::null);
-
-    device = device;
+}
+Goal::Goal(ID3D11Device* device, const char* filename_)
+{
+    model = make_unique<Model>(device, filename_, true);
+    Gimic_type = Gimic_Type::Goal;
+    Scale = { 0.05f,0.2f,0.05f };
+    initialaize_Set_attribute(ObjType::null, ObjType::null);
 }
 void Goal::Update(float elapsedTime)
 {
@@ -29,10 +34,7 @@ void Goal::Update(float elapsedTime)
     {
         Goal_Flag = true;
     }
-    if (Goal_Flag)
-    {
-        SceneManagement::instance().SceneChange(new Scene_Clear);
-    }
+  
     UpdateTransform();
 }
 

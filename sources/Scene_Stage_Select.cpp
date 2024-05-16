@@ -46,12 +46,24 @@ void Scene_Stage_Serect::initialize()
 	}
 
 	vector<unique_ptr<UI>>UIs;
-	wstring filenam = failepath::UI_Path_Wstring + L"select_stage1.png";
+	wstring filenam = L"";
 	XMFLOAT2 scale{ 404.495f*0.7f,575.645f };
-	unique_ptr<UI>ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+	unique_ptr<UI>ui;
+
+	filenam = failepath::UI_Path_Wstring + L"StageSelectBack.png";
+	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
+	ui->SetScale({1280.f,720.f});
+	ui->SetPosition({});
+	ui->SetID(UI_StringID::UI_ID::StageSelect_ID::Stage1);
+	ui->SetHanteiFlag(false);
+	UIs.push_back(move(ui));
+	ui = nullptr;
+
+	filenam = failepath::UI_Path_Wstring + L"select_stage1.png";
+	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
-	ui->SetPosition({101.901f,53.211f});
-	ui->SetID(UI_StringID::StageSelect_ID::Stage1);
+	ui->SetPosition({101.901f,88.029f});
+	ui->SetID(UI_StringID::UI_ID::StageSelect_ID::Stage1);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -59,8 +71,8 @@ void Scene_Stage_Serect::initialize()
 	filenam = failepath::UI_Path_Wstring + L"select_stage2.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
-	ui->SetPosition({519.975f,53.612f});
-	ui->SetID(UI_StringID::StageSelect_ID::Stage2);
+	ui->SetPosition({504.907f,88.029f});
+	ui->SetID(UI_StringID::UI_ID::StageSelect_ID::Stage2);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -68,8 +80,8 @@ void Scene_Stage_Serect::initialize()
 	filenam = failepath::UI_Path_Wstring + L"select_stage3.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
-	ui->SetPosition({916.103f,53.211f});
-	ui->SetID(UI_StringID::StageSelect_ID::Stage3);
+	ui->SetPosition({904.479f,88.029f});
+	ui->SetID(UI_StringID::UI_ID::StageSelect_ID::Stage3);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
 	ui = nullptr;
@@ -109,7 +121,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 			UI* ui = can->GetUI(j);
 			if (ui->GetHanteiFlag())
 			{
-				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage1)
+				if (ui->GetID() == UI_StringID::UI_ID::StageSelect_ID::Stage1)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
@@ -122,7 +134,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						}
 					}
 				}
-				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage2)
+				if (ui->GetID() == UI_StringID::UI_ID::StageSelect_ID::Stage2)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
@@ -137,7 +149,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						
 					}
 				}
-				if (ui->GetID() == UI_StringID::StageSelect_ID::Stage3)
+				if (ui->GetID() == UI_StringID::UI_ID::StageSelect_ID::Stage3)
 				{
 					
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
