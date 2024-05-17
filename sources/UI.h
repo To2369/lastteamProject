@@ -101,7 +101,7 @@ public:
     std::string GetID() { return ID; }
     bool GetHanteiFlag(){ return hanteiflag; }
     DirectX::XMFLOAT2 GetScale() { return Scale; };
-    D3D11_TEXTURE2D_DESC GetTexture2DDesc() { return Ui.get()->texture2d_desc; }
+    D3D11_TEXTURE2D_DESC& GetTexture2DDesc() { return Ui.get()->texture2d_desc; }
 public:
    
 private:

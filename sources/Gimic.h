@@ -14,6 +14,7 @@ public:
     virtual void ResultInfo();
     //自分のタイプを取得
     Gimic_Type Get_GimicType()const { return Gimic_type; }
+    bool RayCastFlag() { return Raycastflag; }
 public:
     virtual bool gimic_VS_Object() { return false; };//今のところswitchクラスに対してしか使っていない
     void SetSwitchFlag(bool f) { switchFlag = f; }//今のところswitchクラスに対してしか使っていない
@@ -57,6 +58,7 @@ public:
 protected:
     LiftType type_=LiftType::null;
     string ID;
+    bool Raycastflag = false;
     bool bootFlag;
     bool switchFlag = false;
     bool Goal_Flag = false;
@@ -212,7 +214,7 @@ public:
 public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
-
-
+private:
+    const char* filename=".\\resources\\stage1\\tumiki.fbx";
 
 };

@@ -219,6 +219,7 @@ void SceneGame::update(float elapsed_time)
 	
 	if (ClearScreen(elapsed_time))
 	{
+		Menu_ = false;
 		return;
 	}
 	else if (Menu(elapsed_time))
@@ -605,7 +606,7 @@ void SceneGame::render(float elapsed_time)
 #else
 	graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
 #endif
-	GetAsyncKeyState(VK_RBUTTON);
+	
 	//UI•`‰æ
 	{
 		ObjType type = PlayerManager::Instance().GetPlayer(0)->Getattribute();
@@ -785,7 +786,7 @@ bool SceneGame::Menu(float elapsedTime)
 		for (int j = 0; j < uicount; j++)
 		{
 			UI* ui = can->GetUI(j);
-			if (ui->GetHanteiFlag())
+			if (ui->GetHanteiFlag()&&Menu_)
 			{
 				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuContinue)
 				{

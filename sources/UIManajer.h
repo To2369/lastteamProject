@@ -54,7 +54,8 @@ public:
     void CreateCanbas(std::string id);
     void CreateGameSceneUI(ID3D11Device*device);
     void CreateUI(ID3D11Device*device,ObjType type, vector<unique_ptr<UI>>& uis);
-    void CreateUI(ID3D11Device*device,std::wstring filename,ObjType type,std::string id ,vector<unique_ptr<UI>>& uis);
+    void CreateUI(ID3D11Device*device,std::wstring filename,
+        ObjType type,std::string id ,vector<unique_ptr<UI>>& uis,DirectX::XMFLOAT2 pos);
     
     void Gui();
     void Update(float elapsedTime);

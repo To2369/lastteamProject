@@ -39,6 +39,7 @@ Heavy::~Heavy()
 
 void Heavy::Update(float elapsedTime)
 {
+    israycast.IsRayCastGround = true;
     if (GetStatic_Objflag())
     {
         UpdateTransform();
@@ -87,20 +88,25 @@ void Heavy::Update(float elapsedTime)
             Position.z += VelocityXZ.y;
         }
     }
-    InvisibleWall_VS_Object();
+    if(israycast.IsRayCastInvisibleWall)
+        InvisibleWall_VS_Object();
+
     isObject = false;
     count = ince_o.Get_GameObjCount();
   
     {
-        for (int i = 0; i < count; i++)
+        if (israycast.IsRayCastObject)
         {
-            Object* obj = ince_o.Get_GameObject(i);
-            if (this == obj)continue;
-            if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+            for (int i = 0; i < count; i++)
             {
-                Position = oldPosition;
-                isObject = true;
-                break;
+                Object* obj = ince_o.Get_GameObject(i);
+                if (this == obj)continue;
+                if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+                {
+                    Position = oldPosition;
+                    isObject = true;
+                    break;
+                }
             }
         }
     }
@@ -122,13 +128,16 @@ void Heavy::Update(float elapsedTime)
                 VeloctyY = 0;
                 obj->SetisLift(this->Get_Old_Objtype(0));
                 Position.y = hit.position.y+0.1f;
+                israycast.IsRayCastGround = false;
                 break;
             }
                 
         }
         
     }
-    RayCastGround();
+   if(israycast.IsRayCastGround)
+       RayCastGround();
+
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
@@ -162,7 +171,7 @@ Super_Heavy::Super_Heavy(ID3D11Device* device, const char* filename_)
     initialaize_Set_attribute(ObjType::Super_heavy, ObjType::null);
 
     //Position = { 0,0,0 };
-    Scale.x = Scale.y = Scale.z = 10.f;
+    Scale.x = Scale.y = Scale.z = 1.f;
     moveobjectFlag = true;
 }
 
@@ -172,6 +181,7 @@ Super_Heavy::~Super_Heavy()
 
 void Super_Heavy::Update(float elapsedTime)
 {
+
     if (GetStatic_Objflag())
     {
         UpdateTransform();
@@ -192,24 +202,26 @@ void Super_Heavy::Update(float elapsedTime)
     int count = ince_o.Get_GameGimicCount();
 
     {
-        //ギミックに対して何かするfor文
-        for (int i = 0; i < count; i++)
+        if (israycast.IsRayCastGimic)
         {
-            Gimic* gimic = ince_o.Get_GameGimic(i);
-            if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
-            if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+            //ギミックに対して何かするfor文
+            for (int i = 0; i < count; i++)
             {
-                if (Get_isGimic_UpPosNow())
+                Gimic* gimic = ince_o.Get_GameGimic(i);
+                if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
+                if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
                 {
-                    string g = gimic->GetGimicID();
-                    Set_GimicType(g);
-                    VeloctyY = 0;
+                    if (Get_isGimic_UpPosNow())
+                    {
+                        string g = gimic->GetGimicID();
+                        Set_GimicType(g);
+                        VeloctyY = 0;
 
-                    break;
+                        break;
+                    }
                 }
             }
         }
-
 
     }
     if (!GetIsWall() && !GetIsObject())
@@ -220,20 +232,25 @@ void Super_Heavy::Update(float elapsedTime)
             Position.z += VelocityXZ.y;
         }
     }
-    InvisibleWall_VS_Object();
+    if (israycast.IsRayCastInvisibleWall)
+        InvisibleWall_VS_Object();
+
     isObject = false;
     count = ince_o.Get_GameObjCount();
 
     {
-        for (int i = 0; i < count; i++)
+        if (israycast.IsRayCastObject)
         {
-            Object* obj = ince_o.Get_GameObject(i);
-            if (this == obj)continue;
-            if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+            for (int i = 0; i < count; i++)
             {
-                Position = oldPosition;
-                isObject = true;
-                break;
+                Object* obj = ince_o.Get_GameObject(i);
+                if (this == obj)continue;
+                if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+                {
+                    Position = oldPosition;
+                    isObject = true;
+                    break;
+                }
             }
         }
     }
@@ -255,20 +272,25 @@ void Super_Heavy::Update(float elapsedTime)
                 VeloctyY = 0;
                 obj->SetisLift(this->Get_Old_Objtype(0));
                 Position.y = hit.position.y + 0.1f;
-
+                israycast.IsRayCastGround = false;
+                break;
             }
 
         }
 
     }
-    RayCastGround();
+    if (israycast.IsRayCastGround)
+        RayCastGround();
+
     ObjType_effect(elapsedTime);
     UpdateTransform();
 }
 
 void Super_Heavy::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    DebugRenderer& ince = DebugRenderer::incetance(Graphics::Instance().GetDevice());
+    ince.DrawSphere(Position, radius, { 1,1,1,1 });
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Super_Heavy::Gui()

@@ -65,7 +65,7 @@ void SceneTitle::initialize()
 	filenam = failepath::UI_Bottun_Other_Path_Wstring + L"StartButton.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
-	ui->SetPosition({ 898.248f,365.087 });
+	ui->SetPosition({ 898.248f,365.087f });
 	ui->SetID(UI_StringID::UI_ID::Title_ID::Start);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));
@@ -74,7 +74,7 @@ void SceneTitle::initialize()
 	filenam = failepath::UI_Bottun_Other_Path_Wstring + L"EndButton.png";
 	ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
 	ui->SetScale(scale);
-	ui->SetPosition({ 898.248f,550.694 });
+	ui->SetPosition({ 898.248f,550.694f });
 	ui->SetID(UI_StringID::UI_ID::Title_ID::End);
 	ui->SetHanteiFlag(true);
 	UIs.push_back(move(ui));

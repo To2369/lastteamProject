@@ -60,11 +60,11 @@ Player::Player(ID3D11Device* device)
     {
         
         vector<unique_ptr<UI>>uis;
-        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"karu.png",ObjType::cution,"cution", uis);
-        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"chookaru.png",ObjType::Super_cution, "Super_cution", uis);
-        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"juu.png",ObjType::heavy,"heavy", uis);
-        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"choojuu.png",ObjType::Super_heavy,"Super_heavy", uis);
-        ince_ui.CreateUI(graphics.GetDevice(),failepath::UI_Player_Property+L"nai.png",ObjType::null,"null", uis);
+        ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"karu.png", ObjType::cution, "cution", uis, { 1200.f,600.f});
+        ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"chookaru.png", ObjType::Super_cution, "Super_cution", uis, { 1200.f,600.f });
+        ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"juu.png", ObjType::heavy, "heavy", uis, { 1200.f,600.f });
+        ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"choojuu.png", ObjType::Super_heavy, "Super_heavy", uis, { 1200.f,600.f });
+        ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"nai.png", ObjType::null, "null", uis, { 1200.f,600.f});
         ince_ui.UI_move(move(uis));
         ince_ui.CreateCanbas(UI_StringID::CanbasID::Player);
     }

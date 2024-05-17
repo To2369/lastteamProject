@@ -191,12 +191,9 @@ public:
     void render(Graphics& gr, DirectX::XMFLOAT4X4 transform)
     {
         
-        if(Color.w<=0)
-            gr.GetDeviceContext()->OMSetBlendState(gr.GetBlendState(1), nullptr, 0xFFFFFFFF);
-        else
-            gr.GetDeviceContext()->OMSetBlendState(gr.GetBlendState(2), nullptr, 0xFFFFFFFF);
-        model->render(gr.GetDeviceContext(), transform, anim.animSpeed, Color);
-        gr.GetDeviceContext()->OMSetBlendState(gr.GetBlendState(2), nullptr, 0xFFFFFFFF);
+        if (Color.w > 0) model->render(gr.GetDeviceContext(), transform, anim.animSpeed, Color);
+       
+           
     }
     Model* GetModel() { return model.get(); }
     void RenderCompGui();

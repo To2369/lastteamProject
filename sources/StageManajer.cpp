@@ -30,12 +30,17 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
+		Object::RayCastList raylist;
+		raylist.IsRayCastGround = true;
+		raylist.IsRayCastInvisibleWall = true;
+		raylist.IsRayCastGimic = true;
+		raylist.IsRayCastObject = true;
 		obj_Manager.Initialize(ObjType::heavy, device, false, {
 
 			  -1.037836f,
 			   1.747557f,
 			  -0.430794f
-			});
+			},raylist);
 		obj_Manager.Initialize(ObjType::cution, device, true, {
 			 -1.336630f,
 			 1.747557f,
@@ -122,52 +127,69 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	break;
 	case StageName::stage1_2:
 	{
+		string filename;
 		PlayerManager& ince_p = PlayerManager::Instance();
+		Object::RayCastList raylist;
+
 		ince_p.GetPlayer(0)->SetPosition({ 3.702f,-3.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_2,
 			Gimic_Type::Goal, device,
 			{ 7.577f,7.223f,-0.535f });
 		{
+			//Lift
+			{
+				obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+					{ 4.252f,7.290f,-0.020f },
+					"num1",
+					{ 4.252f,5.154f,-0.020f });
+				filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
+				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
+					{ 4.30f,7.287f,-0.948f },
+					"num1",
+					{ 0.f,-1.6f,0.f }
 
-			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ 4.252f,7.290f,-0.020f },
-				"num1",
-				{ 4.252f,5.154f,-0.020f });
-			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ 4.30f,7.287f,-0.948f },
-				"num1",
-				{ 0.f,-1.6f,0.f }
+				);
+				filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
+				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
+					{ 4.247f,6.944f,-0.941f },
+					"num1",
+					{ 0.f,-1.6f,0.f }
+				);
 
-			);
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ 4.247f,6.944f,-0.941f },
-				"num1",
-				{ 0.f,-1.6f,0.f }
-			);
+				obj_Manager.Initialize(Chain_Type::lift_chain_L,
+					{ 4.304f,0,-0.432f, },
+					"num1",
+					{ 0.000000f,-1.620995f,0.000000f });
 
-			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ 4.304f,0,-0.432f, },
-				"num1",
-				{ 0.000000f,-1.620995f,0.000000f });
+				obj_Manager.Initialize(Chain_Type::lift_chain_S,
+					{ 4.208f,7.794f,-0.432f, },
+					"num1",
+					{ 0.000000f,-1.590007f,0.000000f });
+			}
+			//object
+			{
+				raylist = {};
+				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+					{
+					 1.879f,
+					 5.094f,
+					-1.005f
+					});
+				raylist.IsRayCastGimic = true;
+				raylist.IsRayCastInvisibleWall = false;
+				raylist.IsRayCastObject = false;
 
-			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ 4.208f,7.794f,-0.432f, },
-				"num1",
-				{ 0.000000f,-1.590007f,0.000000f });
-			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
-				{
-				 1.879f,
-				 5.094f,
-				-1.005f
-				});
-			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
-				{
-				4.421f,
-				 8.920f,
-				-0.061f
-				});
+				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::Super_heavy, device, false,
+					{
+					4.421f,
+					 8.920f,
+					-0.061f
+					},raylist);
+			}
 		}
 		{
+			//lift
+			{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{ -0.891f,5.178f,0.012f },
 				"num2",
@@ -190,96 +212,126 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				{ -0.871f,5.644f,-0.440f, },
 				"num2",
 				{ 0.000000f,-1.590007f,0.000000f });
-			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
-				{
-				 -2.073f,
-				2.986f,
-				-1.005f
-				});
-			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
-				{
-				-0.747f,
-				6.347f,
-				0.093f
-				});
+		    }
+			//object
+			{
+				raylist = {};
+				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+					{
+					 -2.073f,
+					2.986f,
+					-1.005f
+					});
+				raylist.IsRayCastGimic = true;
+				raylist.IsRayCastInvisibleWall = false;
+				raylist.IsRayCastObject = false;
+				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+					{
+					-0.747f,
+					6.347f,
+					0.093f
+					}, raylist);
+			}
 
 		}
 
 		{
-			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -5.158f,1.562f,-0.945f },
-				"num3",
-				{ -5.158f,-0.574f,-0.945f });
-			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ -5.096f,1.555f,-0.013f },
-				"num3",
-				{ 0.f,-1.6f,0.f }
-			);
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ -5.157f,1.180f,-0.013f },
-				"num3",
-				{ 0.f,1.6f,0.f }
-			);
+			//lift
+			{
+				obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+					{ -5.158f,1.562f,-0.945f },
+					"num3",
+					{ -5.158f,-0.574f,-0.945f });
+				filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
+				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
+					{ -5.096f,1.555f,-0.013f },
+					"num3",
+					{ 0.f,-1.6f,0.f }
+				);
+				filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
+				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
+					{ -5.157f,1.180f,-0.013f },
+					"num3",
+					{ 0.f,1.6f,0.f }
+				);
 
-			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -5.110f,0.f,-0.483f },
-				"num3",
-				{ 0.000000f,1.6f,0.000000f });
+				obj_Manager.Initialize(Chain_Type::lift_chain_L,
+					{ -5.110f,0.f,-0.483f },
+					"num3",
+					{ 0.000000f,1.6f,0.000000f });
 
-			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ -5.158f,2.025f, -0.492f },
-				"num3",
-				{ 0.000000f,1.6f,0.000000f });
-			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
-				{
-				 -3.076f,
-				-0.486f,
-				-0.581f
-				});
-			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
-				{
-				-5.284f,
-				2.f,
-				-1.016f
-				});
+				obj_Manager.Initialize(Chain_Type::lift_chain_S,
+					{ -5.158f,2.025f, -0.492f },
+					"num3",
+					{ 0.000000f,1.6f,0.000000f });
+			}
+			//object
+			{
+				raylist = {};
+				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+					{
+					 -3.076f,
+					-0.486f,
+					-0.581f
+					}, raylist);
+				raylist.IsRayCastGimic = true;
+				raylist.IsRayCastInvisibleWall = false;
+				raylist.IsRayCastObject = false;
+				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+					{
+					-5.284f,
+					2.f,
+					-1.016f
+					}, raylist);
+			}
 		}
 		{
-			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -0.008f,-0.600f,-0.932f },
-				"num4",
-				{ -0.008f,-2.707f,-0.932f });
-			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ -0.002f,-0.573f,-0.013f },
-				"num4",
-				{ 0.f,-1.6f,0.f }
-			);
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ -0.009f,-0.944f,-0.013f },
-				"num4",
-				{ 0.f,1.6f,0.f }
-			);
-
-			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -0.019f,0.f,-0.483f },
-				"num4",
-				{ 0.000000f,1.6f,0.000000f });
-
-			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ -0.004f,-0.120f, -0.492f },
-				"num4",
-				{ 0.000000f,1.6f,0.000000f });
-			obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
-				{
-				 2.397f,
-				-2.823f,
-				-1.227f
-				});
-			obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
-				{
-				-0.093f,
-				-0.393f,
-				-0.961f
-				});
+			//lift
+		     {
+		     	 obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+		     	 	{ -0.008f,-0.600f,-0.932f },
+		     	 	"num4",
+		     	 	{ -0.008f,-2.707f,-0.932f });
+		     	 obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+		     	 	{ -0.002f,-0.573f,-0.013f },
+		     	 	"num4",
+		     	 	{ 0.f,-1.6f,0.f }
+		     	 );
+		     	 obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+		     	 	{ -0.009f,-0.944f,-0.013f },
+		     	 	"num4",
+		     	 	{ 0.f,1.6f,0.f }
+		     	 );
+		     	 
+		     	 obj_Manager.Initialize(Chain_Type::lift_chain_L,
+		     	 	{ -0.019f,0.f,-0.483f },
+		     	 	"num4",
+		     	 	{ 0.000000f,1.6f,0.000000f });
+		     	 
+		     	 obj_Manager.Initialize(Chain_Type::lift_chain_S,
+		     	 	{ -0.004f,-0.120f, -0.492f },
+		     	 	"num4",
+		     	 	{ 0.000000f,1.6f,0.000000f });
+		     }
+			//object
+			{
+				raylist = {};
+				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+					{
+					 2.397f,
+					-2.823f,
+					-1.227f
+					}, raylist);
+				raylist.IsRayCastGimic = true;
+				raylist.IsRayCastInvisibleWall = false;
+				raylist.IsRayCastObject = false;
+				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+					{
+					-0.093f,
+					-0.393f,
+					-0.961f
+					}, raylist);
+			}
 
 		}
 

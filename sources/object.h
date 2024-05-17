@@ -162,9 +162,14 @@ public:
     //SphereQuadPlacement‚ğ¶¬‚µ‚½Œã‚É‚±‚ÌŠÖ”‚É“n‚·
     void SetMySphere(const SphereQuadPlacement& sphere) { Mysphere = sphere; }
     const SphereQuadPlacement GetMySphere()const { return Mysphere; }
-    
-  
-
+public:
+    struct RayCastList//‚±‚ê‚ğg‚Á‚Äraycast‚·‚é‚©‚Ç‚¤‚©‚ğ§Œä‚·‚é
+    {
+        bool IsRayCastGround = false;
+        bool IsRayCastGimic = false;
+        bool IsRayCastObject = false;
+        bool IsRayCastInvisibleWall = false;
+    }israycast;
 protected:
 
    // bool QuadPlacement_vs_ThisSphere(const SphereQuadPlacement& sphere, const DirectX::XMFLOAT3& Position);
@@ -206,6 +211,7 @@ protected:
     };
     std::unique_ptr<Model> model;
 private:
+  
     bool static_ObjFlag = false;
     bool isWall = false;
     std::string GetBootGimicType_ID = "null";

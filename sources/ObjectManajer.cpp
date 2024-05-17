@@ -13,122 +13,106 @@
 #include <algorithm>
 using namespace std;
 using namespace DirectX;
-void Objectmanajer::Initialize( ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos)
+
+void Objectmanajer::Initialize(ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos, Object::RayCastList raylist)
 {
     unique_ptr<Object> obj;
-
+    
     switch (type_name)
     {
     case Obj_attribute::cution:
         obj = make_unique<Cution>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_cution:
         obj = make_unique<Super_Cution>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::heavy:
         obj = make_unique<Heavy>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_heavy:
         obj = make_unique<Super_Heavy>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Fragile:
         obj = make_unique<Fragile>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_fragile:
         obj = make_unique<Super_fragile>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Hard_to_Break:
         obj = make_unique<Hard_to_Break>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_hard_to_Break:
         obj = make_unique<Super_hard_to_Break>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Crack:
         obj = make_unique<Crack>(device);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     default:
         obj = make_unique<stage_OBJ>(device);
-        Rigister_obj(move(obj));
         break;
     }
-
+    obj->israycast = raylist;
+    Rigister_obj(move(obj));
 
 }
 
-void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos)
+void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos, Object::RayCastList raylist)
 {
     unique_ptr<Object> obj;
-
     switch (type_name)
     {
     case Obj_attribute::cution:
         obj = make_unique<Cution>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_cution:
         obj = make_unique<Super_Cution>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::heavy:
         obj = make_unique<Heavy>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_heavy:
         obj = make_unique<Super_Heavy>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Fragile:
         obj = make_unique<Fragile>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_fragile:
         obj = make_unique<Super_fragile>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Hard_to_Break:
         obj = make_unique<Hard_to_Break>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Super_hard_to_Break:
         obj = make_unique<Super_hard_to_Break>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     case Obj_attribute::Crack:
         obj = make_unique<Crack>(device,filename);
         obj->SetPosition({ pos });
-        Rigister_obj(move(obj));
         break;
     default:
         obj = make_unique<stage_OBJ>(device);
-        Rigister_obj(move(obj));
+       
         break;
     }
+    obj->israycast = raylist;
+    Rigister_obj(move(obj));
 }
 
 void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id, XMFLOAT3 endpos)
@@ -180,49 +164,60 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
     }
 }
 
-void Objectmanajer::Initialize(const char* filename, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id, XMFLOAT3 endpos)
-{
-}
 
 void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id,XMFLOAT3 angle)
 {
-    unique_ptr<BaseChain> obj;
+    unique_ptr<BaseChain> obj=nullptr;
     switch (type)
     {
     case Chain_Type::lift_chain_S:
         obj = make_unique<Lift_chain_s>();
-        obj->GetTransformComp()->SetPosition(pos);
-        obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
-        Rigister_Lift_Chains(move(obj));
-        break;
+         break;
     case Chain_Type::lift_chain_L:
         obj = make_unique<Lift_chain_l>();
-        obj->GetTransformComp()->SetPosition(pos);
-        obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
-
-        Rigister_Lift_Chains(move(obj));
         break;
     case Chain_Type::lift_P_Animatio_ndown:
         obj = make_unique<Lift_chain_Animatio_ndown>();
-        obj->GetTransformComp()->SetPosition(pos);
-        obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
-
-        Rigister_Lift_Chains(move(obj));
         break;
     case Chain_Type::lift_P_Not_Animation:
         obj = make_unique<Lift_chain_P>();
+        break;
+    }
+    if (obj)
+    {
         obj->GetTransformComp()->SetPosition(pos);
         obj->SetID(id);
         obj->GetTransformComp()->SetAngle(angle);
 
         Rigister_Lift_Chains(move(obj));
-        break;
-
     }
+}
 
+void Objectmanajer::Initialize(const char* filename, Chain_Type type, XMFLOAT3 pos, std::string id, XMFLOAT3 angle)
+{
+    unique_ptr<BaseChain> obj=nullptr;
+    switch (type)
+    {
+    case Chain_Type::lift_chain_S:
+        obj = make_unique<Lift_chain_s>(filename);
+        break;
+    case Chain_Type::lift_chain_L:
+        obj = make_unique<Lift_chain_l>(filename);
+        break;
+    case Chain_Type::lift_P_Animatio_ndown:
+        obj = make_unique<Lift_chain_Animatio_ndown>(filename);
+        break;
+    case Chain_Type::lift_P_Not_Animation:
+        obj = make_unique<Lift_chain_P>(filename);
+        break;
+    }
+    if (obj)
+    {
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
+        Rigister_Lift_Chains(move(obj));
+    }
 }
 
 
