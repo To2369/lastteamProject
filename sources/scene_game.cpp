@@ -19,6 +19,7 @@ extern ImWchar glyphRangesJapanese[];
 #include"scene_loading.h"
 #include"scene_title.h"
 #include"scene_stage_select.h"
+
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
 //{
@@ -148,8 +149,8 @@ void SceneGame::initialize()
 
 		filenam = failepath::UI_Bottun_Other_Path_Wstring + L"ClearLogo.png";
 		ui = make_unique<UI>(graphics.GetDevice(), filenam.c_str());
-		ui->SetScale(scale);
-		ui->SetPosition({ 453.141f,0.f });
+		ui->SetScale({753.f,143.f});
+		ui->SetPosition({ 270.0f,0.f });
 		ui->SetID(UI_StringID::UI_ID::Clear_Id::ClearClearLogo);
 		ui->SetHanteiFlag(false);
 		UIs.push_back(move(ui));
@@ -457,6 +458,8 @@ void SceneGame::render(float elapsed_time)
 		plm.Render(&rc);
 
 		plm.drawDrawPrimitive(graphics.GetDevice());
+		DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
+		ince.Render(graphics.GetDeviceContext(),rc.view,rc.projection);
 
 	}
 
@@ -639,7 +642,6 @@ void SceneGame::render(float elapsed_time)
 				return str;
 			};
 		ince_ui.Render(&rc, UI_StringID::CanbasID::Player, id(type));
-		
 		ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
 		if (ClearScreen(elapsed_time))
 		{

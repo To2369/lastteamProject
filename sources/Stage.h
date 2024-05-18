@@ -26,8 +26,25 @@ public:
     ~Stage_1_1()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
+   
+    void Child_UpdateTransform();
 private:
     const char* filename = ".\\resources\\stage1\\stage_1.fbx";
+    const char* filename2 = ".\\resources\\stage1\\tansu.fbx";
+
+
+    DirectX::XMFLOAT3 child_Position{};
+    DirectX::XMFLOAT3 child_Scale{1,1,1};
+    DirectX::XMFLOAT3 child_Angle{};
+    DirectX::XMFLOAT4X4 child_transform
+    {
+    1,0,0,0,
+    0,1,0,0,
+    0,0,1,0,
+    0,0,0,1    
+    };
+    unique_ptr<Model>child_model;
+   
 };
 
 

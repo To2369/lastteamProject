@@ -33,37 +33,37 @@ void UIManager::CreateGameSceneUI(ID3D11Device* device)
         {
         case Obj_attribute::cution:
             filename = L".\\resources\\UI\\Attribute(cution).png";
-            Scale = { 1280.f / 11.f,720.f / 11.f };
+            Scale = { 1280.f / 8.f,720.f / 8.f };
             break;
         case Obj_attribute::Super_cution:
             filename = L".\\resources\\UI\\Attribute(super_cution).png";
-            Scale = { 222.f / 10.f,247.f / 10.f };
+            Scale = { 222.f / 5.f,247.f / 5.f };
             break;
         case Obj_attribute::heavy:
             filename = L".\\resources\\UI\\Attribute(heavy).png";
-            Scale = { 1280.f / 10.f,720.f / 10.f };
+            Scale = { 222.f /5.f,247.f / 5.f };
             break;
         case Obj_attribute::Super_heavy:
             filename = L".\\resources\\UI\\Attribute(super_heavy).png";
-            Scale = { 222.f / 10.f,247.f / 10.f };
+            Scale = { 222.f / 5.f,247.f / 5.f };
             break;
         case Obj_attribute::Fragile:
             filename = L".\\resources\\UI\\Attribute(fragile).png";
-            Scale = { 1280.f / 10.f,720.f / 10.f };
+            Scale = { 222.f/5.f,247.f/5.f };
             break;
         case Obj_attribute::Super_fragile:
             filename = L".\\resources\\UI\\Attribute(super_fragile).png";
-            Scale = { 222.f / 10.f,247.f / 10.f };
+            Scale = { 222.f / 5.f,247.f / 5.f };
 
             break;
         case Obj_attribute::Hard_to_Break:
             filename = L".\\resources\\UI\\Attribute(ŒÅ).png";
-            Scale = { 222.f / 10.f,247.f / 10.f };
+            Scale = { 222.f / 5.f,247.f / 5.f };
 
             break;
         case Obj_attribute::Super_hard_to_Break:
             filename = L".\\resources\\UI\\’´ŒÅ.png";
-            Scale = { 222.f / 10.f,247.f / 10.f };
+            Scale = { 222.f / 5.f,247.f / 5.f };
 
             break;
         }

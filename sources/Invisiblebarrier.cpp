@@ -33,7 +33,7 @@ void InvisibleBarrier::Render(RenderContext* rc)
 {
     Graphics& graphics = Graphics::Instance();
     graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
-    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0, {0.5f,0.5f,0.5f,0.1f});
+    //model->render(Graphics::Instance().GetDeviceContext(), Transform, 0, {0.5f,0.5f,0.5f,0.1f});
 
     graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }

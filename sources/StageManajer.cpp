@@ -268,7 +268,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
-				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
 					{
 					 -3.076f,
 					-0.486f,
@@ -343,15 +343,36 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	break;
 	case StageName::stage1_3:
 	{
+		unique_ptr<Gimic> gimic = make_unique<Switch>(device);
 		PlayerManager& ince_p = PlayerManager::Instance();
 		Object::RayCastList raylist;
 		ince_p.GetPlayer(0)->SetPosition({ 0.702f,-0.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_3,
 			Gimic_Type::Goal, device,
 			{ 7.577f,7.223f,-0.535f });
+		//object
 		{
-
-
+			obj_Manager.Initialize(failepath::Object_failepath::Object::E_kezuri.filename.c_str(), ObjType::Super_heavy, device, true, { 2.118f,1.238f,-0.020f }, {});
+			gimic = make_unique<Switch>(device);
+			gimic->SetPosition({2.890f,0.258f,-3.345f});
+			gimic->SetMyObjetype(ObjType::Super_heavy);
+			gimic->SetGimicID("enpitukezurimae");
+			obj_Manager.Rigister_Gimic(move(gimic));
+			gimic = nullptr;
+			bool flags[3] = { false,false,true };
+			gimic = make_unique<Move_Object>(device,failepath::Object_failepath::Gimic::thissyu.filename.c_str(), XMFLOAT3(0.193f, 0.630f, -2.351f), flags,0.010f);
+			gimic->SetScale(XMFLOAT3(1.0f, 1.0f, 2.158f));
+			gimic->SetGimicID("enpitukezurimae");
+			gimic->SetEndPos({-1.351f,0,0,});
+			obj_Manager.Rigister_Gimic(move(gimic));
+			raylist = {};
+			obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
+				{
+				 0.076f,
+				0.486f,
+				-0.581f
+				}, raylist);
+			obj_Manager.Initialize(failepath::Object_failepath::Object::kyappu.filename.c_str(),ObjType::Super_cution,device,false,{ 2.869f,0.869f,-3.362f },{});
 
 		}
 		{
@@ -1487,6 +1508,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 			&failepath::Object_failepath::Object::kyappu,
 			&failepath::Object_failepath::Object::enpitu,
 			&failepath::Object_failepath::Object::Light,
+			&failepath::Object_failepath::Object::Clip,
 			nullptr,
 		};
 		ImGui::Checkbox("chengeThred", &CreateGimicTypeChenge);
@@ -1578,7 +1600,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 			{
 				ObjectfilenameIndex = 0;
 			}
-			else if (!name)
+			else if (!name[ObjectfilenameIndex])
 			{
 				while (!name[ObjectfilenameIndex])
 				{

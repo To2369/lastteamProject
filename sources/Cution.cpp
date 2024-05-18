@@ -46,6 +46,27 @@ void Cution::Update(float elapsedTime)
     VeloctyY = -elapsedTime*0.9f;
     PlayerManager& ince_pl = PlayerManager::Instance();
     Objectmanajer& ince_o = Objectmanajer::incetance();
+    if (israycast.IsRayCastGimic)
+    {
+        int count = ince_o.Get_GameGimicCount();
+        //ギミックに対して何かするfor文
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* gimic = ince_o.Get_GameGimic(i);
+            if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+            {
+                if (Get_isGimic_UpPosNow())
+                {
+                    string g = gimic->GetGimicID();
+                    Set_GimicType(g);
+                    VeloctyY = 0;
+
+                    break;
+                }
+            }
+        }
+    }
     Player* pl = ince_pl.GetPlayer(0);
     XMFLOAT3 outpos;
     if (ince_o.Sphere_VS_Player(pl->GetPosition(), pl->getRadius(), this->Position, this->radius, outpos))
@@ -79,7 +100,7 @@ void Cution::Update(float elapsedTime)
 
 void Cution::Render(RenderContext* rc)
 {
-    DebugRenderer& ince = DebugRenderer::incetance(rc->device);
+    DebugRenderer& ince = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     ince.DrawSphere(Position, radius, { 1,1,1,1 });
     model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
@@ -104,7 +125,7 @@ Super_Cution::Super_Cution(ID3D11Device* device, const char* filename_)
     model = make_unique<Model>(device, filename_, true);
     initialaize_Set_attribute(ObjType::Super_cution, ObjType::null);
     //  Position = { 0,0,0 };
-    Scale.x = Scale.y = Scale.z = 1.f;
+    Scale.x = Scale.y = Scale.z = 20.f;
 }
 
 Super_Cution::~Super_Cution()
@@ -128,6 +149,26 @@ void Super_Cution::Update(float elapsedTime)
     {
 
         pl->SetPosition(outpos);
+    }
+    {
+        int count = ince_o.Get_GameGimicCount();
+        //ギミックに対して何かするfor文
+        for (int i = 0; i < count; i++)
+        {
+            Gimic* gimic = ince_o.Get_GameGimic(i);
+            if (gimic->Get_GimicType() == Gimic_Type::Lift)continue;
+            if (ince_o.Bounding_Box_vs_Bounding_Box(this, gimic, true, 0.045f))
+            {
+                if (Get_isGimic_UpPosNow())
+                {
+                    string g = gimic->GetGimicID();
+                    Set_GimicType(g);
+                    VeloctyY = 0;
+
+                    break;
+                }
+            }
+        }
     }
     {
         XMFLOAT3 start = Position;
@@ -158,9 +199,9 @@ void Super_Cution::Update(float elapsedTime)
 
 void Super_Cution::Render(RenderContext* rc)
 {
-    DebugRenderer& ince_d = DebugRenderer::incetance(rc->device);
+    DebugRenderer& ince_d = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     ince_d.DrawSphere(Position, radius * radius, { 0,1,0,1 });
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Super_Cution::Gui()

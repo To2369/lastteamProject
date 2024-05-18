@@ -233,6 +233,16 @@ void Object::BaseGui()
         ImGui::Checkbox("IsObject", &isObject);
         ImGui::TreePop();
     }
+
+    if (ImGui::TreeNode("RayCastList"))
+    {
+        ImGui::Checkbox("IsRayCastGimic",&israycast.IsRayCastGimic);
+        ImGui::Checkbox("IsRayCastGround",&israycast.IsRayCastGround);
+        ImGui::Checkbox("IsRayCastInvisibleWall",&israycast.IsRayCastInvisibleWall);
+        ImGui::Checkbox("IsRayCastObject",&israycast.IsRayCastObject);
+
+        ImGui::TreePop();
+    }
 }
 
 void Object::InvisibleWall_VS_Object()

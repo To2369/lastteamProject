@@ -10,17 +10,18 @@
 #endif
 using namespace std;
 using namespace DirectX;
-Move_Object::Move_Object(ID3D11Device* device, DirectX::XMFLOAT3 pos, bool flags[3])
+Move_Object::Move_Object(ID3D11Device* device, DirectX::XMFLOAT3 pos, bool flags[3], float movespeed)
 {
     model = make_unique<Model>(device, filename, true);
     Position = pos;
-   StartPos = Position;
+    StartPos = Position;
     x_flag = flags[0];
     y_flag = flags[1];
     z_flag = flags[2];
+    moveSpeed = movespeed;
 }
 
-Move_Object::Move_Object(ID3D11Device* device, const char* filename_, DirectX::XMFLOAT3 pos, bool flags[3])
+Move_Object::Move_Object(ID3D11Device* device, const char* filename_, DirectX::XMFLOAT3 pos, bool flags[3], float movespeed)
 {
     model = make_unique<Model>(device,filename_,true);
     Position = pos;
@@ -28,6 +29,8 @@ Move_Object::Move_Object(ID3D11Device* device, const char* filename_, DirectX::X
     x_flag = flags[0];
     y_flag = flags[1];
     z_flag = flags[2];
+    moveSpeed = movespeed;
+
 }
 
 Move_Object::~Move_Object()
@@ -101,19 +104,19 @@ void Move_Object::Update(float elapsedTime)
         if (x_flag)
         {
             DirectX::XMVECTOR P = DirectX::XMVectorLerp(XMLoadFloat(&Position.x), XMLoadFloat(&EndPos.x), moveSpeed);
-            XMStoreFloat3(&Position, P);
+            XMStoreFloat(&Position.x, P);
             
         }
         else if (y_flag)
         {
             DirectX::XMVECTOR P = DirectX::XMVectorLerp(XMLoadFloat(&Position.y), XMLoadFloat(&EndPos.y), moveSpeed);
-            XMStoreFloat3(&Position, P);
+            XMStoreFloat(&Position.y, P);
           
         }
         else if (z_flag)
         {
             DirectX::XMVECTOR P = DirectX::XMVectorLerp(XMLoadFloat(&Position.z), XMLoadFloat(&EndPos.z), moveSpeed);
-            XMStoreFloat3(&Position, P);
+            XMStoreFloat(&Position.z, P);
          
         }
     }

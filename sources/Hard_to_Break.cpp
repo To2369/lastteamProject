@@ -6,6 +6,7 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include <Graphics/graphics.h>
 
 Hard_to_Break::Hard_to_Break(ID3D11Device* device)
 {
@@ -45,7 +46,7 @@ void Hard_to_Break::Update(float elapsedTime)
 
 void Hard_to_Break::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Hard_to_Break::Gui()
@@ -91,7 +92,7 @@ void Super_hard_to_Break::Update(float elapsedTime)
 
 void Super_hard_to_Break::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Super_hard_to_Break::Gui()

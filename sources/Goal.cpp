@@ -59,6 +59,9 @@ bool Goal::GoalInPosition()
 void Goal::Render(RenderContext* rc)
 {
     color = { 1,0,0,1 };
+
+    DebugRenderer& ince_d = DebugRenderer::incetance(Graphics::Instance().GetDevice());
+    ince_d.DrawSphere(Position, radius * radius, { 0,1,0,1 });
     model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 

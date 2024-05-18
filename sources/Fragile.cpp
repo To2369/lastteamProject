@@ -6,6 +6,7 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include <Graphics/graphics.h>
 Fragile::Fragile(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
@@ -49,7 +50,7 @@ void Fragile::Update(float elapsedTime)
 
 void Fragile::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Fragile::Gui()
@@ -100,7 +101,7 @@ void Super_fragile::Update(float elapsedTime)
 
 void Super_fragile::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext, Transform, 0.0f, color);
+    model->render(Graphics::Instance().GetDeviceContext(), Transform, 0.0f, color);
 }
 
 void Super_fragile::Gui()

@@ -22,6 +22,7 @@ public:
 public:
     ObjType GetMyObjeFlagType()const { return MyObjeFlagType; }
     Gimic_Type GetMyGimicFlagType() { return MyGimicFlagType; }
+    void SetMyObjetype(ObjType type) { MyObjeFlagType = type; }//自分(switch)に乗ってギミックを起動させる性質を設定
     void SetGimicID(string id) { ID = id; }//例：複数のスイッチが出てきた時にこれがないと、一つのスイッチでスイッチで起動するすべてのギミックが起動してしまう
     string GetGimicID() { return ID; }//この関数を使って自分(ギミック)がどのギミックに対して起動するかを識別する
 public:
@@ -208,8 +209,8 @@ private:
 class Move_Object :public Gimic
 {
 public:
-    Move_Object(ID3D11Device* device, DirectX::XMFLOAT3 pos,bool flags[3]);
-    Move_Object(ID3D11Device* device,const char* filename_,DirectX::XMFLOAT3 pos,bool flags[3]);
+    Move_Object(ID3D11Device* device, DirectX::XMFLOAT3 pos,bool flags[3],float movespeed=0);
+    Move_Object(ID3D11Device* device,const char* filename_,DirectX::XMFLOAT3 pos,bool flags[3],float movespeed=0);
     ~Move_Object();
     void Gui()override;
 public:

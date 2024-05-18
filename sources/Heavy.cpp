@@ -57,7 +57,27 @@ void Heavy::Update(float elapsedTime)
     VeloctyY = -elapsedTime * 2;
     Objectmanajer& ince_o = Objectmanajer::incetance();
     VMCFHT& ince_ray = VMCFHT::instance();
-    int count = ince_o.Get_GameGimicCount();
+
+    isObject = false;
+    int count = ince_o.Get_GameObjCount();
+
+    {
+        if (israycast.IsRayCastObject)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Object* obj = ince_o.Get_GameObject(i);
+                if (this == obj)continue;
+                if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
+                {
+                    Position = oldPosition;
+                    isObject = true;
+                    break;
+                }
+            }
+        }
+    }
+     count = ince_o.Get_GameGimicCount();
     
     {
         //ƒMƒ~ƒbƒN‚É‘Î‚µ‚Ä‰½‚©‚·‚éfor•¶
@@ -91,25 +111,7 @@ void Heavy::Update(float elapsedTime)
     if(israycast.IsRayCastInvisibleWall)
         InvisibleWall_VS_Object();
 
-    isObject = false;
-    count = ince_o.Get_GameObjCount();
-  
-    {
-        if (israycast.IsRayCastObject)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                Object* obj = ince_o.Get_GameObject(i);
-                if (this == obj)continue;
-                if (ince_o.Bounding_Box_vs_Bounding_Box(this, obj, false))
-                {
-                    Position = oldPosition;
-                    isObject = true;
-                    break;
-                }
-            }
-        }
-    }
+    
 
  
     {
@@ -297,5 +299,6 @@ void Super_Heavy::Gui()
 {
 
     BaseGui();
+
     ImGui::SliderFloat("radius", &radius, 0.f, 1.0f);
 }

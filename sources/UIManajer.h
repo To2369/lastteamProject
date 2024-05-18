@@ -39,7 +39,7 @@ namespace failepath
            static ObjectName  kyappu = { "kyappu",Stage_failepath::Stage5_Path + "objects\\kyappu.fbx" };//キャップのオブジェクト
            static ObjectName  enpitu = { "enpitu",Stage_failepath::Stage5_Path + "objects\\enpitu.fbx" };//鉛筆のオブジェクト
            static ObjectName  Light = { "right",Stage_failepath::Stage5_Path + "objects\\right.fbx" };//ライトのオブジェクト
-
+           static ObjectName  Clip = { "Clip",Stage_failepath::Stage3_Path + "object\\kurippu.fbx" };//クリップのオブジェクト
        };
 
       
