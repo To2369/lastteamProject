@@ -70,12 +70,18 @@ public:
     {
         newObject_Thread.push_back(new thread(CreateObject, t, device, in));
     }
-
+    void Set_CreateObject_Thred(const char* filename,ObjType t, ID3D11Device* device, Intersection in)/*ìnÇ∑ä÷êîÇÃëÊàÍà¯êîÇÃèáî‘Ç…èëÇ¢ÇƒÇ¢Ç≠*/
+    {
+        newObject_Thread.push_back(new thread(CreateObject_2,filename ,t, device, in));
+    }
     void Set_CreateGimic_Thred(Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
     {
         newObject_Thread.push_back(new thread(CreateGimic, t, device, in, id));
     }
-
+    void Set_CreateGimic_Thred(const char*filename,Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
+    {
+        newObject_Thread.push_back(new thread(CreateGimic_2,filename, t, device, in, id));
+    }
     void Set_CreateStaticObject_Thred(Static_ObjType t, ID3D11Device* device, Intersection in, const char* filename = nullptr)
     {
         newObject_Thread.push_back(new thread(CreateStaticObject, t, device, in, filename));
@@ -132,6 +138,8 @@ public:
     void SetMode(DebugMode m) { mode = m; }
     void SetCreateObjeFlag(ObjType t) { CreateObjeType = t; }
     static void CreateObject(ObjType type, ID3D11Device* device, Intersection in);
+    static void CreateObject_2(const char*filename_,ObjType type, ID3D11Device* device, Intersection in);
+    static void CreateGimic_2(const char*filename_,Gimic_Type type, ID3D11Device* device, Intersection in, std::string id = "");
     static void CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in, std::string id = "");
 
     static void CreateStaticObject(Static_ObjType type, ID3D11Device* device, Intersection in, const char* filename);
@@ -215,6 +223,8 @@ public://debugmode
     void Create_Object(ID3D11Device* device);
     void Delete_Object();
     int filenameIndex = 0;
+    int ObjectfilenameIndex=0;
+    bool CreateGimicTypeChenge = false;
     const char* filenames[99]
     {
         ".\\resources\\stage1\\tana.fbx",

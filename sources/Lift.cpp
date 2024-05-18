@@ -154,13 +154,13 @@ void Lift::Gui()
             InputFloat("StartPos.x", &StartPos.x);
             InputFloat("StartPos.y", &StartPos.y);
             InputFloat("StartPos.z", &StartPos.z);
-            static XMFLOAT3 pos2{};
+            XMFLOAT3 pos2{};
             InputFloat("change_StartPos.x", &pos2.x, val.Min.x, val.Max.x);
             InputFloat("change_StartPos.y", &pos2.y, val.Min.y, val.Max.y);
             InputFloat("change_StartPos.z", &pos2.z, val.Min.z, val.Max.z);
-            StartPos.x=pos2.x;
-            StartPos.y=pos2.y;
-            StartPos.z=pos2.z;
+            StartPos.x+=pos2.x;
+            StartPos.y+=pos2.y;
+            StartPos.z+=pos2.z;
             TreePop();
         }
         if (TreeNode("EndPoint"))

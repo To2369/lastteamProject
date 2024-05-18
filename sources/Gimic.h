@@ -205,16 +205,22 @@ private:
 
 };
 
-class Move_Wall :public Gimic
+class Move_Object :public Gimic
 {
 public:
-    Move_Wall(ID3D11Device* device);
-    Move_Wall(ID3D11Device* device,const char* filename_);
-    ~Move_Wall();
+    Move_Object(ID3D11Device* device, DirectX::XMFLOAT3 pos,bool flags[3]);
+    Move_Object(ID3D11Device* device,const char* filename_,DirectX::XMFLOAT3 pos,bool flags[3]);
+    ~Move_Object();
+    void Gui()override;
 public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
 private:
+  
+    float moveSpeed=0.5f;
+    bool x_flag = false;
+    bool y_flag = false;
+    bool z_flag = false;
     const char* filename=".\\resources\\stage1\\tumiki.fbx";
 
 };

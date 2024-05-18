@@ -38,6 +38,7 @@ enum class Gimic_Type
     Goal,
     Drop_Road,
     Lift,
+    Move_Object,
     null
 };
 //Guiをマジックナンバーを使用して操作しないよう

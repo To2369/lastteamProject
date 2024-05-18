@@ -19,6 +19,29 @@ namespace failepath
        static string  Pengin = ".\\resources\\stage3\\object\\pengin.fbx";//ペンギンのオブジェクト
        static string  Kami =   ".\\resources\\stage3\\object\\kami.fbx";//紙のオブジェクト
        static string  Denti =  ".\\resources\\stage3\\object\\denti.fbx";//電池のオブジェクト
+       
+       struct ObjectName
+       {
+           string name="";
+           string filename = "";
+       };
+       namespace Gimic
+       {
+           static ObjectName  thissyu = { "thissyu" ,Stage_failepath::Stage5_Path + "objects\\thissyu.fbx" };//ティッシュのオブジェクト
+           static ObjectName  hikidasi_k = { "hikidasi_k",Stage_failepath::Stage5_Path + "objects\\hikidasi_K.fbx" };//引き出しのオブジェクト
+
+       };
+       namespace Object
+       {
+           static ObjectName  Book = { "Book",Stage_failepath::Stage5_Path + "objects\\book.fbx" };//本のオブジェクト
+           static ObjectName  E_kezuri = { "E_kezuri",Stage_failepath::Stage5_Path + "objects\\E_kezuri.fbx" };//鉛筆削りのオブジェクト
+           static ObjectName  kesigomu = { "kesigomu",Stage_failepath::Stage5_Path + "objects\\kesigomu.fbx" };//消しゴムのオブジェクト
+           static ObjectName  kyappu = { "kyappu",Stage_failepath::Stage5_Path + "objects\\kyappu.fbx" };//キャップのオブジェクト
+           static ObjectName  enpitu = { "enpitu",Stage_failepath::Stage5_Path + "objects\\enpitu.fbx" };//鉛筆のオブジェクト
+           static ObjectName  Light = { "right",Stage_failepath::Stage5_Path + "objects\\right.fbx" };//ライトのオブジェクト
+
+       };
+
       
    };
    

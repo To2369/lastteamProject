@@ -157,6 +157,14 @@ void Objectmanajer::Initialize(StageName s_name_, Gimic_Type type_name, ID3D11De
         gimic->SetAngle({ 0.f,0.f,0.f });
         Rigister_Gimic(move(gimic));
         break;
+    case Gimic_Type::Move_Object:
+        gimic = make_unique<Lift>(device, pos);
+        gimic->SetEndPos(endpos);
+        gimic->Set_MystageName(s_name_);
+        gimic->SetGimicID(id);
+        gimic->SetAngle({ 0.f,0.f,0.f });
+        Rigister_Gimic(move(gimic));
+        break;
     case Gimic_Type::null:
         break;
     default:

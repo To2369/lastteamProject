@@ -587,7 +587,7 @@ void SceneGame::render(float elapsed_time)
 
 #endif // !DEBUG
 	}
-
+	
 	scene_data->deactivate(graphics.GetDeviceContext());
 	parametric_constant->deactivate(graphics.GetDeviceContext());
 	framebuffers[0]->deactivate(graphics.GetDeviceContext());
@@ -807,7 +807,7 @@ bool SceneGame::Menu(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressedMenu) {
 
-							StageManager::incetance().SetStageName(StageName::stage1_1);
+							StageManager::incetance().SetStageName(StageManager::incetance().GetStageName());
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
 					}

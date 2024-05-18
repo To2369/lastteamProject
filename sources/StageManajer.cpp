@@ -343,10 +343,23 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	break;
 	case StageName::stage1_3:
 	{
-		unique_ptr<Stage>stage = make_unique<Stage_1_3>(device);
-		stage->SetPosition({ 0.f, 0.0f, -0.0f });
-		Rigister(move(stage));
-		ince_UI.CreateGameSceneUI(device);
+		PlayerManager& ince_p = PlayerManager::Instance();
+		Object::RayCastList raylist;
+		ince_p.GetPlayer(0)->SetPosition({ 0.702f,-0.020f,-0.443f });
+		obj_Manager.Initialize(StageName::stage1_3,
+			Gimic_Type::Goal, device,
+			{ 7.577f,7.223f,-0.535f });
+		{
+
+
+
+		}
+		{
+			unique_ptr<Stage>stage = make_unique<Stage_1_3>(device);
+			stage->SetPosition({ 0.f, 0.0f, -0.0f });
+			Rigister(move(stage));
+			ince_UI.CreateGameSceneUI(device);
+		}
 	}
 		break;
 	case StageName::null:
@@ -733,7 +746,6 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 		}
 		DebugMode_MouseRayCast(mode, device);
 	}
-
 	else if (mode == DebugMode::Create_Object)
 	{
 		auto p = [](debugType type) {
@@ -811,7 +823,8 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 					if (ImGui::Button("Goal")) CreateGimicType = Gimic_Type::Goal;
 					if (ImGui::Button("Drop_Load")) CreateGimicType = Gimic_Type::Drop_Road;
 					if (ImGui::Button("Lift")) CreateGimicType = Gimic_Type::Lift;
-
+					if (ImGui::Button("Move_Object")) CreateGimicType = Gimic_Type::Move_Object;
+					
 
 				}
 			}
@@ -910,7 +923,7 @@ void StageManager::Gui(ID3D11Device* device, RenderContext* rc)
 				}
 
 				static_objFilename = filenames[filenameIndex];
-				ImGui::InputText("CreateID", const_cast<char*>(static_objFilename.c_str()), Buffer);
+				ImGui::InputText("Createfilename", const_cast<char*>(static_objFilename.c_str()), Buffer);
 			}
 			if (ImGui::CollapsingHeader("NewCreateObj", ImGuiTreeNodeFlags_DefaultOpen))
 			{
@@ -1021,6 +1034,121 @@ void StageManager::CreateObject(ObjType type, ID3D11Device* device, Intersection
 
 }
 
+void StageManager::CreateObject_2(const char* filename_, ObjType type, ID3D11Device* device, Intersection in)
+{
+	Objectmanajer& ince = Objectmanajer::incetance();
+
+	unique_ptr<Object>obj;
+	switch (type)
+	{
+	case ObjType::cution:
+		obj = make_unique<Cution>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_cution:
+		obj = make_unique<Super_Cution>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::heavy:
+		obj = make_unique<Heavy>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+		break;
+	case ObjType::Super_heavy:
+		obj = make_unique<Super_Heavy>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::Fragile:
+		obj = make_unique<Fragile>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::Super_fragile:
+		obj = make_unique<Super_fragile>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::Hard_to_Break:
+		obj = make_unique<Hard_to_Break>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::Super_hard_to_Break:
+		obj = make_unique<Super_hard_to_Break>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::Crack:
+		obj = make_unique<Crack>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		ince.Rigister_obj(move(obj));
+
+		break;
+	case ObjType::null:
+		break;
+	default:
+		break;
+	}
+}
+
+void StageManager::CreateGimic_2(const char* filename_, Gimic_Type type, ID3D11Device* device, Intersection in, std::string id)
+{
+	Objectmanajer& ince = Objectmanajer::incetance();
+
+	unique_ptr<Gimic>obj;
+	switch (type)
+	{
+	case Gimic_Type::Switch:
+		obj = make_unique<Switch>(device);
+		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Door:
+		obj = make_unique<Door>(device);
+		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Goal:
+		obj = make_unique<Goal>(device,filename_);
+		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Drop_Road:
+		obj = make_unique<DropBox_Road>(device);
+		obj->SetPosition(in.intersection_position);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Lift:
+		obj = make_unique<Lift>(device,in.intersection_position,filename_);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Move_Object:
+	{
+		bool flags[3] = {};
+		obj = make_unique<Move_Object>(device,filename_, in.intersection_position, flags);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+	}
+	break;
+	case Gimic_Type::null:
+
+		break;
+	}
+}
+
 void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in, std::string id)
 {
 	Objectmanajer& ince = Objectmanajer::incetance();
@@ -1056,6 +1184,14 @@ void StageManager::CreateGimic(Gimic_Type type, ID3D11Device* device, Intersecti
 		obj = make_unique<Lift>(device, in.intersection_position);
 		obj->SetGimicID(id);
 		ince.Rigister_Gimic(move(obj));
+		break;
+	case Gimic_Type::Move_Object:
+	{
+		bool flags[3] = {};
+		obj = make_unique<Move_Object>(device, in.intersection_position, flags);
+		obj->SetGimicID(id);
+		ince.Rigister_Gimic(move(obj));
+	}
 		break;
 	case Gimic_Type::null:
 
@@ -1342,6 +1478,41 @@ void StageManager::Create_Object(ID3D11Device* device)
 	switch (o_or_g)
 	{
 	case debugType::obj:
+	{
+		failepath::Object_failepath::ObjectName* name[99]
+		{
+			&failepath::Object_failepath::Object::Book,
+			&failepath::Object_failepath::Object::E_kezuri,
+			&failepath::Object_failepath::Object::kesigomu,
+			&failepath::Object_failepath::Object::kyappu,
+			&failepath::Object_failepath::Object::enpitu,
+			&failepath::Object_failepath::Object::Light,
+			nullptr,
+		};
+		ImGui::Checkbox("chengeThred", &CreateGimicTypeChenge);
+		if (CreateGimicTypeChenge)
+		{
+			ImGui::Text("Notfilename");
+		}
+		else
+		{
+
+			ImGui::Text("Createfilenames");
+			ImGui::InputInt("Createfilename", &ObjectfilenameIndex);
+			if (ObjectfilenameIndex < 0)
+			{
+				ObjectfilenameIndex = 0;
+			}
+			else if (!name[ObjectfilenameIndex])
+			{
+				while (!name[ObjectfilenameIndex])
+				{
+					ObjectfilenameIndex--;
+				}
+
+			}
+			ImGui::Text(name[ObjectfilenameIndex]->filename.c_str());
+		}
 		for (int i = 0; i < stage_count; i++)
 		{
 			StageManager& ince = incetance();
@@ -1353,13 +1524,26 @@ void StageManager::Create_Object(ID3D11Device* device)
 
 				if (GetAsyncKeyState(VK_RBUTTON) & 1)
 				{
-
-					if (ince.GetCreateObjeType() != ObjType::null && Object_CreateFlag)
+					if (CreateGimicTypeChenge)
 					{
-						result_intersection.intersection_position.y += 0.9f;
-						ince.Set_CreateObject_Thred(ince.GetCreateObjeType(), device, result_intersection);
-						ince.DeleteThred();
-						break;
+						if (ince.GetCreateObjeType() != ObjType::null && Object_CreateFlag)
+						{
+							result_intersection.intersection_position.y += 0.9f;
+							ince.Set_CreateObject_Thred(ince.GetCreateObjeType(), device, result_intersection);
+							ince.DeleteThred();
+							break;
+						}
+					}
+					else
+					{
+						if (ince.GetCreateObjeType() != ObjType::null && Object_CreateFlag)
+						{
+							result_intersection.intersection_position.y += 0.9f;
+							ince.Set_CreateObject_Thred(name[ObjectfilenameIndex]->filename.c_str(),ince.GetCreateObjeType(), device, result_intersection);
+							ince.DeleteThred();
+							break;
+						}
+
 					}
 
 				}
@@ -1370,9 +1554,39 @@ void StageManager::Create_Object(ID3D11Device* device)
 			}
 
 		}
+	}
 		break;
 	case debugType::gimic:
+	{
+		failepath::Object_failepath::ObjectName* name[99]
+		{
+			&failepath::Object_failepath::Gimic::hikidasi_k,
+			&failepath::Object_failepath::Gimic::thissyu,
+			nullptr,
+		};
+		ImGui::Checkbox("chengeThred", &CreateGimicTypeChenge);
+		if (CreateGimicTypeChenge)
+		{
+			ImGui::Text("Notfilename");
+		}
+		else
+		{
 
+			ImGui::Text("Createfilenames");
+			ImGui::InputInt("Createfilename", &ObjectfilenameIndex);
+			if (ObjectfilenameIndex < 0)
+			{
+				ObjectfilenameIndex = 0;
+			}
+			else if (!name)
+			{
+				while (!name[ObjectfilenameIndex])
+				{
+					ObjectfilenameIndex--;
+				}
+			}
+			ImGui::Text(name[ObjectfilenameIndex]->filename.c_str());
+		}
 		for (int i = 0; i < stage_count; i++)
 		{
 			StageManager& ince = incetance();
@@ -1387,10 +1601,19 @@ void StageManager::Create_Object(ID3D11Device* device)
 					if (ince.GetCreateGimicType() != Gimic_Type::null && Object_CreateFlag)
 					{
 						result_intersection.intersection_position.y += 0.9f;
-						ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection, ID.c_str());
-						ince.DeleteThred();
-						ID = "null";
+						if (CreateGimicTypeChenge)
+						{
+							ince.Set_CreateGimic_Thred(ince.GetCreateGimicType(), device, result_intersection, ID.c_str());
+							ince.DeleteThred();
+							ID = "null";
+						}
+						else
+						{
 
+							ince.Set_CreateGimic_Thred(name[ObjectfilenameIndex]->filename.c_str(), ince.GetCreateGimicType(), device, result_intersection, ID.c_str());
+							ince.DeleteThred();
+							ID = "null";
+						}
 						break;
 					}
 
@@ -1402,6 +1625,7 @@ void StageManager::Create_Object(ID3D11Device* device)
 			}
 
 		}
+	}
 		break;
 	case debugType::static_obj:
 		for (int i = 0; i < stage_count; i++)

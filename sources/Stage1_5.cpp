@@ -1,5 +1,5 @@
 #include"Stage.h"
-
+#include"Graphics/graphics.h"
 
 Stage_1_3::Stage_1_3(ID3D11Device* device)
 {
@@ -18,6 +18,7 @@ void Stage_1_3::Update(float elapsedTime)
 
 void Stage_1_3::Render(RenderContext* rc)
 {
-    model->render(rc->deviceContext,Transform,0.0f);
+    Graphics& ince_gr = Graphics::Instance();
+    model->render(ince_gr.GetDeviceContext(),Transform,0.0f);
 }
 
