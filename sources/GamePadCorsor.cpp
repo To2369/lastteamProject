@@ -26,31 +26,40 @@ void GamePadCorsor::Update()
 
 	speed = -20;
 
-	PadCoursorvelocity.y += ay * speed;
-	PadCoursorvelocity.x += ax * -speed;
+	PadcursorPos.y += ay * speed;
+	PadcursorPos.x += ax * -speed;
 
-	if (PadCursorsprPos.x > 1281)
+	//パッドのカーソルが行ける範囲
 	{
-		PadCursorsprPos.x = 1280;
-		if(PadCoursorvelocity.x<0);
+		if (PadCursorsprPos.x > 1280)
 		{
-			speed = 0;
+			PadCursorsprPos.x = 1280;
+		}
+		else if (PadCursorsprPos.x < 0)
+		{
+			PadCursorsprPos.x = 0;
+		}
+
+		if (PadCursorsprPos.y > 720)
+		{
+			PadCursorsprPos.y = 720;
+		}
+		else if (PadCursorsprPos.y < 0)
+		{
+			PadCursorsprPos.y = 0;
 		}
 	}
+
 	if (pad.thumb_state_rx() || pad.thumb_state_ry())
 	{
-		PadCoursorvelocity.x = 0;
-		if (resetFlag)
-		{
-			PadCursorsprPos.x = (PadcursorPos.x + PadCoursorvelocity.x);
-			PadCursorsprPos.y = (PadcursorPos.y + PadCoursorvelocity.y);
-		}
+		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
+		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
 	}
 #if USE_IMGUI
 	ImGui::Begin("GameMouseCursorspr");
 	ImGui::InputFloat2("gamecursorPos", &PadcursorPos.x);
-	ImGui::InputFloat2("mousevelocity", &PadCoursorvelocity.x);
 	ImGui::InputFloat2("sprPos", &PadCursorsprPos.x);
+	ImGui::InputFloat2("currentPos", &currentPadCursorPos.x);
 	ImGui::End();
 #endif
 }
@@ -59,4 +68,26 @@ void  GamePadCorsor::Render(RenderContext*rc)
 {
 	Graphics& graphics = Graphics::Instance();
 	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-50, PadCursorsprPos.y-50, 100, 100, 1, 1, 1, 0.5, 0,0,0,50,50);
+}
+
+bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2)
+{
+	square box1;
+	square box2;
+	box1.left = pos1.x;
+	box1.right = pos1.x + size1.x;
+	box1.top = pos1.y;
+	box1.bottom = pos1.y + size1.y;
+
+	box2.left = pos2.x;
+	box2.right = pos2.x + size2.x;
+	box2.top = pos2.y;
+	box2.bottom = pos2.y + size2.y;
+
+	if ((box1.right > box2.left) && (box1.left < box2.right) && (box1.botom > box2.top) && (box1.top < box2.botom))
+	{
+
+		return true;
+	}
+	return false;
 }
