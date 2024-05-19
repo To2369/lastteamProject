@@ -84,7 +84,7 @@ bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2,
 	box2.top = pos2.y;
 	box2.bottom = pos2.y + size2.y;
 
-	if ((box1.right > box2.left) && (box1.left < box2.right) && (box1.botom > box2.top) && (box1.top < box2.botom))
+	if ((box1.right > box2.left) && (box1.left < box2.right) && (box1.bottom > box2.top) && (box1.top < box2.bottom))
 	{
 
 		return true;
