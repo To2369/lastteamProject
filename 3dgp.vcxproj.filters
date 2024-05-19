@@ -262,6 +262,9 @@
     <ClCompile Include="sources\MoveWall.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
+    <ClCompile Include="sources\GameMouseCursor.cpp">
+      <Filter>Headers\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -440,6 +443,9 @@
     </ClInclude>
     <ClInclude Include="sources\scene_clear.h">
       <Filter>Headers\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\GameMouseCursor.h">
+      <Filter>Headers\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

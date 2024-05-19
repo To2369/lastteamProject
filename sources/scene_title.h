@@ -49,5 +49,4 @@ private:
 
 	float timer = 0.0f;
 	bool wasKeyPressed = false;
-
 };

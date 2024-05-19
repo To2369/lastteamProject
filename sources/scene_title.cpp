@@ -6,6 +6,7 @@
 #include "Input/gamepad.h"
 #include "Graphics/graphics.h"
 #include"UIManajer.h"
+#include"GameMouseCursor.h"
 using namespace std;
 SceneTitle::~SceneTitle()
 {
@@ -15,6 +16,7 @@ SceneTitle::~SceneTitle()
 void SceneTitle::initialize()
 {
 	Graphics& graphics = Graphics::Instance();
+
 	Camera& camera = Camera::instance();
 	camera.SetLookAt(
 		DirectX::XMFLOAT3(0, 10, -10),
@@ -31,6 +33,10 @@ void SceneTitle::initialize()
 		1000.0f
 	);
 	camera_controller = std::make_unique<CameraController>();
+
+	//カーソルの初期設定
+	GameMauseCorsor::Instance().Initialize();
+
 	//定数バッファ生成
 	{
 		scene_data = std::make_unique<constant_buffer<scene_constants>>(graphics.GetDevice());
@@ -83,12 +89,12 @@ void SceneTitle::initialize()
 	ince.UI_move(move(UIs));
 	ince.CreateCanbas();
 	UIs.clear();
-
 }
 
 void SceneTitle::update(float elapsed_time)
 {
 	gamepad& pad = gamepad::Instance();
+	pad.acquire();
 	camera_controller->AddAngle({ pad.thumb_state_ry() * 2.0f * elapsed_time,-pad.thumb_state_rx() * 2.0f * elapsed_time,0 });
 	camera_controller->SetAngle({ 0.0f,-0.0f,0.0f });
 	camera_controller->Update(elapsed_time);
@@ -139,7 +145,8 @@ void SceneTitle::update(float elapsed_time)
 		wasKeyPressed = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
 		ince.Update(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
-	
+
+		GameMauseCorsor::Instance().Update();
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();
@@ -186,7 +193,7 @@ void SceneTitle::render(float elapsed_time)
 	{
 		UIManager& ince = UIManager::incetance();
 		ince.Render(&rc);
-
+		GameMauseCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());

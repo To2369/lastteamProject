@@ -211,6 +211,7 @@
     <ClCompile Include="sources\Lift_chain_Animatio_ndown.cpp" />
     <ClCompile Include="sources\Lift_Chain_P.cpp" />
     <ClCompile Include="sources\Mathf.cpp" />
+    <ClCompile Include="sources\GameMouseCursor.cpp" />
     <ClCompile Include="sources\MoveWall.cpp" />
     <ClCompile Include="sources\scene_clear.cpp" />
     <ClCompile Include="sources\Scene_Stage_Select.cpp" />
@@ -280,6 +281,7 @@
     <ClInclude Include="sources\InvisibleBarria.h" />
     <ClInclude Include="sources\Comp.h" />
     <ClInclude Include="sources\Mathf.h" />
+    <ClInclude Include="sources\GameMouseCursor.h" />
     <ClInclude Include="sources\object.h" />
     <ClInclude Include="sources\objectManajer.h" />
     <ClInclude Include="sources\Player.h" />
