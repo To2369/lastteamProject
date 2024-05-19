@@ -69,6 +69,12 @@ private:
 
     bool pullType = false;
     bool pushType = false;
+    
+    bool pushFlag = false;  //•¨‰Ÿ‚¹‚é‚Æ‚«
+
+    bool SphereHitFlag = false;
+    bool CubeHitFlag = false;
+
     enum Sanime
     {
         wait,

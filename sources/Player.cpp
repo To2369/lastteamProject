@@ -113,21 +113,6 @@ void Player::update(float elapsedTime)
         position.y = resetPosition.y+5;
         position.z = resetPosition.z;
     }
-    //if (GetAsyncKeyState('U') & 0x8000) // 'K'キーが押されたかどうかを確認
-    //{
-    //    if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
-    //    {
-
-    //        
-
-    //       
-    //    }
-    //    //wasKeyPressed = true; // wasKeyPressedをtrueに設定
-    //}
-    //else
-    //{
-    //    wasKeyPressed = false; // キーが押されていない場合はwasKeyPressedをfalseに設定
-    //}
     if (GetKeyState('P'))
     {
         color = { 1,1,1,1 };
@@ -159,10 +144,20 @@ void Player::updateSyringepos()
     XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
     XMFLOAT3 camerafront{ Camera::instance().GetFront() };
 
-    cameraeye.z += camerafront.z * 0.2f;
-    cameraeye.x += camerafront.x * 0.2f;
-    cameraeye.y = position.y + 0.05f;
-    Sposition = cameraeye;
+    if (CubeHitFlag)
+    {
+        cameraeye.z += camerafront.z * 0.2f;
+        cameraeye.x += camerafront.x * 0.2f;
+        cameraeye.y = position.y + 0.05f;
+        Sposition = cameraeye;
+    }
+    else if (SphereHitFlag)
+    {
+        cameraeye.z += camerafront.z * 0.3f;
+        cameraeye.x += camerafront.x * 0.3f;
+        cameraeye.y = position.y + 0.05f;
+        Sposition = cameraeye;
+    }
 }
 //操作移動
 void Player::inputMove(float elapsedTime)
@@ -181,8 +176,8 @@ DirectX::XMFLOAT3 Player::getMoveVec() const
 {
     //入力情報を取得
     gamepad& gamePad = gamepad::Instance();
-    float ax = gamePad.thumb_state_rx();//->getAxisLX();
-    float ay = gamePad.thumb_state_ry();//->getAxisLY();
+    float ax = gamePad.thumb_state_lx();//->getAxisLX();
+    float ay = gamePad.thumb_state_ly();//->getAxisLY();
 
     //カメラ方向を取得
     Camera& camera = Camera::instance();
@@ -247,10 +242,11 @@ void Player::OnLanding()
 //プレイヤーとギミックの当たり判定
 void Player::CollisionPlayerVsGimics(float elapsedTime)
 {
+    gamepad& gamePad = gamepad::Instance();
     Objectmanajer& objMgr = Objectmanajer::incetance();
     gamepad& ince_pad = gamepad::Instance();
-    //全てのギミックと総当たりで衝突処理
 
+    //全てのギミックと総当たりで衝突処理
     int objCount = objMgr.Get_GameObjCount();
     for (int i = 0; i < objCount; i++)
     {
@@ -258,90 +254,105 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         //衝突判定
         Object::ResultSphereQuadPlacement outsphere;
 
-        if (GetKeyState(' '))//(右クリック、LBボタン)
+        //実際に動かす
+        if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
         {
-            if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
+            //物を動かせるかどうか判断
+            if (gamePad.button_state(gamepad::button::left_shoulder) && !pushFlag)//(右クリック、LBボタン)
+            {
+                pushFlag = true;
+            }
+            else if (gamePad.button_state(gamepad::button::b) && pushFlag)//仮でXき- 
+            {
+                pushFlag = false;
+                obj->SetVelotyXZ({ 0,0 });
+                color = { 0,0,0,0 };
+                isHand = false;
+            }
+
+            if (pushFlag)
             {
                 float objMovesp = velocity.x;
                 switch (outsphere.type)
                 {
                 case Object::SphereAttribute::Right:
                 {
-                        objMovesp = velocity.x*elapsedTime;
-                        if (!obj->GetStatic_Objflag())
-                           if (!obj->GetIsWall() && !obj->GetIsObject())
-                               if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
-                                   if (objMovesp < 0)
-                                   {
-                                       obj->SetVelotyXZ({ objMovesp,0 });
-                                   }
-                                   else
-                                   {
-                                       obj->SetVelotyXZ({ 0,0 });
-                                   }
-                   
+                    objMovesp = velocity.x * elapsedTime;
+                    if (!obj->GetStatic_Objflag())
+                        if (!obj->GetIsWall() && !obj->GetIsObject())
+                            if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
+                                if (objMovesp < 0)
+                                {
+                                    obj->SetVelotyXZ({ objMovesp,0 });
+                                }
+                                else
+                                {
+                                    obj->SetVelotyXZ({ 0,0 });
+                                }
+
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
                     angle.y = DirectX::XMConvertToRadians(270);
                     isHand = true;
                 }
-                    break;
+                break;
                 case Object::SphereAttribute::Left:
                 {
-                     objMovesp = velocity.x*elapsedTime;
-                     if (!obj->GetStatic_Objflag())
-                        if (!obj->GetIsWall()&&!obj->GetIsObject())
-                           if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
-                               if (objMovesp>0)
-                               {
-                                   obj->SetVelotyXZ({ objMovesp,0 });
-                               }
-                               else
-                               {
-                                   obj->SetVelotyXZ({ 0,0 });
-                               }
-                   
-                     position.x = outsphere.Spherepos.x;
+                    objMovesp = velocity.x * elapsedTime;
+                    if (!obj->GetStatic_Objflag())
+                        if (!obj->GetIsWall() && !obj->GetIsObject())
+                            if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
+                                if (objMovesp > 0)
+                                {
+                                    obj->SetVelotyXZ({ objMovesp,0 });
+                                }
+                                else
+                                {
+                                    obj->SetVelotyXZ({ 0,0 });
+                                }
+
+                    position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(90);
                     color = { 1,1,1,1 };
                     isHand = true;
                 }
-                    break;
+                break;
                 case Object::SphereAttribute::Front:
 
                     objMovesp = velocity.z * elapsedTime;
-                    if(!obj->GetStatic_Objflag())
-                      if (!obj->GetIsWall() && !obj->GetIsObject())
-                         if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
-                            if (objMovesp<0)
-                            {
-                             obj->SetVelotyXZ({ 0,objMovesp });
-                            }
-                            else
-                            {
-                             obj->SetVelotyXZ({ 0,0 });
-                            }
+                    if (!obj->GetStatic_Objflag())
+                        if (!obj->GetIsWall() && !obj->GetIsObject())
+                            if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
+                                if (objMovesp < 0)
+                                {
+                                    obj->SetVelotyXZ({ 0,objMovesp });
+                                }
+                                else
+                                {
+                                    obj->SetVelotyXZ({ 0,0 });
+                                }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(180);
                     color = { 1,1,1,1 };
+                    isHand = true;
                     break;
                 case Object::SphereAttribute::Backfront:
 
                     objMovesp = velocity.z * elapsedTime;
                     if (!obj->GetStatic_Objflag())
-                       if (!obj->GetIsWall() && !obj->GetIsObject())
-                          if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
-                             if (objMovesp>0)
-                             {
-                                 obj->SetVelotyXZ({ 0,objMovesp });
-                             }
-                             else
-                             {
-                                 obj->SetVelotyXZ({ 0,0 });
-                             }
+                        if (!obj->GetIsWall() && !obj->GetIsObject())
+                            if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
+                                if (objMovesp > 0)
+                                {
+                                    obj->SetVelotyXZ({ 0,objMovesp });
+                                }
+                                else
+                                {
+                                    obj->SetVelotyXZ({ 0,0 });
+                                }
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
@@ -353,13 +364,6 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                 }
             }
         }
-        else
-        {
-            obj->SetVelotyXZ({ 0,0 });
-            color = { 0,0,0,0 };
-            isHand = false;
-        }
-
     }
 }
 
@@ -384,16 +388,20 @@ void Player::ExtractionAttribute(float elapsedTime)
         if (ince_ray.RayCast(start, end, hit, type2))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::b))
+            if (gamePad.button_state(gamepad::button::right_shoulder) && !pullType)
             {
+                pushType = false;
+                CubeHitFlag = true;
                 updateSyringepos();
                 playerType = obj->Get_Original_Objtype(0);
                 pullType = true;
                 break;
             }
-            //注入(左クリック、RBボタン)
-            if (GetKeyState('J'))
+            //注入(左クリック、RBボタン)今Vキー
+            else if (gamePad.button_state(gamepad::button::y) && pullType)
             {
+                pullType = false;
+                CubeHitFlag = true;
                 updateSyringepos();
                 obj->Set_attribute(playerType, 0);
                 pushType = true;
@@ -404,16 +412,20 @@ void Player::ExtractionAttribute(float elapsedTime)
         else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::b))
+            if (gamePad.button_state(gamepad::button::right_shoulder)&1 && !pullType)
             {
+                pushType = false;
+                SphereHitFlag = true;
                 updateSyringepos();
                 playerType = obj->Get_Original_Objtype(0);
                 pullType = true;
                 break;
             }
-            //注入(左クリック、RBボタン)
-            if (GetKeyState('J'))
+            //注入(左クリック、RBボタン)今Vキー
+            else if (gamePad.button_state(gamepad::button::y) && pullType)
             {
+                pullType = false;
+                SphereHitFlag = true;
                 updateSyringepos();
                 obj->Set_attribute(playerType, 0);
                 pushType = true;
@@ -437,7 +449,11 @@ void Player::pullpushAnime(float elapsedTime)
         Smodel->update_animation(*Smodel->kefreame);
         if (Smodel->animation_End)
         {
-            pullType = false;
+            Sposition = { 5000,5000,5000 };
+            CubeHitFlag = false;
+            SphereHitFlag = false;
+            Smodel->stop_animation = false;
+            Smodel->animation_End = false;
         }
     }
     else if (pushType)
@@ -447,14 +463,18 @@ void Player::pullpushAnime(float elapsedTime)
         Smodel->update_animation(*Smodel->kefreame);
         if (Smodel->animation_End)
         {
-            pushType = false;
+            playerType = Obj_attribute::null;
+            Sposition = { 5000,5000,5000 };
+            CubeHitFlag = false;
+            SphereHitFlag = false;
+            Smodel->stop_animation = false;
+            Smodel->animation_End = false;
         }
     }
     else
     {
-        Scolor = { 0,0,0,0 };
         Smodel->animation_End = false;
         Smodel->stop_animation = false;
-        Sposition = { FLT_MAX,FLT_MAX,FLT_MAX};
+        Sposition = { 5000,5000,5000 };
     }
 }
