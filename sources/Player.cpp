@@ -280,7 +280,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                        obj->SetVelotyXZ({ 0,0 });
                                    }
                    
-                    position.x = outsphere.Spherepos.x - 0.06f;
+                    position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
                     angle.y = DirectX::XMConvertToRadians(270);
@@ -302,7 +302,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                    obj->SetVelotyXZ({ 0,0 });
                                }
                    
-                     position.x = outsphere.Spherepos.x + 0.06f;
+                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(90);
                     color = { 1,1,1,1 };
@@ -324,7 +324,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                              obj->SetVelotyXZ({ 0,0 });
                             }
                     position.x = outsphere.Spherepos.x;
-                    position.z = outsphere.Spherepos.z - 0.06f;
+                    position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(180);
                     color = { 1,1,1,1 };
                     break;
@@ -343,7 +343,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                                  obj->SetVelotyXZ({ 0,0 });
                              }
                     position.x = outsphere.Spherepos.x;
-                    position.z = outsphere.Spherepos.z + 0.06f;
+                    position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
                     angle.y = DirectX::XMConvertToRadians(0);
                     isHand = true;
