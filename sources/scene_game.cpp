@@ -329,7 +329,7 @@ void SceneGame::update(float elapsed_time)
 
 		float speed = -20;
 
-		cursorPos.y += ay * speed;
+		cursorPos.y += ay * -speed;
 		cursorPos.x += ax * speed;
 
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
