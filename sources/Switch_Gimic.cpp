@@ -111,12 +111,42 @@ bool Switch::gimic_VS_Object()
 void Switch::Gui()
 {
     BaseGui();
+    //map<key,Žæ‚èo‚·Œ^>
+    std::map<ObjType, string>enumClassToString
+    {
+        {ObjType::heavy,"heavy"},
+        {ObjType::Super_heavy,"super_heavy"},
+        {ObjType::cution,"cution"},
+        {ObjType::Super_cution,"super_cution"},
+        {ObjType::Hard_to_Break,"Hard_to_Break"},
+        {ObjType::Super_hard_to_Break,"Super_Hard_to_Break"},
+        {ObjType::Fragile,"Fragile"},
+        {ObjType::Super_fragile,"Super_Fragile"},
+        {ObjType::Crack,"Crack"},
+
+    };
+    
+
     if (ImGui::TreeNode("Switch_Boot_Check"))
     {
         bool f = this->Get_SwitchFlag();
         ImGui::Checkbox("Switch_Boot", &f);
         ImGui::TreePop();
     }
+    if (ImGui::TreeNode("MyobjectTypeFlagSet"))
+    {
+        if (ImGui::Button("heavy")) MyObjeFlagType = ObjType::heavy;
+        if (ImGui::Button("Super_heavy")) MyObjeFlagType = ObjType::Super_heavy;
+        if (ImGui::Button("Cution")) MyObjeFlagType = ObjType::cution;
+        if (ImGui::Button("Super_cution")) MyObjeFlagType = ObjType::Super_cution;
+        if (ImGui::Button("Hard_to_Break")) MyObjeFlagType = ObjType::Hard_to_Break;
+        if (ImGui::Button("Super_hard_to_Break")) MyObjeFlagType = ObjType::Super_hard_to_Break;
+        if (ImGui::Button("Fragile")) MyObjeFlagType = ObjType::Fragile;
+        if (ImGui::Button("Super_fragile")) MyObjeFlagType = ObjType::Super_fragile;
+        if (ImGui::Button("Crack")) MyObjeFlagType = ObjType::Crack;
+        ImGui::TreePop();
+    }
+    ImGui::Text(enumClassToString[MyObjeFlagType].c_str());
     const int buffer = 256;
     ImGui::InputText("ID", const_cast<char*>(ID.c_str()), buffer);
     ImGui::Text(ID.c_str());

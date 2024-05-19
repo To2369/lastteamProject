@@ -401,25 +401,25 @@ void Player::ExtractionAttribute(float elapsedTime)
             }
         }
         //円柱と
-        else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
-        {
-            //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::b))
-            {
-                updateSyringepos();
-                playerType = obj->Get_Original_Objtype(0);
-                pullType = true;
-                break;
-            }
-            //注入(左クリック、RBボタン)
-            if (GetKeyState('J'))
-            {
-                updateSyringepos();
-                obj->Set_attribute(playerType, 0);
-                pushType = true;
-                break;
-            }
-        }
+        //else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
+        //{
+        //    //抽出(左クリック、RBボタン)
+        //    if (gamePad.button_state(gamepad::button::b))
+        //    {
+        //        updateSyringepos();
+        //        playerType = obj->Get_Original_Objtype(0);
+        //        pullType = true;
+        //        break;
+        //    }
+        //    //注入(左クリック、RBボタン)
+        //    if (GetKeyState('J'))
+        //    {
+        //        updateSyringepos();
+        //        obj->Set_attribute(playerType, 0);
+        //        pushType = true;
+        //        break;
+        //    }
+        //}
 
     }
     if (GetKeyState('K'))

@@ -65,17 +65,19 @@ private:
 	DirectX::XMFLOAT3 camera_position{ 0.0f,24.0f, 0.0f };
 	std::unique_ptr<sprite>MaskSprite;
 private:
-	std::unique_ptr<Object>game_obj;
+	//std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};
 	//unique_ptr<DropBox_Road> Debug_ParameterObj=nullptr;
-	std::unique_ptr<Stage>Debug_ParameterObj;
-	Object* Debug_ParameterPlayer = nullptr;
+	std::unique_ptr<Stage>Debug_ParameterObj=nullptr;
+	//Object* Debug_ParameterPlayer = nullptr;
 	unique_ptr<collision_mesh> debug_collition;
 	unique_ptr<Goal_navigation_Arrow>Goal_navi;
 	unique_ptr<sprite> text;
 	float moveSpeed = 1.5f;
 	float ms = 0;
 	bool Menu_ = false;
+	bool MenuRenderUiFlag = false;
+	bool ClearRenderUiFlag = false;
 	bool wasKeyPressed = false;
 	bool wasKeyPressed_mouse = false;
 	bool wasKeyPressedMenu = false;

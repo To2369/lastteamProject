@@ -30,22 +30,25 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	
 		PlayerManager& ince_p = PlayerManager::Instance();
 		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
-		Object::RayCastList raylist;
+		Object::CollitionList raylist;
 		raylist.IsRayCastGround = true;
 		raylist.IsRayCastInvisibleWall = true;
-		raylist.IsRayCastGimic = true;
+		raylist.IsBoundhingBoxVSGimic = true;
 		raylist.IsRayCastObject = true;
 		obj_Manager.Initialize(ObjType::heavy, device, false, {
 
 			  -1.037836f,
 			   1.747557f,
 			  -0.430794f
-			},raylist);
+			},0.123f,raylist);
+		raylist={};
+		raylist.IsRayCastGround = true;
+
 		obj_Manager.Initialize(ObjType::cution, device, true, {
 			 -1.336630f,
 			 1.747557f,
 			  0.460227f
-			});
+			},0.123f,raylist);
 		obj_Manager.Initialize(name, Gimic_Type::Switch, device, {
 		-2.010655f,
 		0.640562f,
@@ -129,8 +132,8 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 		string filename;
 		PlayerManager& ince_p = PlayerManager::Instance();
-		Object::RayCastList raylist;
-
+		Object::CollitionList raylist;
+		unique_ptr<Gimic> lift;
 		ince_p.GetPlayer(0)->SetPosition({ 3.702f,-3.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_2,
 			Gimic_Type::Goal, device,
@@ -142,6 +145,8 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 					{ 4.252f,7.290f,-0.020f },
 					"num1",
 					{ 4.252f,5.154f,-0.020f });
+				
+				
 				filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
 				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
 					{ 4.30f,7.287f,-0.948f },
@@ -169,22 +174,22 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
-				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Pengin.filename.c_str(), ObjType::cution, device, true,
 					{
 					 1.879f,
 					 5.094f,
 					-1.005f
-					});
-				raylist.IsRayCastGimic = true;
+					},0.123f,raylist);
+				raylist.IsBoundhingBoxVSGimic = true;
 				raylist.IsRayCastInvisibleWall = false;
 				raylist.IsRayCastObject = false;
-
-				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::Super_heavy, device, false,
+				raylist.IsRayCastGround = true;
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Denti.filename.c_str(), ObjType::Super_heavy, device, false,
 					{
 					4.421f,
 					 8.920f,
 					-0.061f
-					},raylist);
+					},0.228f,raylist);
 			}
 		}
 		{
@@ -216,21 +221,22 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
-				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Pengin.filename.c_str(), ObjType::cution, device, true,
 					{
 					 -2.073f,
 					2.986f,
 					-1.005f
-					});
-				raylist.IsRayCastGimic = true;
+					},0.228 ,raylist);
+				raylist.IsBoundhingBoxVSGimic = true;
 				raylist.IsRayCastInvisibleWall = false;
 				raylist.IsRayCastObject = false;
-				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				raylist.IsRayCastGround = true;
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Denti.filename.c_str(), ObjType::heavy, device, false,
 					{
 					-0.747f,
 					6.347f,
 					0.093f
-					}, raylist);
+					}, 0.228f, raylist);
 			}
 
 		}
@@ -268,21 +274,27 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
-				obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
+				unique_ptr<Object>obj = make_unique<Cution>(device, failepath::Object_failepath::Object::Clip.filename.c_str());
+				obj->SetScale({6.361f,6.408f,6.130f});
+				obj->israycast = raylist;
+				obj->SetPosition({ -3.076f,-0.486f,-0.51f });
+				obj_Manager.Rigister_obj(move(obj));
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, false,
 					{
 					 -3.076f,
 					-0.486f,
 					-0.581f
-					}, raylist);
-				raylist.IsRayCastGimic = true;
+					}, 0.228f,raylist);
+				raylist.IsBoundhingBoxVSGimic = true;
 				raylist.IsRayCastInvisibleWall = false;
 				raylist.IsRayCastObject = false;
-				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				raylist.IsRayCastGround = true;
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Denti.filename.c_str(), ObjType::heavy, device, false,
 					{
 					-5.284f,
 					2.f,
 					-1.016f
-					}, raylist);
+					}, 0.228f,raylist);
 			}
 		}
 		{
@@ -316,21 +328,22 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
-				obj_Manager.Initialize(failepath::Object_failepath::Pengin.c_str(), ObjType::cution, device, true,
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Pengin.filename.c_str(), ObjType::cution, device, false,
 					{
 					 2.397f,
 					-2.823f,
 					-1.227f
-					}, raylist);
-				raylist.IsRayCastGimic = true;
+					},0.228f,raylist);
+				raylist.IsBoundhingBoxVSGimic = true;
 				raylist.IsRayCastInvisibleWall = false;
 				raylist.IsRayCastObject = false;
-				obj_Manager.Initialize(failepath::Object_failepath::Denti.c_str(), ObjType::heavy, device, false,
+				raylist.IsRayCastGround = true;
+				obj_Manager.Initialize(failepath::Object_failepath::Object::Denti.filename.c_str(), ObjType::heavy, device, false,
 					{
 					-0.093f,
 					-0.393f,
 					-0.961f
-					}, raylist);
+					},0.228f,raylist);
 			}
 
 		}
@@ -343,36 +356,92 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	break;
 	case StageName::stage1_3:
 	{
-		unique_ptr<Gimic> gimic = make_unique<Switch>(device);
+		unique_ptr<Gimic> gimic;
+		unique_ptr<Object>obj;
 		PlayerManager& ince_p = PlayerManager::Instance();
-		Object::RayCastList raylist;
+		Object::CollitionList raylist;
 		ince_p.GetPlayer(0)->SetPosition({ 0.702f,-0.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_3,
 			Gimic_Type::Goal, device,
 			{ 7.577f,7.223f,-0.535f });
 		//object
 		{
-			obj_Manager.Initialize(failepath::Object_failepath::Object::E_kezuri.filename.c_str(), ObjType::Super_heavy, device, true, { 2.118f,1.238f,-0.020f }, {});
+
+			obj_Manager.Initialize(failepath::Object_failepath::Object::E_kezuri.filename.c_str(), ObjType::Super_heavy, device, true, { 3.740f,1.238f,-0.445f }, {});
 			gimic = make_unique<Switch>(device);
-			gimic->SetPosition({2.890f,0.258f,-3.345f});
-			gimic->SetMyObjetype(ObjType::Super_heavy);
+			gimic->SetPosition({ 3.654f,0.258f,-3.624f });
+			gimic->SetMyObjeFlagtype(ObjType::Super_heavy);
 			gimic->SetGimicID("enpitukezurimae");
 			obj_Manager.Rigister_Gimic(move(gimic));
 			gimic = nullptr;
 			bool flags[3] = { false,false,true };
-			gimic = make_unique<Move_Object>(device,failepath::Object_failepath::Gimic::thissyu.filename.c_str(), XMFLOAT3(0.193f, 0.630f, -2.351f), flags,0.010f);
-			gimic->SetScale(XMFLOAT3(1.0f, 1.0f, 2.158f));
+			gimic = make_unique<Move_Object>(device, failepath::Object_failepath::Gimic::thissyu.filename.c_str(), XMFLOAT3(1.841f, 0.630f, -2.351f), flags, 0.010f);
+			gimic->SetScale(XMFLOAT3(0.928f, 1.0f, 2.385f));
 			gimic->SetGimicID("enpitukezurimae");
-			gimic->SetEndPos({-1.351f,0,0,});
+			gimic->SetEndPos({ -1.351f,0,0, });
 			obj_Manager.Rigister_Gimic(move(gimic));
+			gimic = nullptr;
 			raylist = {};
 			obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
 				{
 				 0.076f,
 				0.486f,
 				-0.581f
-				}, raylist);
-			obj_Manager.Initialize(failepath::Object_failepath::Object::kyappu.filename.c_str(),ObjType::Super_cution,device,false,{ 2.869f,0.869f,-3.362f },{});
+				}, 0.228f, raylist);
+			raylist.IsRayCastGround = true;
+			obj_Manager.Initialize(failepath::Object_failepath::Object::kyappu.filename.c_str(), ObjType::Super_cution, device, true, { 3.566f,0.869f,-3.641f }, 0.123f, raylist);
+			/*	obj = make_unique<Super_Cution>(device,failepath::Object_failepath::Object::kyappu.filename.c_str());
+				obj->SetPosition({ 3.566f,0.869f,-3.641f });
+				obj->SetStatic_Objflag(true);
+				obj->SetRadius(0.123f);*/
+
+
+
+			obj = nullptr;
+			obj = make_unique<Heavy>(device, failepath::Object_failepath::Object::Book.filename.c_str());
+			obj->spehereRadius = 0.394f;
+			obj->spehereLength = 0.901f;
+			obj->SetPosition({ -0.169f,0.261f,3.585f });
+			obj->CustomSphereFlag = true;
+			obj->CustomSpherePos.offsetpos[2].z = -0.224000022f;
+			obj->CustomSpherePos.offsetpos[3].z = 0.202999920f;
+			obj->SetCustomizationSpherePos(obj->CustomSpherePos);
+			obj_Manager.Rigister_obj(move(obj));
+			obj = nullptr;
+
+			obj = make_unique<Cution>(device, failepath::Object_failepath::Object::kesigomu.filename.c_str());
+			obj->SetPosition({ -1.806f,0.263f,3.721f });
+			obj->SetAngle({ 0.0f,1.458f,0.0f });
+			raylist = {};
+			obj->israycast = raylist;
+			obj->SetStatic_Objflag(true);
+			obj_Manager.Rigister_obj(move(obj));
+			obj = nullptr;
+
+			obj = make_unique<Cution>(device, failepath::Object_failepath::Object::enpitu.filename.c_str());
+			obj->SetPosition({ -3.069f,0.263f,3.066f });
+			obj->SetAngle({ 0.0f,0.0f,0.0f });
+			raylist = {};
+			obj->israycast = raylist;
+			obj->SetStatic_Objflag(true);
+			obj_Manager.Rigister_obj(move(obj));
+			obj = nullptr;
+
+			gimic = make_unique<Switch>(device);
+			gimic->SetPosition({ 0.869f,1.810f,-2.252f });
+			gimic->SetMyObjeFlagtype(ObjType::heavy);
+			gimic->SetGimicID("2danme");
+			gimic->SetScale({2.115f,3.456f,3.496f});
+			obj_Manager.Rigister_Gimic(move(gimic));
+			gimic = nullptr;
+
+			obj = make_unique<Heavy>(device,failepath::Object_failepath::Object::Book.filename.c_str());
+			obj->SetPosition({ 3.154f,1.923f,-2.508f});
+			raylist = {};
+			raylist.IsRayCastGround = true;
+			raylist.IsBoundhingBoxVSGimic = true;
+			obj->israycast = raylist;
+			obj_Manager.Rigister_obj(move(obj));
 
 		}
 		{
@@ -1509,6 +1578,9 @@ void StageManager::Create_Object(ID3D11Device* device)
 			&failepath::Object_failepath::Object::enpitu,
 			&failepath::Object_failepath::Object::Light,
 			&failepath::Object_failepath::Object::Clip,
+			&failepath::Object_failepath::Object::Denti,
+			&failepath::Object_failepath::Object::Kami,
+			&failepath::Object_failepath::Object::Pengin,
 			nullptr,
 		};
 		ImGui::Checkbox("chengeThred", &CreateGimicTypeChenge);

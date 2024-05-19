@@ -16,10 +16,7 @@ namespace failepath
    };
    namespace Object_failepath
    {
-       static string  Pengin = ".\\resources\\stage3\\object\\pengin.fbx";//ペンギンのオブジェクト
-       static string  Kami =   ".\\resources\\stage3\\object\\kami.fbx";//紙のオブジェクト
-       static string  Denti =  ".\\resources\\stage3\\object\\denti.fbx";//電池のオブジェクト
-       
+      
        struct ObjectName
        {
            string name="";
@@ -40,6 +37,10 @@ namespace failepath
            static ObjectName  enpitu = { "enpitu",Stage_failepath::Stage5_Path + "objects\\enpitu.fbx" };//鉛筆のオブジェクト
            static ObjectName  Light = { "right",Stage_failepath::Stage5_Path + "objects\\right.fbx" };//ライトのオブジェクト
            static ObjectName  Clip = { "Clip",Stage_failepath::Stage3_Path + "object\\kurippu.fbx" };//クリップのオブジェクト
+           static ObjectName  Denti = { "Denti",Stage_failepath::Stage3_Path +"object\\denti.fbx" };//電池のオブジェクト
+           static ObjectName  Kami = { "Kami",Stage_failepath::Stage3_Path +"object\\kami.fbx" };//kamiのオブジェクト
+           static ObjectName  Pengin = { "Denti",Stage_failepath::Stage3_Path +"object\\pengin.fbx" };//ペンギンのオブジェクト
+
        };
 
       

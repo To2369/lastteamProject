@@ -14,7 +14,7 @@
 using namespace std;
 using namespace DirectX;
 
-void Objectmanajer::Initialize(ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos, Object::RayCastList raylist)
+void Objectmanajer::Initialize(ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos,float radius, Object::CollitionList raylist)
 {
     unique_ptr<Object> obj;
     
@@ -60,12 +60,14 @@ void Objectmanajer::Initialize(ObjType type_name, ID3D11Device* device, bool sta
         obj = make_unique<stage_OBJ>(device);
         break;
     }
+    obj->SetRadius(radius);
+    obj->SetStatic_Objflag(static_flag);
     obj->israycast = raylist;
     Rigister_obj(move(obj));
 
 }
 
-void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos, Object::RayCastList raylist)
+void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos,float radius, Object::CollitionList raylist)
 {
     unique_ptr<Object> obj;
     switch (type_name)
@@ -111,6 +113,8 @@ void Objectmanajer::Initialize(const char* filename,ObjType type_name, ID3D11Dev
        
         break;
     }
+    obj->SetRadius(radius);
+    obj->SetStatic_Objflag(static_flag);
     obj->israycast = raylist;
     Rigister_obj(move(obj));
 }

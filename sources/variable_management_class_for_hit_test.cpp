@@ -81,7 +81,7 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
         for (int i = 0; i < count; i++)
         {
             Gimic* obj = ince_o.Get_GameGimic(i);
-            if (obj->GetBootFlag())continue;
+            if (obj->GetBootFlag()&&obj->Get_GimicType()==Gimic_Type::Switch)continue;
             if (obj->Raycast(Start, End, hit))
                 return true;
         }
@@ -91,7 +91,7 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
         for (int i = 0; i < count; i++)
         {
             Object* obj = ince_o.Get_GameObject(i);
-            if (obj->Get_Original_Objtype(0) == ObjType::cution || obj->Get_Original_Objtype(0) == ObjType::Super_cution)continue;
+            if (obj->Get_Original_Objtype(0) == ObjType::cution&&obj->israycast.IsSphereCollition || obj->Get_Original_Objtype(0) == ObjType::Super_cution&&obj->israycast.IsSphereCollition)continue;
             if (raycast(Start, End, obj->GetModel(), hit, obj->GetTransform()))
             {
                 return true;

@@ -87,6 +87,7 @@ public:
     DirectX::XMFLOAT4X4 GetTransform()const { return Transform; }
     DirectX::XMFLOAT3 GetPosition()const { return Position; }
     DirectX::XMFLOAT3 GetScale() const { return Scale; }
+    DirectX::XMFLOAT3 GetAngle() const { return Angle; }
     ObjType Get_Old_Objtype(int Number)const { return old_attribute_state[Number]; };//この関数がリアルタイムで更新されるType
     ObjType Get_Original_Objtype(int Number)const { return original_attribute_state[Number]; };//定数Type//基本s的に０番目をとる
     float GetReturnTimer(int i)const { return ReturnTimer[i]; }
@@ -104,6 +105,7 @@ public:
     bool GetStatic_Objflag() { return static_ObjFlag; }
 public:
     void InvisibleWall_VS_Object();
+    void SetRadius(float rad) { radius = rad; };
     void SetMoveObjectFlag(bool f) { moveobjectFlag = f; }
     void SetVelotyXZ(DirectX::XMFLOAT2 sp) { VelocityXZ = sp; }
     void SetReturnTimer(float timer1 = 0.f, int num = 0) { ReturnTimer[num] = timer1; }
@@ -131,6 +133,7 @@ public:
         Backfront,
         null
     };
+    struct CustomizationSpherePos;
     struct SphereQuadPlacement
     {
         struct sphereType
@@ -148,11 +151,41 @@ public:
             pos[2].Type = SphereAttribute::Front;
             pos[3].Type = SphereAttribute::Backfront;
         };
+        SphereQuadPlacement(XMFLOAT3 thisPos,float radius)
+        {
+            pos[0].Spherepos = pos[1].Spherepos = pos[2].Spherepos = pos[3].Spherepos = thisPos;
+            pos[0].Type = SphereAttribute::Right;
+            pos[1].Type = SphereAttribute::Left;
+            pos[2].Type = SphereAttribute::Front;
+            pos[3].Type = SphereAttribute::Backfront;
+            SphereRadius = radius;
+        };
+        SphereQuadPlacement(XMFLOAT3 thisPos, float radius, CustomizationSpherePos offset)
+        {
+            pos[0].Spherepos = pos[1].Spherepos = pos[2].Spherepos = pos[3].Spherepos = thisPos;
+            pos[0].Spherepos.x += offset.offsetpos[0].x;  pos[1].Spherepos.x += offset.offsetpos[1].x;  pos[2].Spherepos.x += offset.offsetpos[2].x;  pos[3].Spherepos.x += offset.offsetpos[3].x;
+            pos[0].Spherepos.y += offset.offsetpos[0].y;  pos[1].Spherepos.y += offset.offsetpos[1].y;  pos[2].Spherepos.y += offset.offsetpos[2].y;  pos[3].Spherepos.y += offset.offsetpos[3].y;
+            pos[0].Spherepos.z += offset.offsetpos[0].z;  pos[1].Spherepos.z+= offset.offsetpos[1].z;  pos[2].Spherepos.z += offset.offsetpos[2].z;  pos[3].Spherepos.z += offset.offsetpos[3].z;
+
+            pos[0].Type = SphereAttribute::Right;
+            pos[1].Type = SphereAttribute::Left;
+            pos[2].Type = SphereAttribute::Front;
+            pos[3].Type = SphereAttribute::Backfront;
+            SphereRadius = radius;
+        };
         float sphereLength = 0;
         float SphereRadius = 0.0123f;
         sphereType pos[4]{};
         int size = sizeof(pos) / sizeof(pos[0]);
     };
+    struct CustomizationSpherePos
+    {
+        DirectX::XMFLOAT3  offsetpos[4] = {};
+
+    }CustomSpherePos;
+    bool CustomSphereFlag=false;
+    void SetCustomizationSpherePos(CustomizationSpherePos& customPos) { CustomSpherePos = customPos; };
+    void CreateSphere();
     struct ResultSphereQuadPlacement
     {
         SphereAttribute type = SphereAttribute::null;
@@ -160,16 +193,19 @@ public:
     };
     SphereQuadPlacement Mysphere{};
     ResultSphereQuadPlacement ResultSphere{};
+    float spehereLength = 0;
+    float spehereRadius = 0;
     //SphereQuadPlacementを生成した後にこの関数に渡す
     void SetMySphere(const SphereQuadPlacement& sphere) { Mysphere = sphere; }
     const SphereQuadPlacement GetMySphere()const { return Mysphere; }
 public:
-    struct RayCastList//これを使ってraycastするかどうかを制御する
+    struct CollitionList//これを使ってCollitionするかどうかを制御する
     {
         bool IsRayCastGround = false;
-        bool IsRayCastGimic = false;
+        bool IsBoundhingBoxVSGimic = false;
         bool IsRayCastObject = false;
         bool IsRayCastInvisibleWall = false;
+        bool IsSphereCollition = false;//sphereでの当たり判定をするかどうか、cutionだけ使ってる
     }israycast;
 protected:
 
@@ -194,7 +230,7 @@ protected:
 
     bool isObject = false;
     bool moveobjectFlag = false;
-    float radius = 0.123f;
+    float radius = 0.123f;//0.228
     XMFLOAT3 oldPosition = {};//位置更新する前にこの変数に代入
     DirectX::XMFLOAT3 Normal{ 0.f,0.f,0.f };//raycast用
     DirectX::XMFLOAT3 Position{ 0.f,0.f,0.f };

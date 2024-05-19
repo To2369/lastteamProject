@@ -317,8 +317,8 @@ void Character::updateHorizontalMove(float elapsedTime)
 
         VMCFHT& ince_ray = VMCFHT::instance();
         HitResult hit;
-        XMFLOAT3 start{ position.x,position.y+0.1f,position.z };
-        XMFLOAT3 end{ (position.x + mx),position.y+0.1f,position.z + mz };
+        XMFLOAT3 start{ position.x,position.y+0.05f,position.z };
+        XMFLOAT3 end{ (position.x + mx),position.y+0.05f,position.z + mz };
         Ray_ObjType type = Ray_ObjType::Static_objects;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;

@@ -62,7 +62,7 @@ void framework::render(float elapsed_time/*Elapsed seconds from last frame*/)
 	HRESULT hr{ S_OK };
 
 	SceneManagement::instance().render(elapsed_time);
-
+	
 	graphics.GetImguiRenderer()->render();
 
 	hr = graphics.GetSwapChain()->Present(0, 0);

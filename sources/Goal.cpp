@@ -13,6 +13,7 @@
 #include"scene_management.h"
 #include"scene_title.h"
 #include"scene_clear.h"
+#include"scene_loading.h"
 Goal::Goal(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
@@ -32,7 +33,8 @@ void Goal::Update(float elapsedTime)
     Goal_Flag = false;
     if (GoalInPosition())
     {
-        Goal_Flag = true;
+        //Goal_Flag = true;
+        SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
     }
   
     UpdateTransform();

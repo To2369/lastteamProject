@@ -32,11 +32,11 @@ Fragile::~Fragile()
 
 void Fragile::Update(float elapsedTime)
 {
-    if (GetStatic_Objflag())
+   /* if (GetStatic_Objflag())
     {
         UpdateTransform();
         return;
-    }
+    }*/
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime;
@@ -84,11 +84,11 @@ Super_fragile::~Super_fragile()
 
 void Super_fragile::Update(float elapsedTime)
 {
-    if (GetStatic_Objflag())
+  /*  if (GetStatic_Objflag())
     {
         UpdateTransform();
         return;
-    }
+    }*/
     color = InitColor();
     Return_orijinal_ObjType(elapsedTime);
     VeloctyY = -elapsedTime;

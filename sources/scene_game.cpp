@@ -67,11 +67,8 @@ void SceneGame::initialize()
 	}
 	GetAsyncKeyState(VK_RBUTTON);
 
-	////プレイヤー初期設定
-	//PlayerManager& playerManager = PlayerManager::Instance();
-	//unique_ptr<Player> player = make_unique<Player>(device);
-	//player->SetPosition({ 5,5,0 });
-	//PlayerManager::Instance().Register(std::move(player));
+	//プレイヤー初期設定
+	PlayerManager& playerManager = PlayerManager::Instance();
 	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
 	pl->SetPosition({ 0,30,0 });
 	plm.Register(move(pl));
@@ -221,12 +218,25 @@ void SceneGame::update(float elapsed_time)
 	if (ClearScreen(elapsed_time))
 	{
 		Menu_ = false;
+		ClearRenderUiFlag = true;
 		return;
 	}
-	else if (Menu(elapsed_time))
+	//else ClearRenderUiFlag = false;
+	if (Menu(elapsed_time))
 	{
+		MenuRenderUiFlag = true;
 		return;
 	}
+	else MenuRenderUiFlag = false;
+	//static float aaa = 0;
+
+	//aaa+=elapsed_time;
+	//if (aaa > 3)
+	//{
+	//	aaa = 0;
+	//	SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+	//	
+	//}
 
 	gamepad& pad = gamepad::Instance();
 	VMCFHT ince_ray = VMCFHT::instance();
@@ -364,7 +374,7 @@ void SceneGame::update(float elapsed_time)
 		camera_controller->Update(elapsed_time);
 
 	}
-	Goal_navi->Update(elapsed_time);
+	//Goal_navi->Update(elapsed_time);
 	//マウスカーソル操作変更
 	if (GetAsyncKeyState('4') & 0x8000)
 	{
@@ -451,15 +461,14 @@ void SceneGame::render(float elapsed_time)
 			Debug_ParameterObj->Render(&rc);
 		}
 		//オブジェクト描画処理
-		Goal_navi->Render(&rc);
+		//Goal_navi->Render(&rc);
 		Objectmanajer::incetance().render(&rc);
 		
 		//プレイヤー描画処理
 		plm.Render(&rc);
 
 		plm.drawDrawPrimitive(graphics.GetDevice());
-		DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
-		ince.Render(graphics.GetDeviceContext(),rc.view,rc.projection);
+		
 
 	}
 
@@ -587,11 +596,13 @@ void SceneGame::render(float elapsed_time)
 		//Objectmanajer::incetance().Gui(graphics.GetDevice());
 		//PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
-
+		DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
+		ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
 #endif // !DEBUG
 	}
 	
 	scene_data->deactivate(graphics.GetDeviceContext());
+	
 	parametric_constant->deactivate(graphics.GetDeviceContext());
 	framebuffers[0]->deactivate(graphics.GetDeviceContext());
 
@@ -643,11 +654,11 @@ void SceneGame::render(float elapsed_time)
 			};
 		ince_ui.Render(&rc, UI_StringID::CanbasID::Player, id(type));
 		ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
-		if (ClearScreen(elapsed_time))
+		if (ClearRenderUiFlag)
 		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::GameClear);
 		}
-		else if (Menu(elapsed_time))
+		else if (MenuRenderUiFlag)
 		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::Menu);
 		}
@@ -658,6 +669,7 @@ void SceneGame::render(float elapsed_time)
 
 void SceneGame::finalize()
 {
+
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
 	UIManager::incetance().Clear();
@@ -734,6 +746,7 @@ bool SceneGame::ClearScreen(float elapsedTime)
 							{
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
+								break;
 							}
 
 						}
@@ -749,6 +762,7 @@ bool SceneGame::ClearScreen(float elapsedTime)
 							{
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new SceneTitle));
+								break;
 							}
 
 						}

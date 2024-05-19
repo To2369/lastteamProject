@@ -34,11 +34,11 @@ Hard_to_Break::~Hard_to_Break()
 
 void Hard_to_Break::Update(float elapsedTime)
 {
-    if (GetStatic_Objflag())
+   /* if (GetStatic_Objflag())
     {
         UpdateTransform();
         return;
-    }
+    }*/
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);
@@ -80,11 +80,11 @@ Super_hard_to_Break::~Super_hard_to_Break()
 
 void Super_hard_to_Break::Update(float elapsedTime)
 {
-    if (GetStatic_Objflag())
+ /*   if (GetStatic_Objflag())
     {
         UpdateTransform();
         return;
-    }
+    }*/
     UpdateTransform();
     Return_orijinal_ObjType(elapsedTime);
     ObjType_effect(elapsedTime);

@@ -9,7 +9,7 @@
 #include "fullscreen_quad.h"
 #include "ImGuiRenderer.h"
 
-#define CLEAR_COLOR 0.0f,0.0f,1.0f,1.0f
+#define CLEAR_COLOR 0.0f,0.0f,1.0f,1.0
 
 class Graphics
 {

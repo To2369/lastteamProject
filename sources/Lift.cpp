@@ -45,10 +45,8 @@ void Lift::Update(float elapsedTime)
     DirectX::XMVECTOR Start = DirectX::XMLoadFloat(&StartPos.y);
     DirectX::XMVECTOR Goal = DirectX::XMLoadFloat(&EndPos.y);
     DirectX::XMVECTOR Position_ = DirectX::XMLoadFloat(&Position.y);
-  //  moveRate += speedRate;
-    //ゴールに到達、またはスタートに戻った場合、移動方向を反転させる
     moveRate = moveSpeed * elapsedTime;
-
+#if 1
     if (isLift_Objtype==ObjType::heavy|| isLift_Objtype == ObjType::Super_heavy)
     {
         DirectX::XMVECTOR P = DirectX::XMVectorLerp(Position_, Goal, moveRate);
@@ -69,7 +67,27 @@ void Lift::Update(float elapsedTime)
         }
     }
     
-   
+#else
+    if (isLift_Objtype ==  || isLift_Objtype == ObjType::Super_heavy)
+    {
+        DirectX::XMVECTOR P = DirectX::XMVectorLerp(Position_, Goal, moveRate);
+        DirectX::XMStoreFloat(&Position.y, P);
+        if (Position.y <= EndPos.y)
+        {
+            DirectX::XMStoreFloat(&Position.y, Goal);
+        }
+    }
+    else  if (isLift_Objtype == ObjType::cution || isLift_Objtype == ObjType::Super_cution)
+    {
+
+        DirectX::XMVECTOR P = DirectX::XMVectorLerp(Position_, Start, moveRate);
+        DirectX::XMStoreFloat(&Position.y, P);
+        if (Position.y >= StartPos.y)
+        {
+            DirectX::XMStoreFloat(&Position.y, Start);
+        }
+    }
+#endif
     BoxPosition = Position;
     BoxPosition.y -= 0.4f;
     UpdateTransform();

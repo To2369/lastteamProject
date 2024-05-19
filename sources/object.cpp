@@ -175,7 +175,15 @@ void Object::BaseGui()
 
                 ImGui::TreePop();
             }
-            
+            if (ImGui::TreeNode("angle"))
+            {
+                XMFLOAT3 angle{GetAngle()};
+                ImGui::InputFloat("angle.x:", &angle.x);
+                ImGui::InputFloat("angle.y:", &angle.y);
+                ImGui::InputFloat("angle.z:", &angle.z);
+
+                ImGui::TreePop();
+            }
         }
 
         if (ImGui::CollapsingHeader("move_obj", ImGuiTreeNodeFlags_DefaultOpen))
@@ -204,31 +212,79 @@ void Object::BaseGui()
                 Scale.z += scale.z;
                 ImGui::TreePop();
             }
+            if (ImGui::TreeNode("move_angle"))
+            {
+                Gui_parameter_Valu valu = parameter_valu;
+                XMFLOAT3 angle{};
+                ImGui::SliderFloat("move_angle.x:", &angle.x, valu.Min.x, valu.Max.x);
+                ImGui::SliderFloat("move_angle.y:", &angle.y, valu.Min.y, valu.Max.y);
+                ImGui::SliderFloat("move_angle.z:", &angle.z, valu.Min.z, valu.Max.z);
+                Angle.x += angle.x;
+                Angle.y += angle.y;
+                Angle.z += angle.z;
+                ImGui::TreePop();
+            }
             
         }
     }
     if (ImGui::TreeNode("SpherePos"))
     {
-        ImGui::SliderFloat("SpherePos", &Mysphere.sphereLength, 0.f, 1.f);
+        ImGui::SliderFloat("SpherePos", &spehereLength, 0.f, 5.f);
+        ImGui::SliderFloat("SphereRadius", &spehereRadius, 0.f, 5.f);
         /*const char* r = u8"ê‘ÇÕâE";
         const char* g = u8"óŒÇÕç∂";
         const char* b = u8"ê¬ÇÕëO";
         const char* i = u8"â©êFÇÕå„ÇÎ";*/
-        if (resultsphere_GUI.type == SphereAttribute::Right)
+        if (ImGui::TreeNode("resultsphere_Type"))
         {
-            ImGui::TextUnformatted("red_hit");
+            if (resultsphere_GUI.type == SphereAttribute::Right)
+            {
+                ImGui::TextUnformatted("red_hit");
+            }
+            else if (resultsphere_GUI.type == SphereAttribute::Left)
+            {
+                ImGui::TextUnformatted("green_left");
+            }
+            else if (resultsphere_GUI.type == SphereAttribute::Front)
+            {
+                ImGui::TextUnformatted("blue_front");
+            }
+            else if (resultsphere_GUI.type == SphereAttribute::Backfront)
+            {
+                ImGui::TextUnformatted("yellow_back");
+            }
+            ImGui::TreePop();
         }
-        else if (resultsphere_GUI.type == SphereAttribute::Left)
+        ImGui::Checkbox("CustomSphereFlag",&CustomSphereFlag);
+        if(CustomSphereFlag)
+        if (ImGui::TreeNode("customSphere"))
         {
-            ImGui::TextUnformatted("green_left");
-        }
-        else if (resultsphere_GUI.type == SphereAttribute::Front)
-        {
-            ImGui::TextUnformatted("blue_front");
-        }
-        else if (resultsphere_GUI.type == SphereAttribute::Backfront)
-        {
-            ImGui::TextUnformatted("yellow_back");
+            DirectX::XMFLOAT3 pos{};
+            
+            ImGui::SliderFloat3("offsetpos_red",&pos.x,parameter_valu.Min.x*0.5f,parameter_valu.Max.x*0.5f);
+            //right
+            CustomSpherePos.offsetpos[0].x += pos.x;
+            CustomSpherePos.offsetpos[0].y += pos.y;
+            CustomSpherePos.offsetpos[0].z += pos.z;
+            pos = {};
+            ImGui::SliderFloat3("offsetpos_green",&pos.x,parameter_valu.Min.x*0.5f,parameter_valu.Max.x*0.5f);
+            //left
+            CustomSpherePos.offsetpos[1].x += pos.x;
+            CustomSpherePos.offsetpos[1].y += pos.y;
+            CustomSpherePos.offsetpos[1].z += pos.z;
+            pos = {};
+            ImGui::SliderFloat3("offsetpos_blue",&pos.x,parameter_valu.Min.x*0.5f,parameter_valu.Max.x*0.5f);
+            //front
+            CustomSpherePos.offsetpos[2].x += pos.x;
+            CustomSpherePos.offsetpos[2].y += pos.y;
+            CustomSpherePos.offsetpos[2].z += pos.z;
+            pos = {};
+            ImGui::SliderFloat3("offsetpos_yellow",&pos.x,parameter_valu.Min.x*0.5f,parameter_valu.Max.x*0.5f);
+            //backfront
+            CustomSpherePos.offsetpos[3].x += pos.x;
+            CustomSpherePos.offsetpos[3].y += pos.y;
+            CustomSpherePos.offsetpos[3].z += pos.z;
+            ImGui::TreePop();
         }
         ImGui::Checkbox("IsObject", &isObject);
         ImGui::TreePop();
@@ -236,10 +292,11 @@ void Object::BaseGui()
 
     if (ImGui::TreeNode("RayCastList"))
     {
-        ImGui::Checkbox("IsRayCastGimic",&israycast.IsRayCastGimic);
+        ImGui::Checkbox("IsRayCastGimic",&israycast.IsBoundhingBoxVSGimic);
         ImGui::Checkbox("IsRayCastGround",&israycast.IsRayCastGround);
         ImGui::Checkbox("IsRayCastInvisibleWall",&israycast.IsRayCastInvisibleWall);
         ImGui::Checkbox("IsRayCastObject",&israycast.IsRayCastObject);
+        ImGui::Checkbox("IsSphereCollition", &israycast.IsSphereCollition);
 
         ImGui::TreePop();
     }
@@ -303,6 +360,23 @@ void Object::InvisibleWall_VS_Object()
 //
 //    }
 //}
+
+void Object::CreateSphere()
+{
+    if (!CustomSphereFlag)
+    {
+        SphereQuadPlacement spheres(Position, spehereRadius);
+        spheres.sphereLength = spehereLength;
+        CreateQuadPlacement(spheres);
+    }
+    else
+    {
+        SphereQuadPlacement spheres(Position, spehereRadius,CustomSpherePos);
+        spheres.sphereLength = spehereLength;
+        CreateQuadPlacement(spheres);
+    }
+
+}
 
 void Object::CreateQuadPlacement(SphereQuadPlacement& sphere)
 {
