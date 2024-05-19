@@ -262,7 +262,7 @@
     <ClCompile Include="sources\MoveWall.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
-    <ClCompile Include="sources\GameMouseCursor.cpp">
+    <ClCompile Include="sources\GamePadCorsor.cpp">
       <Filter>Headers\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -444,7 +444,7 @@
     <ClInclude Include="sources\scene_clear.h">
       <Filter>Headers\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="sources\GameMouseCursor.h">
+    <ClInclude Include="sources\GamePadCorsor.h">
       <Filter>Headers\UI</Filter>
     </ClInclude>
   </ItemGroup>

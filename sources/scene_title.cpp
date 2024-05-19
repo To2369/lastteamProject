@@ -6,7 +6,7 @@
 #include "Input/gamepad.h"
 #include "Graphics/graphics.h"
 #include"UIManajer.h"
-#include"GameMouseCursor.h"
+#include"GamePadCorsor.h"
 using namespace std;
 SceneTitle::~SceneTitle()
 {
@@ -35,7 +35,7 @@ void SceneTitle::initialize()
 	camera_controller = std::make_unique<CameraController>();
 
 	//カーソルの初期設定
-	GameMauseCorsor::Instance().Initialize();
+	GamePadCorsor::Instance().Initialize();
 
 	//定数バッファ生成
 	{
@@ -146,7 +146,7 @@ void SceneTitle::update(float elapsed_time)
 		ince.Update(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 
-		GameMauseCorsor::Instance().Update();
+		GamePadCorsor::Instance().Update();
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();
@@ -193,7 +193,7 @@ void SceneTitle::render(float elapsed_time)
 	{
 		UIManager& ince = UIManager::incetance();
 		ince.Render(&rc);
-		GameMauseCorsor::Instance().Render(&rc);
+		GamePadCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());
