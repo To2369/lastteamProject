@@ -107,28 +107,28 @@ void Character::updateVerticalMove(float elapsedTime)
         XMFLOAT3 end{ position };
         end.y -= 0.1f;
         HitResult hit;
-        Ray_ObjType type = Ray_ObjType::Static_objects;
+        //Ray_ObjType type = Ray_ObjType::Static_objects;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;
         Ray_ObjType type4 = Ray_ObjType::Stage;
         //地面判定
-        if (ince_ray.RayCast(start, end, hit, type))//静的オブジェクト
-        {
-            position.y = hit.position.y+0.1f;
-            velocity.y = 0.0f;
-            normal = hit.normal;
-            //着地した
-            if (!groundedFlag)
-            {
-                OnLanding();
-            }
-            groundedFlag = true;
+        //if (ince_ray.RayCast(start, end, hit, type))//静的オブジェクト
+        //{
+        //    position.y = hit.position.y+0.1f;
+        //    velocity.y = 0.0f;
+        //    normal = hit.normal;
+        //    //着地した
+        //    if (!groundedFlag)
+        //    {
+        //        OnLanding();
+        //    }
+        //    groundedFlag = true;
 
-            //傾斜率の計算
-            float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
-            slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
-        }
-        else if (road)
+        //    //傾斜率の計算
+        //    float normalLengthXZ = sqrtf(hit.normal.x * hit.normal.x + hit.normal.z * hit.normal.z);
+        //    slopeRate = 1.0f - (hit.normal.y / (normalLengthXZ + hit.normal.y));
+        //}
+        if (road)
         {
             if (ince_ray.raycast(start, end, road->GetModel(), hit, road->GetTransform()))
             {

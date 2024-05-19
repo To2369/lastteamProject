@@ -239,6 +239,7 @@ void SceneGame::update(float elapsed_time)
 	//}
 
 	gamepad& pad = gamepad::Instance();
+	pad.acquire();
 	VMCFHT ince_ray = VMCFHT::instance();
 	Objectmanajer& ince_o = Objectmanajer::incetance();
 	
@@ -332,6 +333,14 @@ void SceneGame::update(float elapsed_time)
 	{
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
 		cursorPos = SceneManagement::instance().GetCursorPosition();
+
+		float ax = pad.thumb_state_rx();
+		float ay = pad.thumb_state_ry();
+
+		float speed = -20;
+
+		cursorPos.y += ay * -speed;
+		cursorPos.x += ax * speed;
 
 		camera_angle.y += (currentCursorPos.x - cursorPos.x) * sensi;
 		camera_angle.x += (currentCursorPos.y - cursorPos.y) * sensi;
