@@ -375,7 +375,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 		ince_p.GetPlayer(0)->SetPosition({ 0.702f,-0.020f,-0.443f });
 		obj_Manager.Initialize(StageName::stage1_3,
 			Gimic_Type::Goal, device,
-			{ 7.577f,7.223f,-0.535f });
+			{ -4.378f,3.147f,-2.451f });
 		bool flags[3] = {};
 		//object
 		{
