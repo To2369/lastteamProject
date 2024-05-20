@@ -20,7 +20,7 @@ void GamePadCorsor::Update()
 	Graphics& graphics = Graphics::Instance();
 	currentPadCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
 	PadcursorPos = SceneManagement::instance().GetCursorPosition();
-
+	corsor = SceneManagement::instance().GetCursorPosition();
 	float ax = pad.thumb_state_rx();
 	float ay = pad.thumb_state_ry();
 
@@ -55,6 +55,12 @@ void GamePadCorsor::Update()
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
 	}
+	/*else 
+	{
+		PadCursorsprPos = corsor;
+	}*/
+
+	//SetCursorPos(PadCursorsprPos.x,PadCursorsprPos.y);
 #if USE_IMGUI
 	ImGui::Begin("GameMouseCursorspr");
 	ImGui::InputFloat2("gamecursorPos", &PadcursorPos.x);
@@ -67,7 +73,7 @@ void GamePadCorsor::Update()
 void  GamePadCorsor::Render(RenderContext*rc)
 {
 	Graphics& graphics = Graphics::Instance();
-	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-50, PadCursorsprPos.y-50, 100, 100, 1, 1, 1, 0.5, 0,0,0,50,50);
+	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5, 0,0,0,0,0);
 }
 
 bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2)
@@ -86,7 +92,6 @@ bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2,
 
 	if ((box1.right > box2.left) && (box1.left < box2.right) && (box1.bottom > box2.top) && (box1.top < box2.bottom))
 	{
-
 		return true;
 	}
 	return false;

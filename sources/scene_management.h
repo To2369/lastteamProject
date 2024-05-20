@@ -38,7 +38,6 @@ public:
 	//I—¹ˆ—
 	virtual void finalize() = 0;
 
-	
 	bool IsReady() { return ready; }
 	void SetReady() { ready = true; }
 	virtual void setFramebuffer() = 0;
