@@ -214,7 +214,7 @@ protected:
     void CreateQuadPlacement(SphereQuadPlacement& sphere);
 
     virtual void UpdateTransform();
-    void RayCastGround();
+    virtual void RayCastGround();
     //«¿‚ÌŒø‰Ê
     void ObjType_effect(float elapsedTime);
     //©•ª‚ª‚Á‚Ä‚¢‚½ƒIƒŠƒWƒiƒ‹‚Ì«¿‚É–ß‚·ŠÖ”

@@ -116,6 +116,10 @@ bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& 
     return false;
 
 }
+bool VMCFHT::RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& hit,Object& obj)
+{
+    return raycast(Start,End,obj.GetModel(),hit,obj.GetTransform());
+}
 bool VMCFHT::raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 WorldTransform_, DirectX::XMMATRIX rotation_ /*回転だけ適用するための行列 */, bool rotation_flag/*rotation_をworld行列に適用するかのフラグ */)
 {
     DirectX::XMVECTOR WorldStart = DirectX::XMLoadFloat3(&start);

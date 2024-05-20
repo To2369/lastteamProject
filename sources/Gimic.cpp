@@ -74,7 +74,7 @@ void Gimic::Gimic_effect(Gimic_Type type)
             {
                 this->SetReturnTimer();
             }*/
-            FallDown(90,0.1f);
+            FallDown(80,0.1f);
 
         }
     

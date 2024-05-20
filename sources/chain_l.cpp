@@ -7,15 +7,16 @@ Lift_chain_l::Lift_chain_l()
     //render = make_unique<RenderComp>(filename, Graphics::Instance(),filenames);
     render = make_unique<RenderComp>(filename, Graphics::Instance());
     MyType = Chain_Type::lift_chain_L;
-  
+    offset = 1.5f;
 }
 
-Lift_chain_l::Lift_chain_l(const char* filename_)
+Lift_chain_l::Lift_chain_l(const char* filename_,float offset_)
 {
     transform = make_unique<TransformComp>();
     //render = make_unique<RenderComp>(filename, Graphics::Instance(),filenames);
     render = make_unique<RenderComp>(filename_, Graphics::Instance());
     MyType = Chain_Type::lift_chain_L;
+    offset = offset_;
 }
 
 void Lift_chain_l::Update(float elapsedTime)
@@ -25,8 +26,8 @@ void Lift_chain_l::Update(float elapsedTime)
     XMFLOAT3 Position = gimic ? gimic->GetPosition() : XMFLOAT3(0.f, 0.f, 0.f);
     Position.x = transform->GetPosition().x;
     Position.z = transform->GetPosition().z;
-    Position.y +=1.5f;
-    render->Color.w = 0;
+    Position.y += offset;
+    render->Color.w = 1;
     if (gimic)
     {
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)

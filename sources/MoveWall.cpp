@@ -78,6 +78,7 @@ void Move_Object::Gui()
         InputFloat("moveSpeed", &moveSpeed);
         SliderFloat("Change_moveSpeed", &sp, param.Min.x, param.Max.x);
         moveSpeed += sp;
+        Checkbox("BootFlag",&bootFlag);
         Checkbox("x_moveflag",&x_flag);
         Checkbox("y_moveflag",&y_flag);
         Checkbox("z_moveflag",&z_flag);

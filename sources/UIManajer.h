@@ -26,6 +26,11 @@ namespace failepath
        {
            static ObjectName  thissyu = { "thissyu" ,Stage_failepath::Stage5_Path + "objects\\thissyu.fbx" };//ティッシュのオブジェクト
            static ObjectName  hikidasi_k = { "hikidasi_k",Stage_failepath::Stage5_Path + "objects\\hikidasi_K.fbx" };//引き出しのオブジェクト
+           static ObjectName  hontate = {"hontate",Stage_failepath::Stage5_Path+ "objects\\hontate.fbx" };
+           static ObjectName  rihuto_downAnimation = { "rihuto_downAnimation",Stage_failepath::Stage5_Path + "objects\\5_rihuto_down.fbx" };//引き出しのオブジェクト
+           static ObjectName  rihuto_downNotAnimation = { "hikidasi_k",Stage_failepath::Stage5_Path + "objects\\5_rihuto.fbx" };//引き出しのオブジェクト
+           static ObjectName  rihuto_ChainS = { "rihuto_ChainS",Stage_failepath::Stage5_Path + "objects\\5_C_S.fbx" };//鎖短いオブジェクト
+           static ObjectName  rihuto_ChainL = { "rihuto_ChainL",Stage_failepath::Stage5_Path + "objects\\5_C_L.fbx" };//鎖長いオブジェクト
 
        };
        namespace Object
@@ -40,6 +45,7 @@ namespace failepath
            static ObjectName  Denti = { "Denti",Stage_failepath::Stage3_Path +"object\\denti.fbx" };//電池のオブジェクト
            static ObjectName  Kami = { "Kami",Stage_failepath::Stage3_Path +"object\\kami.fbx" };//kamiのオブジェクト
            static ObjectName  Pengin = { "Denti",Stage_failepath::Stage3_Path +"object\\pengin.fbx" };//ペンギンのオブジェクト
+           static ObjectName  Wall = { "Wall",Stage_failepath::Stage3_Path +"object\\wall.fbx" };//壁のオブジェクト
 
        };
 

@@ -4,6 +4,7 @@
 #include <directxmath.h>
 #include "collision_mesh.h"
 #include"Model.h"
+#include"object.h"
 enum class Ray_ObjType//どのオブジェクトに対してRayを飛ばすかを指定
 {
 	Static_objects,//静的オブジェクト
@@ -42,6 +43,7 @@ public:
 	bool raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end, const Model* model, HitResult& result, DirectX::XMFLOAT4X4 WorldTransform_, DirectX::XMMATRIX rotation_ = DirectX::XMMatrixIdentity()/*回転だけ適用するための行列 */, bool rotation_flag=false/*rotation_をworld行列に適用するかのフラグ */);
 	bool moveStage_raycast(const DirectX::XMFLOAT3& start, const DirectX::XMFLOAT3& end,  HitResult& result,vector<Model::mesh>&meshes);
 	bool RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& hit, Ray_ObjType type);
+	bool RayCast(DirectX::XMFLOAT3 Start, DirectX::XMFLOAT3 End, HitResult& hit,Object& obj);
 	static DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection);
 private:
 	D3D11_VIEWPORT view_port;

@@ -13,6 +13,7 @@ using namespace std;
 #endif
 #include"PlayerManager.h"
 #include"Graphics/DebugRenderer.h"
+#include"variable_management_class_for_hit_test.h"
 Cution::Cution(ID3D11Device* device)
 {
 
@@ -132,6 +133,24 @@ Super_Cution::Super_Cution(ID3D11Device* device, const char* filename_)
 
 Super_Cution::~Super_Cution()
 {
+}
+
+void Super_Cution::RayCastGround()
+{
+    VMCFHT& ince_ray = VMCFHT::instance();
+    XMFLOAT3 start = Position;
+    //start.y -= 0.05f;
+    XMFLOAT3 end = Position;
+    end.y -= 0.05f;
+    Ray_ObjType type = Ray_ObjType::Stage;
+    HitResult hit;
+
+    if (ince_ray.RayCast(start,end,hit,type))
+    {
+        Position.y = hit.position.y+0.02f;
+        VeloctyY = 0;
+    }
+    Position.y += VeloctyY;
 }
 
 void Super_Cution::Update(float elapsedTime)

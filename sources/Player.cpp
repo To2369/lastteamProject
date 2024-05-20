@@ -374,9 +374,12 @@ void Player::ExtractionAttribute(float elapsedTime)
 
     VMCFHT& ince_ray = VMCFHT::instance();
     HitResult hit;
-    float lengthpow = -0.1f;
+   /* float mx = velocity.x * elapsedTime;
+    float mz = velocity.z * elapsedTime;*/
+    float mx =0.1f;
+    float mz =0.1f;
     XMFLOAT3 start{ position.x,position.y + 0.1f,position.z };
-    XMFLOAT3 end{ position.x + lengthpow,position.y + 0.1f,position.z + lengthpow };
+    XMFLOAT3 end{ position.x + mx,position.y + 0.1f,position.z + mz };
     DirectX::XMFLOAT3 outpos = { 0,0,0 };
     Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
     Objectmanajer& objMgr = Objectmanajer::incetance();
@@ -385,9 +388,10 @@ void Player::ExtractionAttribute(float elapsedTime)
     {
         //四角と
         Object* obj = objMgr.Get_GameObject(i);
-        if (ince_ray.RayCast(start, end, hit, type2))
+        if (ince_ray.RayCast(start, end, hit,*obj))
         {
             //抽出(左クリック、RBボタン)
+
             if (gamePad.button_state(gamepad::button::right_shoulder) && !pullType)
             {
                 pushType = false;
@@ -409,10 +413,18 @@ void Player::ExtractionAttribute(float elapsedTime)
             }
         }
         //円柱と
-        else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
+         if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
+          /*  if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true&& !pullType)
+            {
+                int a = 0;
+            }
+            else if (gamePad.button_state(gamepad::button::y, trigger_mode::falling_edge) == true && pullType)
+            {
+                int a = 0;
+            }*/
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder)&1 && !pullType)
+            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge)==true && !pullType)
             {
                 pushType = false;
                 SphereHitFlag = true;
@@ -422,7 +434,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 break;
             }
             //注入(左クリック、RBボタン)今Vキー
-            else if (gamePad.button_state(gamepad::button::y) && pullType)
+            else if (gamePad.button_state(gamepad::button::y, trigger_mode::falling_edge)==true && pullType)
             {
                 pullType = false;
                 SphereHitFlag = true;

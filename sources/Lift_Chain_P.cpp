@@ -19,7 +19,7 @@ Lift_chain_P::Lift_chain_P(const char* filename_)
 void Lift_chain_P::Update(float elapsedTime)
 {
     Gimic* gimic = LiftCheck();
-    render->Color.w = 0;
+    render->Color.w = 1;
     if (gimic)
     {
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)

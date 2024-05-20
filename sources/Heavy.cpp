@@ -16,7 +16,8 @@ Heavy::Heavy(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
     initialaize_Set_attribute(ObjType::heavy, ObjType::null);
-
+    spehereLength = 0.362;
+    spehereRadius = 0.030;
     //Position = { 0,0,0 };
     Scale.x = Scale.y = Scale.z = 1.f;
     moveobjectFlag = true;
@@ -162,7 +163,7 @@ Super_Heavy::Super_Heavy(ID3D11Device* device)
     initialaize_Set_attribute(ObjType::Super_heavy, ObjType::null);
 
     //Position = { 0,0,0 };
-    Scale.x = Scale.y = Scale.z = 10.f;
+    Scale.x = Scale.y = Scale.z = 1.f;
     moveobjectFlag = true;
 }
 

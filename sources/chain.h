@@ -44,13 +44,13 @@ class Lift_chain_l:public BaseChain//ƒ`ƒF[ƒ“‚ª’·‚¢‚â‚Â
 {
 public:
     Lift_chain_l();
-    Lift_chain_l(const char* filename_);
+    Lift_chain_l(const char* filename_,float offset_=0);
     ~Lift_chain_l()override {};
     void Update(float elapsedTime)override;
     void Gui()override;
 private:
     const char* filename = ".\\resources\\stage3\\C_L.fbx";
-   
+    float offset = 0;
 };
 
 

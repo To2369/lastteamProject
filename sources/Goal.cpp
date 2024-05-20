@@ -33,8 +33,8 @@ void Goal::Update(float elapsedTime)
     Goal_Flag = false;
     if (GoalInPosition())
     {
-        //Goal_Flag = true;
-        SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+        Goal_Flag = true;
+        //SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
     }
   
     UpdateTransform();

@@ -101,7 +101,7 @@ void Lift::Render(RenderContext* rc)
 {
    
     model->render(Graphics::Instance().GetDeviceContext(), Transform);
-    Baria_Wall->render(Graphics::Instance().GetDeviceContext(), BoxTransform);
+   //Baria_Wall->render(Graphics::Instance().GetDeviceContext(), BoxTransform);
 }
 
 void Lift::Gui()

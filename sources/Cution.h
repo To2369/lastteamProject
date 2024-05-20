@@ -25,6 +25,7 @@ public:
     Super_Cution(ID3D11Device* device);
     Super_Cution(ID3D11Device* device,const char*filename_);
     ~Super_Cution()override;
+    void RayCastGround()override;
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
     void Gui()override;

@@ -105,9 +105,12 @@ public:
     void Render(RenderContext* rc)override {};
     void Gui()override {};
     Static_ObjType GetStatic_ObjType() { return type; }
-
+    void WallSetID(std::string id_) { id = id_; }
+    void SetIsWallFlagType(Gimic_Type Flagtype_) { Flagtype = Flagtype_; }
 protected:
     Static_ObjType type = Static_ObjType::null;
+    std::string id = "";
+    Gimic_Type Flagtype = Gimic_Type::null;//‚±‚Ì•Ï”‚ÅŒ©‚¦‚È‚¢•Ç‚ªÁ‚¦‚é‚©Á‚¦‚È‚¢‚©‚ğ”»’f
 };
 
 

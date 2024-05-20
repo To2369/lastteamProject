@@ -232,6 +232,33 @@ void Objectmanajer::Initialize(const char* filename, Chain_Type type, XMFLOAT3 p
     }
 }
 
+void Objectmanajer::Initialize(const char* filename, Chain_Type type, XMFLOAT3 pos, float offset, std::string id, XMFLOAT3 angle)
+{
+    unique_ptr<BaseChain> obj = nullptr;
+    switch (type)
+    {
+    case Chain_Type::lift_chain_S:
+        obj = make_unique<Lift_chain_s>(filename);
+        break;
+    case Chain_Type::lift_chain_L:
+        obj = make_unique<Lift_chain_l>(filename,offset);
+        break;
+    case Chain_Type::lift_P_Animatio_ndown:
+        obj = make_unique<Lift_chain_Animatio_ndown>(filename);
+        break;
+    case Chain_Type::lift_P_Not_Animation:
+        obj = make_unique<Lift_chain_P>(filename);
+        break;
+    }
+    if (obj)
+    {
+        obj->GetTransformComp()->SetPosition(pos);
+        obj->SetID(id);
+        obj->GetTransformComp()->SetAngle(angle);
+        Rigister_Lift_Chains(move(obj));
+    }
+}
+
 
 void Objectmanajer::Initialize_InvisibleBarria(ID3D11Device* device, DirectX::XMFLOAT3 pos,XMFLOAT3 Scale_ )
 {

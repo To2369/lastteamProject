@@ -16,7 +16,10 @@ public:
     void render(RenderContext* rc);
 
     Model* GetModel() { return model.get(); }
-
+//追加
+public:
+    float GetJumSpeed() { return jumpSpeed; };
+    void SetJumpSpeed(float num) { jumpSpeed = num; }
 private:
     //操作移動
     void inputMove(float elapsedTime);
@@ -52,7 +55,8 @@ private:
     float turnSpeed = DirectX::XMConvertToRadians(720);
 
     //ジャンプ力
-    float jumpSpeed = 0.8f;
+   // float jumpSpeed = 0.75f;
+    float jumpSpeed = 1.3f;
 
     //ジャンプ回数
     int jumpCount = 0;

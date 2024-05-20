@@ -90,6 +90,10 @@ public:
     {
         newObject_Thread.push_back(new thread(CreateLiftChain, t, device, in, id));
     }
+    void Set_CreateLiftChain_Thred(const char*filename,Chain_Type t, ID3D11Device* device, Intersection in, std::string id = "")
+    {
+        newObject_Thread.push_back(new thread(CreateLiftChain_2, filename, t, device, in, id));
+    }
     void DeleteThred() {
         for (auto& thred_ : newObject_Thread)
         {
@@ -144,6 +148,7 @@ public:
 
     static void CreateStaticObject(Static_ObjType type, ID3D11Device* device, Intersection in, const char* filename);
     static void CreateLiftChain(Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");
+    static void CreateLiftChain_2(const char*filename,Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");
     void DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device);//この関数はマウス以外でのデバッグを想定してない
     string GetObjectType_S(ObjType type)
     {

@@ -56,11 +56,11 @@ void Character::jump(float speed)
 void Character::updateVelocity(float elapsedTime)
 {
     //垂直速度更新処理
-    updateVerticalVelocity(elapsedTime);
+   // updateVerticalVelocity(elapsedTime);
     updateHorizontalVelocity(elapsedTime);
 
     //垂直移動更新処理
-    updateVerticalMove(elapsedTime);
+    //updateVerticalMove(elapsedTime);
     updateHorizontalMove(elapsedTime);
 
 }
@@ -317,8 +317,8 @@ void Character::updateHorizontalMove(float elapsedTime)
 
         VMCFHT& ince_ray = VMCFHT::instance();
         HitResult hit;
-        XMFLOAT3 start{ position.x,position.y+0.05f,position.z };
-        XMFLOAT3 end{ (position.x + mx),position.y+0.05f,position.z + mz };
+        XMFLOAT3 start{ position.x,position.y-0.05f,position.z };
+        XMFLOAT3 end{ (position.x + mx),position.y-0.05f,position.z + mz };
         Ray_ObjType type = Ray_ObjType::Static_objects;
         Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
         Ray_ObjType type3 = Ray_ObjType::DynamicGimics;

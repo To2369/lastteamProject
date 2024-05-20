@@ -531,6 +531,7 @@ void SceneGame::render(float elapsed_time)
 			ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
 			ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
 			ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
+
 			ImGui::InputFloat("plpos.x", &plpos.x, -1.0f, +1.0f);
 			ImGui::InputFloat("plpos.y", &plpos.y, -2.0f, +2.0f);
 			ImGui::InputFloat("plpos.z", &plpos.z, -1.0f, +1.0f);
@@ -629,7 +630,49 @@ void SceneGame::render(float elapsed_time)
 #else
 	graphics.GetBitBlockTransfer()->blit(graphics.GetDeviceContext(), framebuffers[0]->shader_resource_views[0].GetAddressOf(), 0, 1);
 #endif
-	
+	//if (ImGui::TreeNode("player"))
+	//{
+	//	DirectX::XMFLOAT3 c_pos{};
+	//	DirectX::XMFLOAT3 p_pos{};
+	//	XMFLOAT3 front{ Camera::instance().GetFront() };
+	//	XMFLOAT3 plpos = plm.GetPlayer(0)->GetPosition();
+
+	//	ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
+	//	ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
+	//	ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
+
+	//	ImGui::InputFloat("plpos.x", &plpos.x, -1.0f, +1.0f);
+	//	ImGui::InputFloat("plpos.y", &plpos.y, -2.0f, +2.0f);
+	//	ImGui::InputFloat("plpos.z", &plpos.z, -1.0f, +1.0f);
+	//	plpos.x += p_pos.x;
+	//	plpos.y += p_pos.y;
+	//	plpos.z += p_pos.z;
+	//	plm.GetPlayer(0)->SetPosition(plpos);
+	//	XMFLOAT3 vel = plm.GetPlayer(0)->GetVelocity();
+	//	if (ImGui::TreeNode("Player Velocty"))
+	//	{
+	//		ImGui::InputFloat("velocty.x", &vel.x);
+	//		ImGui::InputFloat("velocty.y", &vel.y);
+	//		ImGui::InputFloat("velocty.z", &vel.z);
+	//		ImGui::SliderFloat("set_velocty", &vel.x, -100, 100);
+	//		ImGui::SliderFloat("set_velocty", &vel.y, -100, 100);
+	//		ImGui::SliderFloat("set_velocty", &vel.z, -100, 100);
+	//		plm.GetPlayer(0)->SetVelocity(vel);
+	//		//ImGui::InputFloat("ms", &ms);
+	//		ImGui::TreePop();
+	//	}
+	//	if (ImGui::TreeNode("player jump"))
+	//	{
+	//		float jumpspeed = plm.GetPlayer(0)->GetJumSpeed();
+	//		ImGui::InputFloat("jump speed",&jumpspeed);
+	//		plm.GetPlayer(0)->SetJumpSpeed(jumpspeed);
+	//		ImGui::TreePop();
+	//	}
+	//	ImGui::TreePop();
+	//}
+	//StageManager::incetance().Gui(graphics.GetDevice(), &rc);
+	//DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
+	//ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
 	//UI•`‰æ
 	{
 		ObjType type = PlayerManager::Instance().GetPlayer(0)->Getattribute();
@@ -733,11 +776,13 @@ bool SceneGame::ClearScreen(float elapsedTime)
 									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
 									{
 										ince_st.SetStageName(i);
+										SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 										break;
 									}
 									if (ince_st.GetStageName() == StageName::stage1_3)
 									{
-										
+										SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+
 									}
 								}
 								

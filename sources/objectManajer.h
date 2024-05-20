@@ -19,7 +19,8 @@ public:
     void Initialize(const char* filename, ObjType type_name, ID3D11Device* device, bool static_flag, XMFLOAT3 pos, float radius, Object::CollitionList raylist = {});
     void Initialize(StageName s_name_, Gimic_Type type_name, ID3D11Device* device, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 endpos = {});
     void Initialize(Chain_Type type, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 angle = {});
-    void Initialize(const char*filename,Chain_Type type, XMFLOAT3 pos, std::string id = "null", XMFLOAT3 angle = {});
+    void Initialize(const char*filename,Chain_Type type, XMFLOAT3 pos ,std::string id = "null", XMFLOAT3 angle = {});
+    void Initialize(const char*filename,Chain_Type type, XMFLOAT3 pos,float offset,std::string id = "null", XMFLOAT3 angle = {});
     template <typename T>
     void Initialize_Static_Object(std::unique_ptr<T> obj)
     {
