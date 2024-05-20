@@ -73,7 +73,7 @@ void GamePadCorsor::Update()
 void  GamePadCorsor::Render(RenderContext*rc)
 {
 	Graphics& graphics = Graphics::Instance();
-	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5, 0,0,0,0,0);
+	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5f, 0,0,0,0,0);
 }
 
 bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2)
