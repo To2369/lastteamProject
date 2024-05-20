@@ -6,6 +6,8 @@
 #include"scene_game.h"
 #include"scene_loading.h"
 #include"StageManager.h"
+#include"GamePadCorsor.h"
+#include "Input/gamepad.h"
 Scene_Stage_Serect::~Scene_Stage_Serect()
 {
 	UIManager& ince = UIManager::incetance();
@@ -31,6 +33,9 @@ void Scene_Stage_Serect::initialize()
 		1000.0f
 	);
 	
+	//カーソルの初期設定
+	GamePadCorsor::Instance().Initialize();
+
 	//定数バッファ生成
 	{
 		scene_data = std::make_unique<constant_buffer<scene_constants>>(graphics.GetDevice());
@@ -107,7 +112,9 @@ void Scene_Stage_Serect::setFramebuffer()
 void Scene_Stage_Serect::update(float elapsedTime)
 {
 	UIManager& ince = UIManager::incetance();
-	
+	gamepad& pad = gamepad::Instance();
+	pad.acquire();
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	StageManager& ince_st = StageManager::incetance();
 	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
 	bool isKKeyPressed = (keyState & 0x8000) != 0;
@@ -133,6 +140,15 @@ void Scene_Stage_Serect::update(float elapsedTime)
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
 					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 150,140 }, { 50,50 }, { 235,525 }))
+					{
+						ui->SetIsMouse(true);
+						if (pad.button_state(gamepad::button::a))
+						{
+							ince_st.SetStageName(StageName::stage1_1);
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+						}
+					}
 				}
 				if (ui->GetID() == UI_StringID::UI_ID::StageSelect_ID::Stage2)
 				{
@@ -147,6 +163,15 @@ void Scene_Stage_Serect::update(float elapsedTime)
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
 						
+					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 555,140 }, { 50,50 }, { 235,525 }))
+					{
+						ui->SetIsMouse(true);
+						if (pad.button_state(gamepad::button::a))
+						{
+							ince_st.SetStageName(StageName::stage1_2);
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+						}
 					}
 				}
 				if (ui->GetID() == UI_StringID::UI_ID::StageSelect_ID::Stage3)
@@ -164,12 +189,22 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						}
 						
 					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 945,140 }, { 50,50 }, { 235,525 }))
+					{
+						ui->SetIsMouse(true);
+						if (pad.button_state(gamepad::button::a))
+						{
+							ince_st.SetStageName(StageName::stage1_3);
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+						}
+					}
 				}
 			}
 		}
 	}
 	wasKeyPressed = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
 	ince.Update(elapsedTime);
+	GPCorsor.Update();
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();
@@ -217,7 +252,8 @@ void Scene_Stage_Serect::render(float elapsed_time)
 	{
 		UIManager& ince = UIManager::incetance();
 		ince.Render(&rc);
-
+		//カーソルの初期設定
+		GamePadCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());

@@ -99,6 +99,7 @@ void SceneTitle::update(float elapsed_time)
 	camera_controller->SetAngle({ 0.0f,-0.0f,0.0f });
 	camera_controller->Update(elapsed_time);
 	UIManager& ince = UIManager::incetance();
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
 	bool isKKeyPressed = (keyState & 0x8000) != 0;
 	
@@ -121,11 +122,18 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (isKKeyPressed && !wasKeyPressed)
 							{
-							    SceneManagement::instance().SceneChange(
+								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
 							}
-							
-
+						}
+						else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 950,410 }, { 50,50 }, { 210,55 }))
+						{
+							ui->SetIsMouse(true);
+							if (pad.button_state(gamepad::button::a))
+							{
+								SceneManagement::instance().SceneChange(
+									new SceneLoading(new Scene_Stage_Serect));
+							}
 						}
 					}
 					if (ui->GetID() == UI_StringID::UI_ID::Title_ID::End)
@@ -138,6 +146,14 @@ void SceneTitle::update(float elapsed_time)
 								PostQuitMessage(0);//実行終了
 							}
 						}
+						else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 950,600 }, { 50,50 }, { 210,55 }))
+						{
+							ui->SetIsMouse(true);
+							if (pad.button_state(gamepad::button::a))
+							{
+								PostQuitMessage(0);//実行終了
+							}
+						}
 					}
 				}
 			}
@@ -146,7 +162,7 @@ void SceneTitle::update(float elapsed_time)
 		ince.Update(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 
-		GamePadCorsor::Instance().Update();
+		GPCorsor.Update();
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();

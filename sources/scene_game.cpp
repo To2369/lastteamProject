@@ -5,6 +5,7 @@
 #include"Graphics/DebugRenderer.h"
 #include"Gimic.h"
 #include"PlayerManager.h"
+#include"GamePadCorsor.h"
 #ifdef USE_IMGUI
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_internal.h"
@@ -19,6 +20,7 @@ extern ImWchar glyphRangesJapanese[];
 #include"scene_loading.h"
 #include"scene_title.h"
 #include"scene_stage_select.h"
+#include"GamePadCorsor.h"
 
 //
 //void GroundRayCamera(XMFLOAT3& pos,XMFLOAT3 Scale,float& velY)
@@ -60,6 +62,8 @@ void SceneGame::initialize()
 	);
 	camera_controller = std::make_unique<CameraController>();
 
+	//カーソルの初期設定
+	GamePadCorsor::Instance().Initialize();
 	//定数バッファ生成
 	{
 		scene_data = std::make_unique<constant_buffer<scene_constants>>(graphics.GetDevice());
@@ -213,18 +217,21 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 void SceneGame::update(float elapsed_time)
 
 {
+	gamepad& pad = gamepad::Instance();
+	pad.acquire();
 	UIManager& ince = UIManager::incetance();
-	
 	if (ClearScreen(elapsed_time))
 	{
 		Menu_ = false;
 		ClearRenderUiFlag = true;
+		GamePadCorsor::Instance().Update();
 		return;
 	}
 	//else ClearRenderUiFlag = false;
 	if (Menu(elapsed_time))
 	{
 		MenuRenderUiFlag = true;
+		GamePadCorsor::Instance().Update();
 		return;
 	}
 	else MenuRenderUiFlag = false;
@@ -237,9 +244,6 @@ void SceneGame::update(float elapsed_time)
 	//	SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 	//	
 	//}
-
-	gamepad& pad = gamepad::Instance();
-	pad.acquire();
 	VMCFHT ince_ray = VMCFHT::instance();
 	Objectmanajer& ince_o = Objectmanajer::incetance();
 	
@@ -407,7 +411,6 @@ void SceneGame::update(float elapsed_time)
 			static_cast<int>(setCursorWindow.y)
 		);
 	}
-	
 
 }
 
@@ -709,10 +712,13 @@ void SceneGame::render(float elapsed_time)
 		if (ClearRenderUiFlag)
 		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::GameClear);
+			GamePadCorsor::Instance().Render(&rc);
+			
 		}
 		else if (MenuRenderUiFlag)
 		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::Menu);
+			GamePadCorsor::Instance().Render(&rc);
 		}
 	}
 
@@ -741,6 +747,7 @@ void SceneGame::setFramebuffer()
 
 bool SceneGame::ClearScreen(float elapsedTime)
 {
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	Gimic*gimic = Objectmanajer::incetance().Select_GetGimic(Gimic_Type::Goal);
 	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
 	bool isKKeyPressed = (keyState & 0x8000) != 0;
@@ -833,6 +840,7 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 bool SceneGame::Menu(float elapsedTime)
 {
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	if (GetAsyncKeyState('K') & 0x8000) // 'K'キーが押されたかどうかを確認
 	{
 		if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
@@ -868,6 +876,13 @@ bool SceneGame::Menu(float elapsedTime)
 							Menu_ = false;
 						}
 					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 585,180}, { 50,50 }, { 225,120 }))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+							Menu_ = false;
+						}
+					}
 				}
 				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuRitrai)
 				{
@@ -881,11 +896,28 @@ bool SceneGame::Menu(float elapsedTime)
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
 					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 945,140 }, { 50,50 }, { 235,525 }))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+
+							StageManager::incetance().SetStageName(StageManager::incetance().GetStageName());
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+						}
+					}
 				}
 				if (ui->GetID() == UI_StringID::UI_ID::Menu_Id::MenuGibuUp)
 				{
 
 					if (ince.Mouse_VS_UI(ui->GetPosition(), ui->GetScale()))
+					{
+						ui->SetIsMouse(true);
+						if (isKKeyPressed && !wasKeyPressedMenu) {
+
+							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+						}
+					}
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 945,140 }, { 50,50 }, { 235,525 }))
 					{
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressedMenu) {
