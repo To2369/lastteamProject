@@ -60,8 +60,8 @@ gamepad::gamepad(int user_id, float deadzonex, float deadzoney, deadzone_mode de
 	if (emulation_mode)
 	{
 		const int button_keymap[_button_count] = {
-			' '/*A*/, 'X'/*B*/, 'C'/*X*/, 'V'/*Y*/,
-			VK_HOME/*LEFT_THUMB*/, VK_END/*RIGHT_THUMB*/, VK_RBUTTON/*LEFT_SHOULDER*/, VK_LBUTTON/*RIGHT_SHOULDER*/,
+			' '/*A*/, 'X'/*B*/, 'Q'/*X*/, 'E'/*Y*/,
+			VK_HOME/*LEFT_THUMB*/, VK_END/*RIGHT_THUMB*/, VK_LCONTROL/*LEFT_SHOULDER*/, VK_LBUTTON/*RIGHT_SHOULDER*/,
 			'K'/*START*/, VK_BACK/*BACK*/, VK_F1/*UP*/, VK_F2/*DOWN*/, VK_F3/*LEFT*/, VK_F4/*RIGHT*/};
 
 		for (size_t button_index = 0; button_index < _button_count; ++button_index)
@@ -88,8 +88,8 @@ gamepad::gamepad(int user_id, float deadzonex, float deadzoney, deadzone_mode de
 		thumb_stick_keys[static_cast<size_t>(side::l)][3] = std::make_unique<keybutton>(VK_DOWN);
 #endif
 
-		trigger_keys[static_cast<size_t>(side::l)] = std::make_unique<keybutton>(VK_LSHIFT);
-		trigger_keys[static_cast<size_t>(side::r)] = std::make_unique<keybutton>(VK_RSHIFT);
+		trigger_keys[static_cast<size_t>(side::l)] = std::make_unique<keybutton>(VK_LSHIFT);//íçì¸âE
+		trigger_keys[static_cast<size_t>(side::r)] = std::make_unique<keybutton>(VK_RBUTTON);
 
 	}
 }

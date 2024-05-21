@@ -25,6 +25,7 @@ public:
     bool hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2);
 
     DirectX::XMFLOAT2 GetPadCursorsprPos(){return PadCursorsprPos;}
+    void SetPadCursorsprPos(const DirectX::XMFLOAT2 pos) { this->PadCursorsprPos; }
 private:
     std::unique_ptr<sprite> padcursorspr;		//マウスのスプライト描画
     const wchar_t* Padcoursorfilename = L".\\resources\\mouse\\mouse.png";

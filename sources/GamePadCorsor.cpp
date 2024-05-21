@@ -55,21 +55,6 @@ void GamePadCorsor::Update()
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
 	}
-	
-	//SetCursorPos(PadcursorPos.x, PadcursorPos.y);
-	/*else 
-	{
-		PadCursorsprPos = corsor;
-	}*/
-
-	//SetCursorPos(PadCursorsprPos.x,PadCursorsprPos.y);
-#if USE_IMGUI
-	ImGui::Begin("GameMouseCursorspr");
-	ImGui::InputFloat2("gamecursorPos", &PadcursorPos.x);
-	ImGui::InputFloat2("sprPos", &PadCursorsprPos.x);
-	ImGui::InputFloat2("currentPos", &currentPadCursorPos.x);
-	ImGui::End();
-#endif
 }
 
 void  GamePadCorsor::Render(RenderContext*rc)
