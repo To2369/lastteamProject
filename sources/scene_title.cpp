@@ -207,9 +207,9 @@ void SceneTitle::render(float elapsed_time)
 
 	//オブジェクト描画
 	{
+		GamePadCorsor::Instance().Render(&rc);
 		UIManager& ince = UIManager::incetance();
 		ince.Render(&rc);
-		GamePadCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());
