@@ -31,7 +31,18 @@ SceneManagement::~SceneManagement()
 	}
 };
 
-void SceneManagement::initialize() {}
+void SceneManagement::initialize()
+{
+	HRESULT hr{ S_OK };
+
+	hr = XAudio2Create(xaudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+	hr = xaudio2->CreateMasteringVoice(&master_voice);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+
+}
 
 void SceneManagement::update(float elapsed_time)
 {

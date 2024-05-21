@@ -22,6 +22,7 @@ extern ImWchar glyphRangesJapanese[];
 
 #include <dxgi1_6.h>
 #include "constant_buffer.h"
+#include "audio.h"
 
 class Scene
 {
@@ -78,6 +79,19 @@ public:
 		nextScene = scene;
 	}
 
+	enum class SCENE_BGM
+	{
+		SCENE_TITLE,
+		SCENE_GAME,
+		SCENE_END,
+		SCENE_MAX,
+	};
+
+	enum class SCENE_SE
+	{
+		SE_MAX,
+	};
+
 	void SetCursorPos(const DirectX::XMFLOAT2 pos) { CursorPos = pos; }
 	const DirectX::XMFLOAT2 GetCursorPosition() const { return CursorPos; }
 	void SetCurrentCursorPos(const DirectX::XMFLOAT2 pos) { CurrentCursorPos = pos; }
@@ -90,6 +104,10 @@ private:
 	Scene* nextScene = nullptr;
 	DirectX::XMFLOAT2 WindowPos = {};
 	DirectX::XMFLOAT2 CursorPos = {};
-
 	DirectX::XMFLOAT2 CurrentCursorPos = {};
+
+	Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
+	IXAudio2MasteringVoice* master_voice = nullptr;
+	std::unique_ptr<audio> bgm[10] = {};
+	std::unique_ptr<audio> se[10] = {};
 };
