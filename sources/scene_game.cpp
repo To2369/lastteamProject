@@ -331,7 +331,7 @@ void SceneGame::update(float elapsed_time)
 		Debug_ParameterObj->Update(elapsed_time);
 	}
 	Objectmanajer::incetance().Update(elapsed_time);
-
+	Goal_navi->Update(elapsed_time);
 
 	//カメラ操作
 	{
@@ -473,7 +473,7 @@ void SceneGame::render(float elapsed_time)
 			Debug_ParameterObj->Render(&rc);
 		}
 		//オブジェクト描画処理
-		//Goal_navi->Render(&rc);
+		Goal_navi->Render(&rc);
 		Objectmanajer::incetance().render(&rc);
 		
 		//プレイヤー描画処理
@@ -708,7 +708,7 @@ void SceneGame::render(float elapsed_time)
 				return str;
 			};
 		ince_ui.Render(&rc, UI_StringID::CanbasID::Player, id(type));
-		ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
+		//ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
 		if (ClearRenderUiFlag)
 		{
 			ince_ui.Render(&rc, UI_StringID::CanbasID::GameClear);

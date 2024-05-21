@@ -64,7 +64,6 @@ void UIManager::CreateGameSceneUI(ID3D11Device* device)
         case Obj_attribute::Super_hard_to_Break:
             filename = L".\\resources\\UI\\’´ŒÅ.png";
             Scale = { 222.f / 5.f,247.f / 5.f };
-
             break;
         }
 

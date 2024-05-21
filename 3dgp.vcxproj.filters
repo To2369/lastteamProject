@@ -65,6 +65,9 @@
     <Filter Include="Sources\objects\Lift_chain">
       <UniqueIdentifier>{aa5d3818-15b7-4729-8dc3-11b105152a8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Audio">
+      <UniqueIdentifier>{5e9a8421-ae8f-4b7a-867e-d12ac5453c7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -265,6 +268,15 @@
     <ClCompile Include="sources\GamePadCorsor.cpp">
       <Filter>Headers\UI</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Audio\Audio.cpp">
+      <Filter>Headers\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Audio\AudioResource.cpp">
+      <Filter>Headers\Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Audio\AudioSource.cpp">
+      <Filter>Headers\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -446,6 +458,15 @@
     </ClInclude>
     <ClInclude Include="sources\GamePadCorsor.h">
       <Filter>Headers\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Audio\Audio.h">
+      <Filter>Headers\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Audio\AudioResource.h">
+      <Filter>Headers\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\Audio\AudioSource.h">
+      <Filter>Headers\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

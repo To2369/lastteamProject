@@ -15,6 +15,11 @@ SceneTitle::~SceneTitle()
 }
 void SceneTitle::initialize()
 {
+	
+	string str = failepath::Audio_failepath::Title + "Title.wav";
+	//Bgm = make_unique<Audio>()->LoadAudioSource(,);
+
+	
 	Graphics& graphics = Graphics::Instance();
 
 	Camera& camera = Camera::instance();

@@ -191,7 +191,8 @@ public:
     void render(Graphics& gr, DirectX::XMFLOAT4X4 transform)
     {
         
-        if (Color.w > 0) model->render(gr.GetDeviceContext(), transform, anim.animSpeed, Color);
+        if (Color.w > 0)
+            model->render(gr.GetDeviceContext(), transform, anim.animSpeed, Color);
        
            
     }
@@ -222,3 +223,23 @@ protected:
 };
 
 
+#if 0
+
+class Comp
+{
+public:
+    Comp() {};
+    virtual ~Comp() {};
+public:
+    virtual void Update(float elapsedTime) {};
+    void Render();
+    void BaseGui();
+    virtual void Gui() = 0;
+private:
+
+    void AddCompnent(std::map<string, unique_ptr<Comp>> Component);
+    std::map<string, unique_ptr<Comp>>Conponent;
+};
+
+
+#endif

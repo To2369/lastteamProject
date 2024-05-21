@@ -1,10 +1,14 @@
 #include "scene_loading.h"
 #include "Graphics/graphics.h"
-
+#include"UIManajer.h"
 void SceneLoading::initialize()
 {
     Graphics& graphics = Graphics::Instance();
+    UIManager& ince_ui = UIManager::incetance();
 
+    vector<unique_ptr<UI>>uis;
+    std::wstring str = failepath::UI_Path_Wstring +L"lodhing.png";
+    sp = std::make_unique<sprite>(graphics.GetDevice(),str.c_str());
     //スレッド開始
     thread = new std::thread(LoadingThread, this);    
 }
@@ -35,7 +39,7 @@ void SceneLoading::render(float elapsed_time)
     graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 1);
 
     graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
-
+    sp->render(graphics.GetDeviceContext(),0.f,0.f,1280.f,720.f);
     D3D11_VIEWPORT viewport;
     UINT num_viewports{ 1 };
     graphics.GetDeviceContext()->RSGetViewports(&num_viewports, &viewport);

@@ -195,6 +195,9 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_ja_gryph_ranges.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="sources\Audio\Audio.cpp" />
+    <ClCompile Include="sources\Audio\AudioResource.cpp" />
+    <ClCompile Include="sources\Audio\AudioSource.cpp" />
     <ClCompile Include="sources\chain.cpp" />
     <ClCompile Include="sources\chain_l.cpp" />
     <ClCompile Include="sources\chain_s.cpp" />
@@ -265,6 +268,9 @@
     <ClInclude Include="imgui\imstb_rectpack.h" />
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
+    <ClInclude Include="sources\Audio\Audio.h" />
+    <ClInclude Include="sources\Audio\AudioResource.h" />
+    <ClInclude Include="sources\Audio\AudioSource.h" />
     <ClInclude Include="sources\chain.h" />
     <ClInclude Include="sources\Character.h" />
     <ClInclude Include="sources\Collision.h" />

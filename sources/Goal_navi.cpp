@@ -35,8 +35,8 @@ void Goal_navigation_Arrow::Update(float elapsedTime)
     cameraeye.z += camerafront.z * 1.3f;
     cameraeye.x += camerafront.x * 1.3f;
     cameraeye.y += camerafront.y * 1.3f + 0.5f;
-
-    Position = cameraeye;
+    //if(cameraeye.y 
+   // Position = cameraeye;
 
 
     UpdateArrow_Front();

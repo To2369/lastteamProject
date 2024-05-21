@@ -56,7 +56,7 @@ private:
 
     //ジャンプ力
    // float jumpSpeed = 0.75f;
-    float jumpSpeed = 1.3f;
+    float jumpSpeed = 0.88f;
 
     //ジャンプ回数
     int jumpCount = 0;

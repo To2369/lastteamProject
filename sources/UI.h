@@ -15,6 +15,7 @@ namespace UI_StringID
             static std::string End = "End";
             static std::string Back = "Back";
         };
+         
         //scene stage select ui id
         namespace StageSelect_ID
         {

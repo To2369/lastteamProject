@@ -2,7 +2,7 @@
 
 #include "scene_management.h"
 #include <thread>
-
+#include"Graphics/sprite.h"
 //ローディングシーン
 class SceneLoading : public Scene
 {
@@ -27,7 +27,7 @@ private:
 private:
     
     float angle = 0.0f;
-
+    std::unique_ptr<sprite>sp;
     Scene* nextScene = nullptr;
     std::thread* thread = nullptr;
     

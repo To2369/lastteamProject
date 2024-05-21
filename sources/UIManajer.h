@@ -14,6 +14,12 @@ namespace failepath
        static string  Stage3_Path = ".\\resources\\Stage3\\";//stage3までのパス
        static string  Stage5_Path = ".\\resources\\Stage5\\";//stage5までのパス
    };
+   namespace Audio_failepath
+   {
+
+       static string Title = ".\\resources\\Audio\\BGM\\タイトル\\";
+
+   };
    namespace Object_failepath
    {
       
@@ -45,7 +51,7 @@ namespace failepath
            static ObjectName  Denti = { "Denti",Stage_failepath::Stage3_Path +"object\\denti.fbx" };//電池のオブジェクト
            static ObjectName  Kami = { "Kami",Stage_failepath::Stage3_Path +"object\\kami.fbx" };//kamiのオブジェクト
            static ObjectName  Pengin = { "Denti",Stage_failepath::Stage3_Path +"object\\pengin.fbx" };//ペンギンのオブジェクト
-           static ObjectName  Wall = { "Wall",Stage_failepath::Stage3_Path +"object\\wall.fbx" };//壁のオブジェクト
+           static ObjectName  Wall = { "Wall",Stage_failepath::Stage3_Path +"wall.fbx" };//壁のオブジェクト
 
        };
 
@@ -106,6 +112,12 @@ public:
     ObjType Get_Objetypes(int i) { return ObjectTypes[i]; }
     int GetCanBassCount() { return CanBass.size(); }
     CanBas* GetCanbas(int i) { return CanBass[i].get(); }
+    CanBas* GetCanbas(std::string id) 
+    {
+        for(auto&can:CanBass)
+        if(id==can->GetCanbasID())
+        return can.get(); 
+    }
 private:
     void GetStageObjectTypes();
     std::vector<ObjType>ObjectTypes;
