@@ -45,10 +45,13 @@ HRESULT load_texture_from_file(ID3D11Device* device, const wchar_t* filename,
 		resources.insert(make_pair(filename, *shader_resource_view));
 	}
 
-	ComPtr<ID3D11Texture2D> texture2d;
-	hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
-	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
-	texture2d->GetDesc(texture2d_desc);
+	if (texture2d_desc)
+	{
+		ComPtr<ID3D11Texture2D> texture2d;
+		hr = resource.Get()->QueryInterface<ID3D11Texture2D>(texture2d.GetAddressOf());
+		_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+		texture2d->GetDesc(texture2d_desc);
+	}
 
 	return hr;
 }

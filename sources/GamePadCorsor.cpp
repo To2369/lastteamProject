@@ -55,6 +55,8 @@ void GamePadCorsor::Update()
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
 	}
+	
+	//SetCursorPos(PadcursorPos.x, PadcursorPos.y);
 	/*else 
 	{
 		PadCursorsprPos = corsor;

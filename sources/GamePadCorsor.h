@@ -27,7 +27,7 @@ public:
     DirectX::XMFLOAT2 GetPadCursorsprPos(){return PadCursorsprPos;}
 private:
     std::unique_ptr<sprite> padcursorspr;		//マウスのスプライト描画
-    const wchar_t* Padcoursorfilename = L".\\resources\\mouse\\仮マウス.png";
+    const wchar_t* Padcoursorfilename = L".\\resources\\mouse\\mouse.png";
     DirectX::XMFLOAT2 PadCursorsprPos = { 0,0 };
 
     DirectX::XMFLOAT2 PadcursorPos = {};

@@ -12,7 +12,6 @@
 #include "Graphics/graphics.h"
 #include"scene_management.h"
 #include"scene_title.h"
-#include"scene_clear.h"
 #include"scene_loading.h"
 Goal::Goal(ID3D11Device* device)
 {

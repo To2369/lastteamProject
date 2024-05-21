@@ -94,6 +94,11 @@ void SceneGame::initialize()
 		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 		graphics.SetPixelShader(0, "shader\\outline_ps.cso");
 	}
+
+	{
+		//sky_map生成
+		sky = std::make_unique<sky_map>(graphics.GetDevice(), L".\\resources\\sor_lake1.dds");
+	}
 	//MenuUI生成
 	{
 		vector<unique_ptr<UI>>UIs;
@@ -460,8 +465,15 @@ void SceneGame::render(float elapsed_time)
 	scene_data->activate(graphics.GetDeviceContext(), 1);
 	parametric_constant->activate(graphics.GetDeviceContext(), 2);
 	
-	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 0);
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
 	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
+
+	if (sky)
+	{
+		sky->blit(graphics.GetDeviceContext(), scene_data->data.view_projection);
+	}
+
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 0);
 
 	UIManager& ince_ui = UIManager::incetance();
 	
@@ -747,6 +759,7 @@ void SceneGame::setFramebuffer()
 
 bool SceneGame::ClearScreen(float elapsedTime)
 {
+	gamepad& pad = gamepad::Instance();
 	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	Gimic*gimic = Objectmanajer::incetance().Select_GetGimic(Gimic_Type::Goal);
 	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
@@ -786,6 +799,7 @@ bool SceneGame::ClearScreen(float elapsedTime)
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 										break;
 									}
+
 									if (ince_st.GetStageName() == StageName::stage1_3)
 									{
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
@@ -793,6 +807,32 @@ bool SceneGame::ClearScreen(float elapsedTime)
 									}
 								}
 								
+							}
+						}
+						else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 490,610 }, { 50,50 }, { 340,120 }))
+						{
+							ui->SetIsMouse(true);
+							if (pad.button_state(gamepad::button::a, trigger_mode::falling_edge))
+							{
+
+								StageManager& ince_st = StageManager::incetance();
+								for (StageName i = ince_st.GetStageName(); i != StageName::null;
+									i = static_cast<StageName>(static_cast<int>(i) + 1))
+								{
+									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
+									{
+										ince_st.SetStageName(i);
+										SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
+										break;
+									}
+
+									if (ince_st.GetStageName() == StageName::stage1_3)
+									{
+										SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
+
+									}
+								}
+
 							}
 						}
 					}
@@ -811,6 +851,17 @@ bool SceneGame::ClearScreen(float elapsedTime)
 							}
 
 						}
+						else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 915,610 }, { 50,50 }, { 340,120 }))
+						{
+							ui->SetIsMouse(true);
+
+							if (pad.button_state(gamepad::button::a, trigger_mode::falling_edge))
+							{
+								SceneManagement::instance().SceneChange(
+									new SceneLoading(new Scene_Stage_Serect));
+								break;
+							}
+						}
 					}
 					if (ui->GetID() == UI_StringID::UI_ID::Clear_Id::ClearTitle)
 					{
@@ -825,7 +876,17 @@ bool SceneGame::ClearScreen(float elapsedTime)
 									new SceneLoading(new SceneTitle));
 								break;
 							}
+						}
+						else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 65,610 }, { 50,50 }, { 340,120 }))
+						{
+							ui->SetIsMouse(true);
 
+							if (pad.button_state(gamepad::button::a, trigger_mode::falling_edge))
+							{
+								SceneManagement::instance().SceneChange(
+									new SceneLoading(new SceneTitle));
+								break;
+							}
 						}
 					}
 				}
@@ -840,8 +901,9 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 bool SceneGame::Menu(float elapsedTime)
 {
+	gamepad& pad = gamepad::Instance();
 	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
-	if (GetAsyncKeyState('K') & 0x8000) // 'K'キーが押されたかどうかを確認
+	if (pad.button_state(gamepad::button::start)) // 'K'キーが押されたかどうかを確認
 	{
 		if (!wasKeyPressed) // 前回のフレームでkが押されていない場合
 		{
@@ -879,7 +941,7 @@ bool SceneGame::Menu(float elapsedTime)
 					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 585,180}, { 50,50 }, { 225,120 }))
 					{
 						ui->SetIsMouse(true);
-						if (isKKeyPressed && !wasKeyPressedMenu) {
+						if (pad.button_state(gamepad::button::a,trigger_mode::falling_edge)){
 							Menu_ = false;
 						}
 					}
@@ -896,10 +958,10 @@ bool SceneGame::Menu(float elapsedTime)
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
 					}
-					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 945,140 }, { 50,50 }, { 235,525 }))
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 585,390 }, { 50,50 }, { 225,120 }))
 					{
 						ui->SetIsMouse(true);
-						if (isKKeyPressed && !wasKeyPressedMenu) {
+						if (pad.button_state(gamepad::button::a)){
 
 							StageManager::incetance().SetStageName(StageManager::incetance().GetStageName());
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
@@ -917,10 +979,10 @@ bool SceneGame::Menu(float elapsedTime)
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 						}
 					}
-					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 945,140 }, { 50,50 }, { 235,525 }))
+					else if (GPCorsor.hitChechLect(GPCorsor.GetPadCursorsprPos(), { 585,595 }, { 50,50 }, { 225,120 }))
 					{
 						ui->SetIsMouse(true);
-						if (isKKeyPressed && !wasKeyPressedMenu) {
+						if (pad.button_state(gamepad::button::a)){
 
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 						}
