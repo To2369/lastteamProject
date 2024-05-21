@@ -94,6 +94,11 @@ void SceneGame::initialize()
 		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 		graphics.SetPixelShader(0, "shader\\outline_ps.cso");
 	}
+
+	{
+		//sky_mapê∂ê¨
+		sky = std::make_unique<sky_map>(graphics.GetDevice(), L".\\resources\\sor_lake1.dds");
+	}
 	//MenuUIê∂ê¨
 	{
 		vector<unique_ptr<UI>>UIs;
@@ -460,8 +465,15 @@ void SceneGame::render(float elapsed_time)
 	scene_data->activate(graphics.GetDeviceContext(), 1);
 	parametric_constant->activate(graphics.GetDeviceContext(), 2);
 	
-	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 0);
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
 	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
+
+	if (sky)
+	{
+		sky->blit(graphics.GetDeviceContext(), scene_data->data.view_projection);
+	}
+
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(0), 0);
 
 	UIManager& ince_ui = UIManager::incetance();
 	

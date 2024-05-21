@@ -12,6 +12,7 @@
 #include"Stage.h"
 #include "StageManager.h"
 #include"Goal_navi.h"
+#include "Graphics/sky_map.h"
 class SceneGame : public Scene
 {
 public:
@@ -64,6 +65,8 @@ private:
 
 	DirectX::XMFLOAT3 camera_position{ 0.0f,24.0f, 0.0f };
 	std::unique_ptr<sprite>MaskSprite;
+
+	std::unique_ptr<sky_map> sky = nullptr;
 private:
 	//std::unique_ptr<Object>game_obj;
 	Intersection result_intersection{};

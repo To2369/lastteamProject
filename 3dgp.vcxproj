@@ -205,6 +205,7 @@
     <ClCompile Include="sources\Goal.cpp" />
     <ClCompile Include="sources\Goal_navi.cpp" />
     <ClCompile Include="sources\Graphics\graphics.cpp" />
+    <ClCompile Include="sources\Graphics\sky_map.cpp" />
     <ClCompile Include="sources\Invisiblebarrier.cpp" />
     <ClCompile Include="sources\Lift.cpp" />
     <ClCompile Include="sources\Comp.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="sources\Goal_navi.h" />
     <ClInclude Include="sources\Graphics\DebugRenderer.h" />
     <ClInclude Include="sources\Graphics\graphics.h" />
+    <ClInclude Include="sources\Graphics\sky_map.h" />
     <ClInclude Include="sources\Hard_to_Break.h" />
     <ClInclude Include="sources\Heavy.h" />
     <ClInclude Include="sources\InvisibleBarria.h" />
@@ -332,6 +334,7 @@
     <None Include="hlsl\gltf_model.hlsli" />
     <None Include="hlsl\image_based_lighting.hlsli" />
     <None Include="hlsl\skinned_mesh.hlsli" />
+    <None Include="hlsl\sky_map.hlsli" />
     <None Include="hlsl\sprite.hlsli" />
     <None Include="hlsl\static_mesh.hlsli" />
   </ItemGroup>
@@ -393,6 +396,24 @@
     <FxCompile Include="hlsl\skinned_mesh_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_box_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="hlsl\sprite_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

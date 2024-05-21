@@ -265,6 +265,9 @@
     <ClCompile Include="sources\GamePadCorsor.cpp">
       <Filter>Headers\UI</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Graphics\sky_map.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -447,6 +450,9 @@
     <ClInclude Include="sources\GamePadCorsor.h">
       <Filter>Headers\UI</Filter>
     </ClInclude>
+    <ClInclude Include="sources\Graphics\sky_map.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="hlsl\gltf_model.hlsli">
@@ -474,6 +480,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="hlsl\debug.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="hlsl\sky_map.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -527,6 +536,15 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="hlsl\outline_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_vs.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_box_ps.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
