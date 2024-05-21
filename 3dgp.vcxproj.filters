@@ -250,9 +250,6 @@
     <ClCompile Include="sources\Scene_Stage_Select.cpp">
       <Filter>Sources\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="sources\scene_clear.cpp">
-      <Filter>Sources\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Stage1_5.cpp">
       <Filter>Sources\Stages\GameStage</Filter>
     </ClCompile>
@@ -442,9 +439,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="sources\Scene_Stage_Select.h">
-      <Filter>Headers\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\scene_clear.h">
       <Filter>Headers\Scene</Filter>
     </ClInclude>
     <ClInclude Include="sources\GamePadCorsor.h">

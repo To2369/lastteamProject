@@ -214,7 +214,6 @@
     <ClCompile Include="sources\Mathf.cpp" />
     <ClCompile Include="sources\GamePadCorsor.cpp" />
     <ClCompile Include="sources\MoveWall.cpp" />
-    <ClCompile Include="sources\scene_clear.cpp" />
     <ClCompile Include="sources\Scene_Stage_Select.cpp" />
     <ClCompile Include="sources\Stage.cpp" />
     <ClCompile Include="sources\stage1_3.cpp" />
@@ -306,7 +305,6 @@
     <ClInclude Include="sources\Input\gamepad.h" />
     <ClInclude Include="sources\misc.h" />
     <ClInclude Include="sources\model.h" />
-    <ClInclude Include="sources\scene_clear.h" />
     <ClInclude Include="sources\scene_game.h" />
     <ClInclude Include="sources\scene_loading.h" />
     <ClInclude Include="sources\scene_management.h" />
