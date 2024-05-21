@@ -35,4 +35,5 @@ private:
     std::unique_ptr<constant_buffer<scene_constants>> scene_data;
     DirectX::XMFLOAT4 light_direction{ -0.2f,-0.353f,0.331f,0.0f };
     bool wasKeyPressed = false;
+    bool startup = false;
 };

@@ -115,6 +115,11 @@ void Scene_Stage_Serect::update(float elapsedTime)
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
+	if (!startup)
+	{
+		GPCorsor.SetPadCursorsprPos({ 10,10 });
+		startup = true;
+	}
 	StageManager& ince_st = StageManager::incetance();
 	SHORT keyState = GetAsyncKeyState(VK_LBUTTON);
 	bool isKKeyPressed = (keyState & 0x8000) != 0;

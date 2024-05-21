@@ -258,15 +258,15 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
         if (QuadPlacement_vs_PlayerSphere(obj->GetMySphere(), position, radius, outsphere))
         {
             //物を動かせるかどうか判断
-            if (gamePad.button_state(gamepad::button::left_shoulder) && !pushFlag)//(右クリック、LBボタン)
+            if (gamePad.button_state(gamepad::button::x) && !pushFlag)//(Q、xボタン)
             {
                 pushFlag = true;
             }
-            else if (gamePad.button_state(gamepad::button::b) && pushFlag)//仮でXき- 
+            else if (gamePad.button_state(gamepad::button::y) && pushFlag)//E,Yボタン 
             {
-                pushFlag = false;
                 obj->SetVelotyXZ({ 0,0 });
                 color = { 0,0,0,0 };
+                pushFlag = false;
                 isHand = false;
             }
 
@@ -384,6 +384,7 @@ void Player::ExtractionAttribute(float elapsedTime)
     Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
     Objectmanajer& objMgr = Objectmanajer::incetance();
     int objCount = objMgr.Get_GameObjCount();
+    float x = gamePad.trigger_state_r();
     for (int i = 0; i < objCount; i++)
     {
         //四角と
@@ -392,7 +393,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         {
             //抽出(左クリック、RBボタン)
 
-            if (gamePad.button_state(gamepad::button::right_shoulder) && !pullType)
+            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true && !pullType)
             {
                 pushType = false;
                 CubeHitFlag = true;
@@ -401,30 +402,22 @@ void Player::ExtractionAttribute(float elapsedTime)
                 pullType = true;
                 break;
             }
-            //注入(左クリック、RBボタン)今Vキー
-            else if (gamePad.button_state(gamepad::button::y) && pullType)
+            //注入(右クリック、トリガーボタン)
+            else if (x>0.1f && pullType)
             {
-                pullType = false;
+                pushType = true;
                 CubeHitFlag = true;
                 updateSyringepos();
                 obj->Set_attribute(playerType, 0);
-                pushType = true;
+                pullType = false;
                 break;
             }
         }
         //円柱と
-         if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
+        else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
-          /*  if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true&& !pullType)
-            {
-                int a = 0;
-            }
-            else if (gamePad.button_state(gamepad::button::y, trigger_mode::falling_edge) == true && pullType)
-            {
-                int a = 0;
-            }*/
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge)==true && !pullType)
+            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge)==true)
             {
                 pushType = false;
                 SphereHitFlag = true;
@@ -434,13 +427,13 @@ void Player::ExtractionAttribute(float elapsedTime)
                 break;
             }
             //注入(左クリック、RBボタン)今Vキー
-            else if (gamePad.button_state(gamepad::button::y, trigger_mode::falling_edge)==true && pullType)
+            else if (x>0.1f && pullType)
             {
-                pullType = false;
                 SphereHitFlag = true;
                 updateSyringepos();
                 obj->Set_attribute(playerType, 0);
                 pushType = true;
+                pullType = false;
                 break;
             }
         }
