@@ -6,7 +6,11 @@ class Scene_Stage_Serect:public Scene
 public:
     Scene_Stage_Serect() {};
     ~Scene_Stage_Serect()override;
-    void finalize()override {};
+    void finalize()override 
+    {
+        SceneManagement& scene_manager = SceneManagement::instance();
+        scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+    };
     void initialize()override ;
     void setFramebuffer()override;
 public:

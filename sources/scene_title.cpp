@@ -95,6 +95,15 @@ void SceneTitle::initialize()
 	ince.UI_move(move(UIs));
 	ince.CreateCanbas();
 	UIs.clear();
+
+	SceneManagement& scene_management = SceneManagement::instance();
+	if(!scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	else
+	{
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	}
 }
 
 void SceneTitle::update(float elapsed_time)
@@ -226,7 +235,8 @@ void SceneTitle::render(float elapsed_time)
 
 void SceneTitle::finalize()
 {
-
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
 }
 
 void SceneTitle::setFramebuffer()

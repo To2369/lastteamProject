@@ -196,7 +196,7 @@ void SceneGame::initialize()
 		ince.CreateCanbas(UI_StringID::CanbasID::GameClear);
 		UIs.clear();
 	}
-	
+	SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -223,6 +223,14 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 void SceneGame::update(float elapsed_time)
 
 {
+	if (!SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing() && !ClearRenderUiFlag)
+	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
+	}
+	else
+	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
+	}
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();
@@ -230,6 +238,8 @@ void SceneGame::update(float elapsed_time)
 	ShowCursor(disPlayCorsor);			//マウスカーソル表示
 	if (ClearScreen(elapsed_time))
 	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->stop();
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
 		disPlayCorsor = true;
 		GamePadCorsor::Instance().Update(elapsed_time);
 		Menu_ = false;
@@ -754,7 +764,11 @@ void SceneGame::render(float elapsed_time)
 
 void SceneGame::finalize()
 {
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->stop();
 
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->stop();
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
 	UIManager::incetance().Clear();

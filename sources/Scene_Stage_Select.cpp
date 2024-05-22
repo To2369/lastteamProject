@@ -12,7 +12,6 @@ Scene_Stage_Serect::~Scene_Stage_Serect()
 {
 	UIManager& ince = UIManager::incetance();
 	ince.Clear();
-
 }
 void Scene_Stage_Serect::initialize()
 {
@@ -97,6 +96,17 @@ void Scene_Stage_Serect::initialize()
 	ince.UI_move(move(UIs));
 	ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 	UIs.clear();
+
+	SceneManagement& scene_manager = SceneManagement::instance();
+	if (!scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+	{
+		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play();
+	}
+	else
+	{
+		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play();
+	}
 }
 
 void Scene_Stage_Serect::setFramebuffer()
