@@ -22,6 +22,7 @@ extern ImWchar glyphRangesJapanese[];
 
 #include <dxgi1_6.h>
 #include "constant_buffer.h"
+#include "audio.h"
 
 class Scene
 {
@@ -78,6 +79,26 @@ public:
 		nextScene = scene;
 	}
 
+	enum class SCENE_BGM
+	{
+		SCENE_CLEAR,
+		SCENE_GAME_NOW,
+		SCENE_TITLE,
+		SCENE_MAX,
+	};
+
+	enum class SCENE_SE
+	{
+		SE_BUTTON_DECISION,
+		SE_EXTRACTION,
+		SE_INJECTION_SOUND,
+		SE_LIFT_SOUND_EFFECTS,
+		SE_OBJECT_MOVE,
+		SE_SWITCH,
+		SE_SYRINGE_INTERCALATE,
+		SE_MAX,
+	};
+
 	void SetCursorPos(const DirectX::XMFLOAT2 pos) { CursorPos = pos; }
 	const DirectX::XMFLOAT2 GetCursorPosition() const { return CursorPos; }
 	void SetCurrentCursorPos(const DirectX::XMFLOAT2 pos) { CurrentCursorPos = pos; }
@@ -85,11 +106,19 @@ public:
 	void SetWindowPos(const DirectX::XMFLOAT2 pos) { WindowPos = pos; }
 	const DirectX::XMFLOAT2 GetWindowPosition() const { return WindowPos; }
 	void SetFrameBuffer() { currentScene->setFramebuffer(); }
+
+	audio* GetBgm(int index) { return bgm[index].get(); }
+	audio* GetSe(int index) { return se[index].get(); }
+
 private:
 	Scene* currentScene = nullptr;
 	Scene* nextScene = nullptr;
 	DirectX::XMFLOAT2 WindowPos = {};
 	DirectX::XMFLOAT2 CursorPos = {};
-
 	DirectX::XMFLOAT2 CurrentCursorPos = {};
+
+	Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
+	IXAudio2MasteringVoice* master_voice = nullptr;
+	std::unique_ptr<audio> bgm[static_cast<int>(SCENE_BGM::SCENE_MAX)] = {};
+	std::unique_ptr<audio> se[static_cast<int>(SCENE_SE::SE_MAX)] = {};
 };

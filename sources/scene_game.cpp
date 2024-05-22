@@ -63,7 +63,8 @@ void SceneGame::initialize()
 	camera_controller = std::make_unique<CameraController>();
 
 	//カーソルの初期設定
-	GamePadCorsor::Instance().Initialize();
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
+	GPCorsor.Initialize();
 	//定数バッファ生成
 	{
 		scene_data = std::make_unique<constant_buffer<scene_constants>>(graphics.GetDevice());
@@ -195,6 +196,7 @@ void SceneGame::initialize()
 		ince.CreateCanbas(UI_StringID::CanbasID::GameClear);
 		UIs.clear();
 	}
+
 	{
 		tutorial = make_unique<Tutorial>();
 		bool moveFlag[3];
@@ -210,6 +212,9 @@ void SceneGame::initialize()
 
 
 	}
+
+	//SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
+
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -236,24 +241,44 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 void SceneGame::update(float elapsed_time)
 
 {
+	if (!SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing() && !ClearRenderUiFlag)
+	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
+	}
+	else
+	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
+	}
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();
+
+	ShowCursor(disPlayCorsor);			//マウスカーソル表示
 	if (ClearScreen(elapsed_time))
 	{
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->stop();
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
+		disPlayCorsor = true;
+		GamePadCorsor::Instance().Update(elapsed_time);
 		Menu_ = false;
 		ClearRenderUiFlag = true;
-		GamePadCorsor::Instance().Update();
 		return;
 	}
 	//else ClearRenderUiFlag = false;
 	if (Menu(elapsed_time))
 	{
+		disPlayCorsor = true;
+		GamePadCorsor::Instance().Update(elapsed_time);
 		MenuRenderUiFlag = true;
-		GamePadCorsor::Instance().Update();
 		return;
 	}
-	else MenuRenderUiFlag = false;
+	else
+	{
+		MenuRenderUiFlag = false;
+
+		/*				ここのdisPlayCorsorをReleaseするときfalseにしてください							*/
+		disPlayCorsor = true;
+	}
 	//static float aaa = 0;
 
 	//aaa+=elapsed_time;
@@ -376,6 +401,7 @@ void SceneGame::update(float elapsed_time)
 		if (GetKeyState('3') & 0x01)
 		{
 			target.y += 0.05f;
+			disPlayCorsor = true;
 		}
 		else
 		{
@@ -425,10 +451,13 @@ void SceneGame::update(float elapsed_time)
 			SceneManagement::instance().GetWindowPosition().y + (y / 2)
 		};
 
-		if (mouseMove) SetCursorPos(
-			static_cast<int>(setCursorWindow.x),
-			static_cast<int>(setCursorWindow.y)
-		);
+		if (mouseMove)
+		{
+			SetCursorPos(
+				static_cast<int>(setCursorWindow.x),
+				static_cast<int>(setCursorWindow.y)
+			);
+		}
 	}
 
 }
@@ -790,7 +819,11 @@ void SceneGame::render(float elapsed_time)
 
 void SceneGame::finalize()
 {
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->stop();
 
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->stop();
 	StageManager::incetance().Clear();
 	Objectmanajer::incetance().Clear();
 	UIManager::incetance().Clear();

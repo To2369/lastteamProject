@@ -6,7 +6,6 @@
 #include "camera_controller.h"
 #include"UI.h"
 
-
 class SceneTitle : public Scene
 {
 public:
@@ -51,4 +50,5 @@ private:
 
 	float timer = 0.0f;
 	bool wasKeyPressed = false;
+
 };

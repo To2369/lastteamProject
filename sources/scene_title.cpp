@@ -40,7 +40,8 @@ void SceneTitle::initialize()
 	camera_controller = std::make_unique<CameraController>();
 
 	//カーソルの初期設定
-	GamePadCorsor::Instance().Initialize();
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
+	GPCorsor.Initialize();
 
 	//定数バッファ生成
 	{
@@ -94,6 +95,15 @@ void SceneTitle::initialize()
 	ince.UiVector_Pointer_move(move(UIs));
 	ince.CreateCanbas();
 	UIs.clear();
+
+	SceneManagement& scene_management = SceneManagement::instance();
+	if(!scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	else
+	{
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	}
 }
 
 void SceneTitle::update(float elapsed_time)
@@ -167,7 +177,7 @@ void SceneTitle::update(float elapsed_time)
 		ince.Update_Color_Alpha(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 
-		GPCorsor.Update();
+		GPCorsor.Update(elapsed_time);
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();
@@ -212,9 +222,10 @@ void SceneTitle::render(float elapsed_time)
 
 	//オブジェクト描画
 	{
-		GamePadCorsor::Instance().Render(&rc);
 		UIManager& ince = UIManager::incetance();
+
 		ince.Render(graphics);
+		GamePadCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());
@@ -225,7 +236,8 @@ void SceneTitle::render(float elapsed_time)
 
 void SceneTitle::finalize()
 {
-
+	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
 }
 
 void SceneTitle::setFramebuffer()

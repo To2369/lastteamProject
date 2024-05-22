@@ -21,6 +21,7 @@ framework::framework(BOOL fullscreen)
 bool framework::initialize()
 {
 	graphics.GetImguiRenderer()->init(graphics.GetDevice(),graphics.GetDeviceContext());
+	SceneManagement::instance().initialize();
 	SceneManagement::instance().SceneChange(new SceneTitle);
 	return true;
 }

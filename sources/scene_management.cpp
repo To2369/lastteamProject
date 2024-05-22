@@ -31,7 +31,34 @@ SceneManagement::~SceneManagement()
 	}
 };
 
-void SceneManagement::initialize() {}
+void SceneManagement::initialize()
+{
+	HRESULT hr{ S_OK };
+
+	hr = XAudio2Create(xaudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+	hr = xaudio2->CreateMasteringVoice(&master_voice);
+	_ASSERT_EXPR(SUCCEEDED(hr), hr_trace(hr));
+
+	//BGMê›íË
+	{
+		bgm[static_cast<int>(SCENE_BGM::SCENE_CLEAR)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\BGM\\clear\\clear_jingle1.wav");
+		bgm[static_cast<int>(SCENE_BGM::SCENE_GAME_NOW)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\BGM\\game_now\\game_now1.wav");
+		bgm[static_cast<int>(SCENE_BGM::SCENE_TITLE)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\BGM\\title\\title_bgm0.wav");
+	}
+
+	//SEê›íË
+	{
+		se[static_cast<int>(SCENE_SE::SE_BUTTON_DECISION)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\button\\button_decision_0.wav");
+		se[static_cast<int>(SCENE_SE::SE_EXTRACTION)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\extraction_0\\extraction_2.wav");
+		se[static_cast<int>(SCENE_SE::SE_INJECTION_SOUND)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\injection_sound\\injection_sound_2.wav");
+		se[static_cast<int>(SCENE_SE::SE_LIFT_SOUND_EFFECTS)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\lift_sound_effects\\lift_sound_effects_2.wav");
+		se[static_cast<int>(SCENE_SE::SE_OBJECT_MOVE)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\object_move\\object_move_1.wav");
+		se[static_cast<int>(SCENE_SE::SE_SWITCH)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\switch\\switch_0.wav");
+		se[static_cast<int>(SCENE_SE::SE_SYRINGE_INTERCALATE)] = std::make_unique<audio>(xaudio2.Get(), L".\\resources\\audio\\SE\\syringe_intercalate\\syringe_intercalate_1.wav");
+	}
+}
 
 void SceneManagement::update(float elapsed_time)
 {

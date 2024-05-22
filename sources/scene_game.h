@@ -89,4 +89,5 @@ private:
 	bool ClearScreen(float elapsedTime);
 	bool Menu(float elapsedTime);
 	std::unique_ptr<Tutorial> tutorial;
+	bool disPlayCorsor = false;		//マウスの表示
 };

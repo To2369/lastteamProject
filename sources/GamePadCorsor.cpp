@@ -8,19 +8,20 @@ void GamePadCorsor::Initialize()
 	x = static_cast<float>(graphics.GetWindowSize().cx)/2;
 	y = static_cast<float>(graphics.GetWindowSize().cy)/2;
 	//カーソルの初期位置設定
-	PadCursorsprPos.x = x-50;
-	PadCursorsprPos.y = y-50;
 	SetCursorPos(x, y);
+	//パッドカーソルの初期位置
+	PadCursorsprPos = { x - 50 ,y - 50 };
 	padcursorspr = std::make_unique<sprite>(graphics.GetDevice(), Padcoursorfilename);
+	padCorsorFlag = false;
+	disPlayFlag = false;
 }
 
-void GamePadCorsor::Update()
+void GamePadCorsor::Update(float elapsedTime)
 {
 	gamepad& pad = gamepad::Instance();
 	Graphics& graphics = Graphics::Instance();
 	currentPadCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
 	PadcursorPos = SceneManagement::instance().GetCursorPosition();
-	corsor = SceneManagement::instance().GetCursorPosition();
 	float ax = pad.thumb_state_rx();
 	float ay = pad.thumb_state_ry();
 
@@ -54,15 +55,37 @@ void GamePadCorsor::Update()
 	{
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
+		padCorsorFlag = true;
+		disPlayFlag = true;
+		timer = timerset;				//動いている間は値が入り続ける
+		SetCursorPos(2000, 2000);		//マウスカーソルの位置を固定
 	}
+
+	//ゲームパッドを放置している時間が長いとここに入る
+	if (timer < 0)
+	{
+		if (padCorsorFlag)//一度だけマウスカーソル位置を中央に戻す
+		{
+			SetCursorPos(static_cast<float>(graphics.GetWindowSize().cx) / 2, static_cast<float>(graphics.GetWindowSize().cy) / 2);
+			disPlayFlag = false;			//ゲームパッドカーソルの表示OFF
+			padCorsorFlag = false;			//ここのifに入らないようfalse
+		}
+		timer = 0;
+	}
+	
+	timer -= elapsedTime;
 }
 
 void  GamePadCorsor::Render(RenderContext*rc)
 {
 	Graphics& graphics = Graphics::Instance();
+	gamepad& pad = gamepad::Instance();
+	
+	if (disPlayFlag)
 	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5f, 0,0,0,0,0);
 }
 
+//カーソルと四角形の当たり判定
 bool GamePadCorsor::hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2)
 {
 	square box1;
