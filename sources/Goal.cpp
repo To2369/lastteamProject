@@ -17,7 +17,7 @@ Goal::Goal(ID3D11Device* device)
 {
     model = make_unique<Model>(device, filename, true);
     Gimic_type = Gimic_Type::Goal;
-    Scale = { 0.05f,0.2f,0.05f };
+    Scale = { 0.5f,1.0f,0.5f };
     initialaize_Set_attribute(ObjType::null, ObjType::null);
 }
 Goal::Goal(ID3D11Device* device, const char* filename_)
@@ -59,7 +59,7 @@ bool Goal::GoalInPosition()
 
 void Goal::Render(RenderContext* rc)
 {
-    color = { 1,0,0,1 };
+    color = { 1,1,1,1 };
 
     DebugRenderer& ince_d = DebugRenderer::incetance(Graphics::Instance().GetDevice());
     ince_d.DrawSphere(Position, radius * radius, { 0,1,0,1 });
