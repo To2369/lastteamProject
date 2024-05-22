@@ -74,6 +74,11 @@ void Gimic::Gimic_effect(Gimic_Type type)
             {
                 this->SetReturnTimer();
             }*/
+            if (switchFlag)
+            {
+                SceneManagement& ince = SceneManagement::instance();
+                ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SWITCH))->stop();
+            }
             if (!switchFlag)
             {
                 SceneManagement& ince = SceneManagement::instance();
