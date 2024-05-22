@@ -62,7 +62,7 @@ gamepad::gamepad(int user_id, float deadzonex, float deadzoney, deadzone_mode de
 		const int button_keymap[_button_count] = {
 			' '/*A*/, 'X'/*B*/, 'Q'/*X*/, 'E'/*Y*/,
 			VK_HOME/*LEFT_THUMB*/, VK_END/*RIGHT_THUMB*/, VK_LCONTROL/*LEFT_SHOULDER*/, VK_LBUTTON/*RIGHT_SHOULDER*/,
-			'K'/*START*/, VK_BACK/*BACK*/, VK_F1/*UP*/, VK_F2/*DOWN*/, VK_F3/*LEFT*/, VK_F4/*RIGHT*/};
+			'R'/*START*/, VK_BACK/*BACK*/, VK_F1/*UP*/, VK_F2/*DOWN*/, VK_F3/*LEFT*/, VK_F4/*RIGHT*/};
 
 		for (size_t button_index = 0; button_index < _button_count; ++button_index)
 		{

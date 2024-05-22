@@ -87,4 +87,5 @@ private:
 	PlayerManager& plm = PlayerManager::Instance();
 	bool ClearScreen(float elapsedTime);
 	bool Menu(float elapsedTime);
+	bool disPlayCorsor = false;		//マウスの表示
 };

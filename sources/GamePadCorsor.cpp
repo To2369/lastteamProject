@@ -8,13 +8,14 @@ void GamePadCorsor::Initialize()
 	x = static_cast<float>(graphics.GetWindowSize().cx)/2;
 	y = static_cast<float>(graphics.GetWindowSize().cy)/2;
 	//カーソルの初期位置設定
-	PadCursorsprPos.x = x-50;
-	PadCursorsprPos.y = y-50;
 	SetCursorPos(x, y);
+	PadCursorsprPos = { x - 50 ,y - 50 };
 	padcursorspr = std::make_unique<sprite>(graphics.GetDevice(), Padcoursorfilename);
+	padCorsorFlag = false;
+	disPlayFlag = false;
 }
 
-void GamePadCorsor::Update()
+void GamePadCorsor::Update(float elapsedTime)
 {
 	gamepad& pad = gamepad::Instance();
 	Graphics& graphics = Graphics::Instance();
@@ -54,12 +55,31 @@ void GamePadCorsor::Update()
 	{
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
+		padCorsorFlag = true;
+		disPlayFlag = true;
+		timer = timerset;
+		SetCursorPos(2000, 2000);
 	}
+	if (timer < 0)
+	{
+		if (padCorsorFlag)
+		{
+			SetCursorPos(static_cast<float>(graphics.GetWindowSize().cx) / 2, static_cast<float>(graphics.GetWindowSize().cy) / 2);
+			disPlayFlag = false;
+			padCorsorFlag = false;
+		}
+		timer = 0;
+	}
+	
+	timer -= elapsedTime;
 }
 
 void  GamePadCorsor::Render(RenderContext*rc)
 {
 	Graphics& graphics = Graphics::Instance();
+	gamepad& pad = gamepad::Instance();
+	
+	if (disPlayFlag)
 	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5f, 0,0,0,0,0);
 }
 

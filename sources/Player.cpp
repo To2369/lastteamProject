@@ -392,7 +392,6 @@ void Player::ExtractionAttribute(float elapsedTime)
         if (ince_ray.RayCast(start, end, hit,*obj))
         {
             //抽出(左クリック、RBボタン)
-
             if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true && !pullType)
             {
                 pushType = false;
@@ -426,7 +425,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 pullType = true;
                 break;
             }
-            //注入(左クリック、RBボタン)今Vキー
+            //注入(右クリック、トリガーボタン)
             else if (x>0.1f && pullType)
             {
                 SphereHitFlag = true;
@@ -438,10 +437,6 @@ void Player::ExtractionAttribute(float elapsedTime)
             }
         }
 
-    }
-    if (GetKeyState('K'))
-    {
-        playerType = Obj_attribute::null;
     }
 }
 

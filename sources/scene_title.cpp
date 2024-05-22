@@ -40,7 +40,8 @@ void SceneTitle::initialize()
 	camera_controller = std::make_unique<CameraController>();
 
 	//カーソルの初期設定
-	GamePadCorsor::Instance().Initialize();
+	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
+	GPCorsor.Initialize();
 
 	//定数バッファ生成
 	{
@@ -167,7 +168,7 @@ void SceneTitle::update(float elapsed_time)
 		ince.Update(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 
-		GPCorsor.Update();
+		GPCorsor.Update(elapsed_time);
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
 	ince.Gui();
@@ -212,9 +213,9 @@ void SceneTitle::render(float elapsed_time)
 
 	//オブジェクト描画
 	{
-		GamePadCorsor::Instance().Render(&rc);
 		UIManager& ince = UIManager::incetance();
 		ince.Render(&rc);
+		GamePadCorsor::Instance().Render(&rc);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());

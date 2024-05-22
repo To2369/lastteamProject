@@ -17,7 +17,7 @@ public:
 
     void Initialize();
 
-    void Update();
+    void Update(float elapsedTime);
 
     void Render(RenderContext* rc);
 
@@ -25,7 +25,7 @@ public:
     bool hitChechLect(DirectX::XMFLOAT2 pos1, DirectX::XMFLOAT2 pos2, DirectX::XMFLOAT2 size1, DirectX::XMFLOAT2 size2);
 
     DirectX::XMFLOAT2 GetPadCursorsprPos(){return PadCursorsprPos;}
-    void SetPadCursorsprPos(const DirectX::XMFLOAT2 pos) { this->PadCursorsprPos; }
+    void SetPadCursorsprPos(const DirectX::XMFLOAT2 pos) { PadCursorsprPos = pos; }
 private:
     std::unique_ptr<sprite> padcursorspr;		//マウスのスプライト描画
     const wchar_t* Padcoursorfilename = L".\\resources\\mouse\\mouse.png";
@@ -41,4 +41,11 @@ private:
     {
         float left, right, top, bottom;
     };
+    DirectX::XMFLOAT4 color = { 0,0,0,0 };
+
+    bool padCorsorFlag = false;
+    bool disPlayFlag = false;
+
+    float timer = 0;
+    float timerset = 20;
 };

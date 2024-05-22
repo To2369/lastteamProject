@@ -5,8 +5,6 @@
 #include "model.h"
 #include "camera_controller.h"
 #include"UI.h"
-#include"Audio/AudioSource.h"
-#include"Audio/Audio.h"
 class SceneTitle : public Scene
 {
 public:
@@ -51,5 +49,5 @@ private:
 
 	float timer = 0.0f;
 	bool wasKeyPressed = false;
-	std::unique_ptr<AudioSource> Bgm;
+	//std::unique_ptr<AudioSource> Bgm;
 };
