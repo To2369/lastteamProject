@@ -241,14 +241,14 @@ DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FL
 void SceneGame::update(float elapsed_time)
 
 {
-	/*if (!SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing() && !ClearRenderUiFlag)
+	if (!SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->queuing() && !ClearRenderUiFlag)
 	{
 		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
 	}
 	else
 	{
 		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
-	}*/
+	}
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();

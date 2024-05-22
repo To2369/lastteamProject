@@ -399,7 +399,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         if (ince_ray.RayCast(start, end, hit,*obj))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true && !pullType)
+            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true)
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
@@ -427,11 +427,10 @@ void Player::ExtractionAttribute(float elapsedTime)
         else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge)==true)
+            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge))
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
-                
                 pushType = false;
                 SphereHitFlag = true;
                 updateSyringepos();
@@ -494,6 +493,8 @@ void Player::pullpushAnime(float elapsedTime)
     }
     else
     {
+        Smodel->kefreame = Smodel->getKeyFreame(elapsedTime, Sanime::wait);
+        Smodel->update_animation(*Smodel->kefreame);
         Smodel->animation_End = false;
         Smodel->stop_animation = false;
         Sposition = { 5000,5000,5000 };
