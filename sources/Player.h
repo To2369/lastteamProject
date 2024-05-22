@@ -27,6 +27,7 @@ private:
     //入力値から移動ベクトルを取得
     DirectX::XMFLOAT3 getMoveVec() const;
 public:
+    //注射器の位置設定
     void updateSyringepos();
 
     //ジャンプ入力処理
@@ -35,8 +36,10 @@ public:
     //プレイヤーとギミックの当たり判定
     void CollisionPlayerVsGimics(float elapsedTime);
 
+    //抽出注入処理
     void ExtractionAttribute(float elapsedTime);
 
+    //注射器のアニメーション
     void pullpushAnime(float elapsedTime);
 protected:
     //着地したときに呼び出される
@@ -70,6 +73,7 @@ private:
     float elapsedTime_ = 0;
 
     bool wasKeyPressed = false;
+
 
     bool pullType = false;
     bool pushType = false;

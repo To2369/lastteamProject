@@ -226,7 +226,8 @@ void SceneGame::update(float elapsed_time)
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();
-	ShowCursor(disPlayCorsor);
+
+	ShowCursor(disPlayCorsor);			//マウスカーソル表示
 	if (ClearScreen(elapsed_time))
 	{
 		disPlayCorsor = true;

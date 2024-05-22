@@ -97,7 +97,9 @@ void Player::update(float elapsedTime)
     //抽出注入
     ExtractionAttribute(elapsedTime);
 
+    //注射器のアニメーション
     pullpushAnime(elapsedTime);
+
     ////ワールド行列の更新
     UpdateTransform();
 
@@ -112,11 +114,6 @@ void Player::update(float elapsedTime)
         position.x = resetPosition.x;
         position.y = resetPosition.y+5;
         position.z = resetPosition.z;
-    }
-    if (GetKeyState('P'))
-    {
-        color = { 1,1,1,1 };
-        isHand = true;
     }
 }
 
@@ -138,7 +135,7 @@ void Player::render(RenderContext* rc)
 
     graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
-
+//注射器の位置設定
 void Player::updateSyringepos()
 {
     XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
@@ -439,7 +436,7 @@ void Player::ExtractionAttribute(float elapsedTime)
 
     }
 }
-
+//注射器のアニメーション
 void Player::pullpushAnime(float elapsedTime)
 {
     if (pullType)
