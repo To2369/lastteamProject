@@ -81,14 +81,42 @@ public:
 
 	enum class SCENE_BGM
 	{
-		SCENE_TITLE,
-		SCENE_GAME,
-		SCENE_END,
+		SCENE_CLEAR_0,
+		SCENE_CLEAR_1,
+		SCENE_CLEAR_2,
+		SCENE_GAME_0,
+		SCENE_GAME_1,
+		SCENE_GAME_2,
+		SCENE_GAME_3,
+		SCENE_TITLE_0,
+		SCENE_TITLE_1,
+		SCENE_TITLE_2,
+		SCENE_TITLE_3,
 		SCENE_MAX,
 	};
 
 	enum class SCENE_SE
 	{
+		SE_BUTTON_DECISION_0,
+		SE_BUTTON_DECISION_1,
+		SE_BUTTON_DECISION_2,
+		SE_EXTRACTION_0,
+		SE_EXTRACTION_1,
+		SE_EXTRACTION_2,
+		SE_INJECTION_SOUND_0,
+		SE_INJECTION_SOUND_1,
+		SE_INJECTION_SOUND_2,
+		SE_LIFT_SOUND_EFFECTS_0,
+		SE_LIFT_SOUND_EFFECTS_1,
+		SE_LIFT_SOUND_EFFECTS_2,
+		SE_OBJECT_MOVE_0,
+		SE_OBJECT_MOVE_1,
+		SE_OBJECT_MOVE_2,
+		SE_SWITCH_0,
+		SE_SWITCH_1,
+		SE_SWITCH_2,
+		SE_SYRINGE_INTERCALATE_0,
+		SE_SYRINGE_INTERCALATE_1,
 		SE_MAX,
 	};
 
@@ -99,6 +127,10 @@ public:
 	void SetWindowPos(const DirectX::XMFLOAT2 pos) { WindowPos = pos; }
 	const DirectX::XMFLOAT2 GetWindowPosition() const { return WindowPos; }
 	void SetFrameBuffer() { currentScene->setFramebuffer(); }
+
+	audio* GetBgm(int index) { return bgm[index].get(); }
+	audio* GetSe(int index) { return se[index].get(); }
+
 private:
 	Scene* currentScene = nullptr;
 	Scene* nextScene = nullptr;
@@ -108,6 +140,6 @@ private:
 
 	Microsoft::WRL::ComPtr<IXAudio2> xaudio2;
 	IXAudio2MasteringVoice* master_voice = nullptr;
-	std::unique_ptr<audio> bgm[10] = {};
-	std::unique_ptr<audio> se[10] = {};
+	std::unique_ptr<audio> bgm[static_cast<int>(SCENE_BGM::SCENE_MAX)] = {};
+	std::unique_ptr<audio> se[static_cast<int>(SCENE_SE::SE_MAX)] = {};
 };
