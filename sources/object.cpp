@@ -22,13 +22,13 @@ void Object::RayCastGround()
     XMFLOAT3 start = Position;
     //start.y -= 0.05f;
     XMFLOAT3 end = Position;
-    end.y -= 0.05f;
+    end.y -= 0.2f;
     Ray_ObjType type = Ray_ObjType::Stage;
     HitResult hit;
 
     if (ince_ray.RayCast(start, end, hit, type))
     {
-        Position.y = hit.position.y + 0.02f;
+        Position.y = hit.position.y + 0.1f;
         VeloctyY = 0;
     }
     Position.y += VeloctyY;

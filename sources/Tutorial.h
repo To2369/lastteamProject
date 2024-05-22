@@ -52,7 +52,7 @@ public:
         bool moveflag[3] = {};
         std::string uiid;
         bool loopf = false;
-        int  tutorialcount;//Ž©•ª‚ª‰½‰ñŒÄ‚Î‚ê‚½‚©
+        int  tutorialcount=0;//Ž©•ª‚ª‰½‰ñŒÄ‚Î‚ê‚½‚©
         bool tutorialflag=false;//
     };
     TutorialSphere* GetTutorialSphere(int i) { return sphere[i].get(); }

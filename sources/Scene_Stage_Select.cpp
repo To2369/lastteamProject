@@ -244,12 +244,12 @@ void Scene_Stage_Serect::update(float elapsedTime)
 
 	ince.Update_Color_Alpha(elapsedTime);
 	GPCorsor.Update(elapsedTime);
-
-#if USE_IMGUI
-	ImGui::Begin("sceneTitle");
-	ince.Gui();
-	ImGui::End();
-#endif
+//
+//#if USE_IMGUI
+//	ImGui::Begin("sceneTitle");
+//	ince.Gui();
+//	ImGui::End();
+//#endif
 	GetAsyncKeyState(VK_LBUTTON);
 }
 
