@@ -212,11 +212,11 @@ void SceneGame::initialize()
 			moveFlag[0] = true;
 			moveFlag[1] = false;
 			moveFlag[2] = false;
-			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera, XMFLOAT3(0.8f, 0.f, 0.1f), 0.7f));
-			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction, XMFLOAT3(-1.35f, 0.2f, 0.5f), 0.6f));
-			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection, XMFLOAT3(-1.0f, 0.2f, 0.5f), 0.55f));
-			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump, XMFLOAT3(-0.4f, 0.f, 0.1f), 0.7f));
-			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move, XMFLOAT3(1.6f, 0.0f, 0.0f), 0.5f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera, XMFLOAT3(0.8f, 0.f, 0.1f), 0.7f));//ok
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction, XMFLOAT3(-1.35f, 0.2f, 0.5f), 0.6f));//ok
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection, XMFLOAT3(-1.05f, 0.2f, -0.45f), 0.55f));//ok
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump, XMFLOAT3(-0.4f, 0.f, 0.1f), 0.7f));//ok
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move, XMFLOAT3(1.6f, 0.0f, 0.0f), 0.5f));//ok
 			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push, XMFLOAT3(999.f, 999.f, 999.f), 0));
 		}
 
@@ -827,6 +827,7 @@ void SceneGame::render(float elapsed_time)
 				return str;
 			};
 		ince_ui.Render(graphics, UI_StringID::CanbasID::Player, id(type));
+		if(tutorial)
 		tutorial->Render(graphics);
 		//ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
 		if (ClearRenderUiFlag)
