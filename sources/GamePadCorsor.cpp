@@ -11,7 +11,7 @@ void GamePadCorsor::Initialize()
 	SetCursorPos(x, y);
 	//パッドカーソルの初期位置
 	PadCursorsprPos = { x - 50 ,y - 50 };
-	padcursorspr = std::make_unique<sprite>(graphics.GetDevice(), Padcoursorfilename);
+	padcursorspr = std::make_unique<sprite>(graphics.GetDevice(), filename);
 	padCorsorFlag = false;
 	disPlayFlag = false;
 }
@@ -81,8 +81,15 @@ void  GamePadCorsor::Render(RenderContext*rc)
 	Graphics& graphics = Graphics::Instance();
 	gamepad& pad = gamepad::Instance();
 	
+	graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
+	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
+
 	if (disPlayFlag)
-	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1, 0.5f, 0,0,0,0,0);
+	padcursorspr->render(graphics.GetDeviceContext(), PadCursorsprPos.x-25, PadCursorsprPos.y-25, 50, 50, 1, 1, 1,1,0);
+
+	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
+	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
 }
 
 //カーソルと四角形の当たり判定

@@ -29,7 +29,7 @@ public:
     void SetPadCursorsprPos(const DirectX::XMFLOAT2 pos) { PadCursorsprPos = pos; }
 private:
     std::unique_ptr<sprite> padcursorspr;		//マウスのスプライト描画
-    const wchar_t* Padcoursorfilename = L".\\resources\\mouse\\mouse.png";      //カーソルのファイル
+    const wchar_t* filename = L".\\resources\\mouse\\padcursor.png";      //カーソルのファイル
     DirectX::XMFLOAT2 PadCursorsprPos = { 0,0 };        //パッドカーソルの現在位置
 
     DirectX::XMFLOAT2 PadcursorPos = {};                //マウスカーソルの現在位置

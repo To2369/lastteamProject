@@ -8,6 +8,7 @@
 #include"Graphics/DebugRenderer.h"
 #include "Graphics/graphics.h"
 #include"UIManajer.h"
+#include"scene_management.h"
 /// <summary>
 /// 
 /// </summary>
@@ -39,6 +40,7 @@ bool QuadPlacement_vs_PlayerSphere(const Object::SphereQuadPlacement& sphere, co
     }
     return false;
 }
+
 //コンストラクタ
 Player::Player(ID3D11Device* device)
 {
@@ -262,6 +264,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
             else if (gamePad.button_state(gamepad::button::y) && pushFlag)//E,Yボタン 
             {
                 obj->SetVelotyXZ({ 0,0 });
+                jumpCount = 0;
                 color = { 0,0,0,0 };
                 pushFlag = false;
                 isHand = false;
@@ -274,19 +277,21 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                 {
                 case Object::SphereAttribute::Right:
                 {
+
                     objMovesp = velocity.x * elapsedTime;
                     if (!obj->GetStatic_Objflag())
                         if (!obj->GetIsWall() && !obj->GetIsObject())
                             if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                                 if (objMovesp < 0)
                                 {
+                                    SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_OBJECT_MOVE))->play();
                                     obj->SetVelotyXZ({ objMovesp,0 });
                                 }
                                 else
                                 {
                                     obj->SetVelotyXZ({ 0,0 });
                                 }
-
+                    jumpCount = 1;
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
@@ -302,13 +307,14 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                                 if (objMovesp > 0)
                                 {
+                                    SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_OBJECT_MOVE))->play();
                                     obj->SetVelotyXZ({ objMovesp,0 });
                                 }
                                 else
                                 {
                                     obj->SetVelotyXZ({ 0,0 });
                                 }
-
+                    jumpCount = 1;
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(90);
@@ -324,12 +330,14 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                                 if (objMovesp < 0)
                                 {
+                                    SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_OBJECT_MOVE))->play();
                                     obj->SetVelotyXZ({ 0,objMovesp });
                                 }
                                 else
                                 {
                                     obj->SetVelotyXZ({ 0,0 });
                                 }
+                    jumpCount = 1;
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     angle.y = DirectX::XMConvertToRadians(180);
@@ -344,12 +352,14 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
                             if (obj->Get_Old_Objtype(0) == ObjType::cution || obj->Get_Old_Objtype(0) == ObjType::Super_cution)
                                 if (objMovesp > 0)
                                 {
+                                    SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_OBJECT_MOVE))->play();
                                     obj->SetVelotyXZ({ 0,objMovesp });
                                 }
                                 else
                                 {
                                     obj->SetVelotyXZ({ 0,0 });
                                 }
+                    jumpCount = 1;
                     position.x = outsphere.Spherepos.x;
                     position.z = outsphere.Spherepos.z;
                     color = { 1,1,1,1 };
@@ -368,7 +378,7 @@ void Player::CollisionPlayerVsGimics(float elapsedTime)
 void Player::ExtractionAttribute(float elapsedTime)
 {
     gamepad& gamePad = gamepad::Instance();
-
+    SceneManagement& SceneMgr = SceneManagement::instance();
     VMCFHT& ince_ray = VMCFHT::instance();
     HitResult hit;
     float mx = velocity.x * elapsedTime;
@@ -391,6 +401,8 @@ void Player::ExtractionAttribute(float elapsedTime)
             //抽出(左クリック、RBボタン)
             if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true && !pullType)
             {
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
                 pushType = false;
                 CubeHitFlag = true;
                 updateSyringepos();
@@ -401,6 +413,8 @@ void Player::ExtractionAttribute(float elapsedTime)
             //注入(右クリック、トリガーボタン)
             else if (x>0.1f && pullType)
             {
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_INJECTION_SOUND))->play();
                 pushType = true;
                 CubeHitFlag = true;
                 updateSyringepos();
@@ -415,6 +429,9 @@ void Player::ExtractionAttribute(float elapsedTime)
             //抽出(左クリック、RBボタン)
             if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge)==true)
             {
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
+                
                 pushType = false;
                 SphereHitFlag = true;
                 updateSyringepos();
@@ -425,6 +442,8 @@ void Player::ExtractionAttribute(float elapsedTime)
             //注入(右クリック、トリガーボタン)
             else if (x>0.1f && pullType)
             {
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
+                SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_INJECTION_SOUND))->play();
                 SphereHitFlag = true;
                 updateSyringepos();
                 obj->Set_attribute(playerType, 0);
@@ -439,6 +458,7 @@ void Player::ExtractionAttribute(float elapsedTime)
 //注射器のアニメーション
 void Player::pullpushAnime(float elapsedTime)
 {
+    SceneManagement& SceneMgr = SceneManagement::instance();
     if (pullType)
     {
         Scolor = { 1,1,1,1 };
@@ -446,6 +466,8 @@ void Player::pullpushAnime(float elapsedTime)
         Smodel->update_animation(*Smodel->kefreame);
         if (Smodel->animation_End)
         {
+            SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->stop();
+            SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->stop();
             Sposition = { 5000,5000,5000 };
             CubeHitFlag = false;
             SphereHitFlag = false;
@@ -460,6 +482,8 @@ void Player::pullpushAnime(float elapsedTime)
         Smodel->update_animation(*Smodel->kefreame);
         if (Smodel->animation_End)
         {
+            SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->stop();
+            SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_INJECTION_SOUND))->stop();
             playerType = Obj_attribute::null;
             Sposition = { 5000,5000,5000 };
             CubeHitFlag = false;
