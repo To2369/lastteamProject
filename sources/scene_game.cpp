@@ -222,8 +222,24 @@ void SceneGame::initialize()
 
 	}
 
+	SceneManagement& scene_management = SceneManagement::instance();
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_BGM::SCENE_MAX); i++)
+	{
+		if (scene_management.GetBgm(i)->queuing())
+		{
+			scene_management.GetBgm(i)->stop();
+		}
+	}
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_SE::SE_MAX); i++)
+	{
+		if (scene_management.GetSe(i)->queuing())
+		{
+			scene_management.GetSe(i)->stop();
+		}
+	}
+
 	//SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
-	SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+	//SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)

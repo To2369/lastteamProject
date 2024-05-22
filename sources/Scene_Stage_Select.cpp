@@ -97,7 +97,7 @@ void Scene_Stage_Serect::initialize()
 	ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 	UIs.clear();
 
-	SceneManagement& scene_manager = SceneManagement::instance();
+	/*SceneManagement& scene_manager = SceneManagement::instance();
 	scene_manager.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 	if (!scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
 	{
@@ -106,8 +106,24 @@ void Scene_Stage_Serect::initialize()
 	else
 	{
 		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
-		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play();
+	}*/
+
+	SceneManagement& scene_management = SceneManagement::instance();
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_BGM::SCENE_MAX); i++)
+	{
+		if (scene_management.GetBgm(i)->queuing())
+		{
+			scene_management.GetBgm(i)->stop();
+		}
 	}
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_SE::SE_MAX); i++)
+	{
+		if (scene_management.GetSe(i)->queuing())
+		{
+			scene_management.GetSe(i)->stop();
+		}
+	}
+	scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play();
 }
 
 void Scene_Stage_Serect::setFramebuffer()

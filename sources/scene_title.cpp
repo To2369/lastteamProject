@@ -96,15 +96,33 @@ void SceneTitle::initialize()
 	ince.CreateCanbas();
 	UIs.clear();
 
+	//SceneManagement& scene_management = SceneManagement::instance();
+	//scene_management.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+	//if(!scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+	//	scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	//else
+	//{
+	//	scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+	//	scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+	//}
+
 	SceneManagement& scene_management = SceneManagement::instance();
-	scene_management.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
-	if(!scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
-		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
-	else
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_BGM::SCENE_MAX); i++)
 	{
-		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
-		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
+		if (scene_management.GetBgm(i)->queuing())
+		{
+			scene_management.GetBgm(i)->stop();
+		}
 	}
+	for (int i = 0; i < static_cast<int>(SceneManagement::SCENE_SE::SE_MAX); i++)
+	{
+		if (scene_management.GetSe(i)->queuing())
+		{
+			scene_management.GetSe(i)->stop();
+		}
+	}
+
+	scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
 }
 
 void SceneTitle::update(float elapsed_time)
