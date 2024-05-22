@@ -140,7 +140,7 @@ public:
     bool GoalInPosition();
 private:
     float radius = 0.1f;
-    const char* filename = ".\\resources\\ground.fbx";
+    const char* filename = ".\\resources\\Goal\\goal.fbx";
   
 };
 
