@@ -51,9 +51,9 @@ void framework::update(float elapsed_time/*Elapsed seconds from last frame*/)
 	SceneManagement::instance().SetCursorPos({ static_cast<float>(cursor_pos.x),static_cast<float>(cursor_pos.y) });
 
 #ifdef USE_IMGUI
-	ImGui::Begin("framework");
+	/*ImGui::Begin("framework");
 
-	ImGui::End();
+	ImGui::End();*/
 #endif
 }
 

@@ -396,8 +396,8 @@ public://’Ç‰Á
 	animation::keyframe* getKeyFreame(float elapsedTime, int anime_index);
 	bool StopAnimation();
 	bool stop_animation = true;//
-	unique_ptr<collision_mesh> thisRay_vs_partner;
-	collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
+	//unique_ptr<collision_mesh> thisRay_vs_partner;
+	//collision_mesh* Get_RaycastCollition() { return thisRay_vs_partner.get(); }
 	const scene& GetScene_View() { return scene_view; }
 	bool animation_End = false;
 };

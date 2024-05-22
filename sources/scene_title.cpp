@@ -207,9 +207,9 @@ void SceneTitle::update(float elapsed_time)
 
 		GPCorsor.Update(elapsed_time);
 #if USE_IMGUI
-	ImGui::Begin("sceneTitle");
-	ince.Gui();
-	ImGui::End();
+	//ImGui::Begin("sceneTitle");
+	//ince.Gui();
+	//ImGui::End();
 #endif
 }
 

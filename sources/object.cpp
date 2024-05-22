@@ -18,27 +18,20 @@ void Object::RayCastGround()
 {
 
 
-    StageManager& ince_st = StageManager::incetance();
-    VMCFHT& ince_vf = VMCFHT::instance();
-    XMFLOAT3 normal = { 0.f,-1.f,0.f };
-    float legth = 5.0f;
-    XMFLOAT3 pos = Position;
-    float start_point = Scale.y * 0.005f;
-    if (start_point < 0.1f) start_point = 0.1f;
-    else if (start_point > 0.5f)start_point = 0.5f;
-    pos.y += -start_point;
-    ince_vf.update(pos, normal);
-    int stagecount = ince_st.GetStageCount();
-    for (int i = 0; i < stagecount; i++)
+    VMCFHT& ince_ray = VMCFHT::instance();
+    XMFLOAT3 start = Position;
+    //start.y -= 0.05f;
+    XMFLOAT3 end = Position;
+    end.y -= 0.05f;
+    Ray_ObjType type = Ray_ObjType::Stage;
+    HitResult hit;
+
+    if (ince_ray.RayCast(start, end, hit, type))
     {
-        collision_mesh* mesh = ince_st.GetStages(i)->GetModel()->Get_RaycastCollition();
-        if (ince_vf.raycast(*mesh, ince_st.GetStages(i)->GetTransform(), result_intersection, legth))
-        {
-            VeloctyY = 0.0f;
-            break;
-        }
+        Position.y = hit.position.y + 0.02f;
+        VeloctyY = 0;
     }
-   Position.y += VeloctyY;
+    Position.y += VeloctyY;
 }
 
 void Object::ObjType_effect(float elapsedTime)

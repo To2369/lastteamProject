@@ -49,9 +49,9 @@ public:
     void Render(RenderContext* rc);
     void Rigister(unique_ptr<Stage>stage) { Stages.push_back(move(stage)); }
     void Clear();
-    void Result_Object_Info(Object& obj);
+   /* void Result_Object_Info(Object& obj);
     void Result_Gimic_Info(Gimic& obj);
-    void Result_Static_Object_Info(Static_Object& obj);
+    void Result_Static_Object_Info(Static_Object& obj);*/
 
     /// <summary>
     /// 
@@ -62,49 +62,49 @@ public:
         return Stages[num].get();
     }
     int GetStageCount() { return (int)Stages.size(); }
-    void Gui(ID3D11Device* device, RenderContext* rc);
+    //void Gui(ID3D11Device* device, RenderContext* rc);
     //ステージ選択したときにセットする
     void SetStageName(StageName n) { s_name = n; }
 
-    void Set_CreateObject_Thred(ObjType t, ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
-    {
-        newObject_Thread.push_back(new thread(CreateObject, t, device, in));
-    }
-    void Set_CreateObject_Thred(const char* filename,ObjType t, ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
-    {
-        newObject_Thread.push_back(new thread(CreateObject_2,filename ,t, device, in));
-    }
-    void Set_CreateGimic_Thred(Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
-    {
-        newObject_Thread.push_back(new thread(CreateGimic, t, device, in, id));
-    }
-    void Set_CreateGimic_Thred(const char*filename,Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
-    {
-        newObject_Thread.push_back(new thread(CreateGimic_2,filename, t, device, in, id));
-    }
-    void Set_CreateStaticObject_Thred(Static_ObjType t, ID3D11Device* device, Intersection in, const char* filename = nullptr)
-    {
-        newObject_Thread.push_back(new thread(CreateStaticObject, t, device, in, filename));
-    }
-    void Set_CreateLiftChain_Thred(Chain_Type t, ID3D11Device* device, Intersection in, std::string id="")
-    {
-        newObject_Thread.push_back(new thread(CreateLiftChain, t, device, in, id));
-    }
-    void Set_CreateLiftChain_Thred(const char*filename,Chain_Type t, ID3D11Device* device, Intersection in, std::string id = "")
-    {
-        newObject_Thread.push_back(new thread(CreateLiftChain_2, filename, t, device, in, id));
-    }
-    void DeleteThred() {
-        for (auto& thred_ : newObject_Thread)
-        {
-            if (thred_)
-            {
-                thred_->join();
-                delete thred_;
-                thred_ = nullptr;
-            }
-        }
-    }
+    //void Set_CreateObject_Thred(ObjType t, ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
+    //{
+    //    newObject_Thread.push_back(new thread(CreateObject, t, device, in));
+    //}
+    //void Set_CreateObject_Thred(const char* filename,ObjType t, ID3D11Device* device, Intersection in)/*渡す関数の第一引数の順番に書いていく*/
+    //{
+    //    newObject_Thread.push_back(new thread(CreateObject_2,filename ,t, device, in));
+    //}
+    //void Set_CreateGimic_Thred(Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
+    //{
+    //    newObject_Thread.push_back(new thread(CreateGimic, t, device, in, id));
+    //}
+    //void Set_CreateGimic_Thred(const char*filename,Gimic_Type t, ID3D11Device* device, Intersection in, std::string id)
+    //{
+    //    newObject_Thread.push_back(new thread(CreateGimic_2,filename, t, device, in, id));
+    //}
+    //void Set_CreateStaticObject_Thred(Static_ObjType t, ID3D11Device* device, Intersection in, const char* filename = nullptr)
+    //{
+    //    newObject_Thread.push_back(new thread(CreateStaticObject, t, device, in, filename));
+    //}
+    //void Set_CreateLiftChain_Thred(Chain_Type t, ID3D11Device* device, Intersection in, std::string id="")
+    //{
+    //    newObject_Thread.push_back(new thread(CreateLiftChain, t, device, in, id));
+    //}
+    //void Set_CreateLiftChain_Thred(const char*filename,Chain_Type t, ID3D11Device* device, Intersection in, std::string id = "")
+    //{
+    //    newObject_Thread.push_back(new thread(CreateLiftChain_2, filename, t, device, in, id));
+    //}
+    //void DeleteThred() {
+    //    for (auto& thred_ : newObject_Thread)
+    //    {
+    //        if (thred_)
+    //        {
+    //            thred_->join();
+    //            delete thred_;
+    //            thred_ = nullptr;
+    //        }
+    //    }
+    //}
 private:
 
     vector<unique_ptr<Stage>>Stages;
@@ -141,14 +141,14 @@ public:
     StageName GetStageName() { return s_name; }
     void SetMode(DebugMode m) { mode = m; }
     void SetCreateObjeFlag(ObjType t) { CreateObjeType = t; }
-    static void CreateObject(ObjType type, ID3D11Device* device, Intersection in);
+   /* static void CreateObject(ObjType type, ID3D11Device* device, Intersection in);
     static void CreateObject_2(const char*filename_,ObjType type, ID3D11Device* device, Intersection in);
     static void CreateGimic_2(const char*filename_,Gimic_Type type, ID3D11Device* device, Intersection in, std::string id = "");
     static void CreateGimic(Gimic_Type type, ID3D11Device* device, Intersection in, std::string id = "");
 
     static void CreateStaticObject(Static_ObjType type, ID3D11Device* device, Intersection in, const char* filename);
     static void CreateLiftChain(Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");
-    static void CreateLiftChain_2(const char*filename,Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");
+    static void CreateLiftChain_2(const char*filename,Chain_Type type, ID3D11Device* device, Intersection in, std::string id="");*/
     void DebugMode_MouseRayCast(DebugMode mode, ID3D11Device* device);//この関数はマウス以外でのデバッグを想定してない
     string GetObjectType_S(ObjType type)
     {
@@ -223,10 +223,10 @@ public:
     };
     scene_constants scene_data{};
 public://debugmode
-    void Object_Info();
+   /* void Object_Info();
     
     void Create_Object(ID3D11Device* device);
-    void Delete_Object();
+    void Delete_Object();*/
     int filenameIndex = 0;
     int ObjectfilenameIndex=0;
     bool CreateGimicTypeChenge = false;

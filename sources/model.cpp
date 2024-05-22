@@ -182,7 +182,7 @@ Model::Model(ID3D11Device* device, const char* fbx_filename, bool triangulate, f
 	}
 	// UNIT.18
 	create_com_objects(device, fbx_filename);
-	thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename, triangulate);
+	//thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename, triangulate);
 	compute_bounding_box();
 }
 Model::Model(ID3D11Device* device, const char* fbx_filename, std::vector<std::string>& animation_filenames, bool triangulate, float sampling_rate)
@@ -214,7 +214,7 @@ Model::Model(ID3D11Device* device, const char* fbx_filename, std::vector<std::st
 	}
 	// UNIT.18
 	create_com_objects(device, fbx_filename);
-	thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename, triangulate);
+	//thisRay_vs_partner = std::make_unique<decltype(thisRay_vs_partner)::element_type>(device, fbx_filename, triangulate);
 }
 
 
