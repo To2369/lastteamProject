@@ -299,7 +299,7 @@ void SceneGame::update(float elapsed_time)
 		MenuRenderUiFlag = false;
 
 		/*				‚±‚±‚ÌdisPlayCorsor‚ğRelease‚·‚é‚Æ‚«false‚É‚µ‚Ä‚­‚¾‚³‚¢							*/
-		disPlayCorsor = true;
+		disPlayCorsor = false;
 	}
 	//static float aaa = 0;
 
@@ -423,14 +423,8 @@ void SceneGame::update(float elapsed_time)
 
 		Player* pl = PlayerManager::Instance().GetPlayer(0);
 		DirectX::XMFLOAT3 target = pl->GetPosition();
-		if (GetKeyState('3') & 0x01)
 		{
 			target.y += 0.05f;
-			disPlayCorsor = true;
-		}
-		else
-		{
-			target.y += 0.5f;
 		}
 		camera_controller->SetTarget(target);
 		if (mouseMove)
