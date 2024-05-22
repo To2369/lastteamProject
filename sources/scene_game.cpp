@@ -51,6 +51,7 @@ void SceneGame::initialize()
 		DirectX::XMFLOAT3(0, 0, 0),
 		DirectX::XMFLOAT3(0, 1, 0)
 	);
+	camera_angle.y = -90.0f;
 	float x, y;
 	x = static_cast<float>(graphics.GetWindowSize().cx);
 	y = static_cast<float>(graphics.GetWindowSize().cy);
@@ -77,9 +78,10 @@ void SceneGame::initialize()
 	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
 	pl->SetPosition({ 0,30,0 });
 	plm.Register(move(pl));
+	// ステージのオブジェクト初期化
+		StageManager & ince = StageManager::incetance();
 	{
-		//ステージのオブジェクト初期化
-		StageManager& ince = StageManager::incetance();
+		
 		ince.Initialize_GameStage(ince.GetStageName(), graphics.GetDevice());
 	}
 	/*Debug_ParameterObj = make_unique<DropBox_Road>(device);
@@ -198,18 +200,20 @@ void SceneGame::initialize()
 	}
 
 	{
-		tutorial = make_unique<Tutorial>();
-		bool moveFlag[3];
-		moveFlag[0] = true;
-		moveFlag[1] = false;
-		moveFlag[2] = false;
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera, XMFLOAT3(0.8f,0.f,0.1f),0.7f));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction, XMFLOAT3(-1.35f,0.2f,0.5f),0.6f));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection,XMFLOAT3(-1.0f,0.2f,0.5f),0.55f));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump,XMFLOAT3(-0.4f,0.f,0.1f),0.7f));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move,XMFLOAT3(1.6f,0.0f,0.0f ), 0.5f));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push,XMFLOAT3(999.f,999.f,999.f),0));
-
+		if (ince.GetStageName() == StageName::stage1_1)
+		{
+			tutorial = make_unique<Tutorial>();
+			bool moveFlag[3];
+			moveFlag[0] = true;
+			moveFlag[1] = false;
+			moveFlag[2] = false;
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera, XMFLOAT3(0.8f, 0.f, 0.1f), 0.7f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction, XMFLOAT3(-1.35f, 0.2f, 0.5f), 0.6f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection, XMFLOAT3(-1.0f, 0.2f, 0.5f), 0.55f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump, XMFLOAT3(-0.4f, 0.f, 0.1f), 0.7f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move, XMFLOAT3(1.6f, 0.0f, 0.0f), 0.5f));
+			tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push, XMFLOAT3(999.f, 999.f, 999.f), 0));
+		}
 
 	}
 
@@ -373,7 +377,10 @@ void SceneGame::update(float elapsed_time)
 	}
 	Objectmanajer::incetance().Update(elapsed_time);
 	Goal_navi->Update(elapsed_time);
-	tutorial->Update(elapsed_time);
+	if (tutorial)
+	{
+		tutorial->Update(elapsed_time);
+	}
 	//カメラ操作
 	{
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
@@ -628,95 +635,98 @@ void SceneGame::render(float elapsed_time)
 	}
 	DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
 	
-	if (ImGui::TreeNode("tutorialSphere"))
+	if (tutorial)
 	{
-		DirectX::XMFLOAT3 c_pos{};
-		DirectX::XMFLOAT3 p_pos{};
-		static int num = 0;
-		ImGui::InputInt("number", &num);
-		if (num < 0)num = 0;
-		if (num >= tutorial->GetTutorialSphereCount())num = tutorial->GetTutorialSphereCount() - 1;
+		if (ImGui::TreeNode("tutorialSphere"))
+		{
+			DirectX::XMFLOAT3 c_pos{};
+			DirectX::XMFLOAT3 p_pos{};
+			static int num = 0;
+			ImGui::InputInt("number", &num);
+			if (num < 0)num = 0;
+			if (num >= tutorial->GetTutorialSphereCount())num = tutorial->GetTutorialSphereCount() - 1;
 
-		auto tutorialmap = [](Tutorial::Tutorial_MapName type)
-			{
-				switch (type)
+			auto tutorialmap = [](Tutorial::Tutorial_MapName type)
 				{
-				case Tutorial::Tutorial_MapName::Instruction_Camera:
-					return"Instruction_Camera";
-					break;
-				case Tutorial::Tutorial_MapName::Instruction_Move:
-					return"Instruction_Move";
+					switch (type)
+					{
+					case Tutorial::Tutorial_MapName::Instruction_Camera:
+						return"Instruction_Camera";
+						break;
+					case Tutorial::Tutorial_MapName::Instruction_Move:
+						return"Instruction_Move";
 
-					break;
-				case Tutorial::Tutorial_MapName::Instruction_Jump:
-					return"Instruction_Jump";
+						break;
+					case Tutorial::Tutorial_MapName::Instruction_Jump:
+						return"Instruction_Jump";
 
-					break;
-				case Tutorial::Tutorial_MapName::Instruction_Extraction:
-					return"Instruction_Extraction";
+						break;
+					case Tutorial::Tutorial_MapName::Instruction_Extraction:
+						return"Instruction_Extraction";
 
-					break;
-				case Tutorial::Tutorial_MapName::Instruction_Injection:
-					return"Instruction_Injection";
+						break;
+					case Tutorial::Tutorial_MapName::Instruction_Injection:
+						return"Instruction_Injection";
 
-					break;
-				case Tutorial::Tutorial_MapName::Instruction_Push:
-					return"Instruction_Push";
+						break;
+					case Tutorial::Tutorial_MapName::Instruction_Push:
+						return"Instruction_Push";
 
-					break;
-				case Tutorial::Tutorial_MapName::null:
-					return"null";
+						break;
+					case Tutorial::Tutorial_MapName::null:
+						return"null";
 
-					break;
-				default:
-					break;
-				}
+						break;
+					default:
+						break;
+					}
 
-			};
-		
-		ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
-		Tutorial::TutorialSphere* sphere = tutorial->GetTutorialSphere(num);
-		ImGui::Text(tutorialmap(sphere->name_));
-		XMFLOAT3& plpos = sphere->Position;
-		ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
-		ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
-		ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
+				};
 
-		ImGui::InputFloat("tutorialpos.x", &plpos.x, -1.0f, +1.0f);
-		ImGui::InputFloat("tutorialpos.y", &plpos.y, -2.0f, +2.0f);
-		ImGui::InputFloat("tutorialpos.z", &plpos.z, -1.0f, +1.0f);
-		plpos.x += p_pos.x;
-		plpos.y += p_pos.y;
-		plpos.z += p_pos.z;
-		float a = 0;
-		float b = sphere->radius;
+			ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
+			Tutorial::TutorialSphere* sphere = tutorial->GetTutorialSphere(num);
+			ImGui::Text(tutorialmap(sphere->name_));
+			XMFLOAT3& plpos = sphere->Position;
+			ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
+			ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
+			ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
 
-		if(ImGui::Button("reset"))
-		{
-			for (int i = 0; i < tutorial->GetTutorialSphereCount(); i++)
+			ImGui::InputFloat("tutorialpos.x", &plpos.x, -1.0f, +1.0f);
+			ImGui::InputFloat("tutorialpos.y", &plpos.y, -2.0f, +2.0f);
+			ImGui::InputFloat("tutorialpos.z", &plpos.z, -1.0f, +1.0f);
+			plpos.x += p_pos.x;
+			plpos.y += p_pos.y;
+			plpos.z += p_pos.z;
+			float a = 0;
+			float b = sphere->radius;
+
+			if (ImGui::Button("reset"))
 			{
-				tutorial->GetTutorialSphere(i)->tutorialflag = false;
-				tutorial->GetTutorialSphere(i)->tutorialcount= 0;
+				for (int i = 0; i < tutorial->GetTutorialSphereCount(); i++)
+				{
+					tutorial->GetTutorialSphere(i)->tutorialflag = false;
+					tutorial->GetTutorialSphere(i)->tutorialcount = 0;
+				}
 			}
-		}
-		int oo = tutorial->cheackCount;
-		ImGui::InputInt("TutorialCheckCount", &oo);
-		ImGui::Checkbox("RemoveFlag", &sphere->tutorialflag);
-		ImGui::InputInt("TutoriaruCount",&sphere->tutorialcount);
-		ImGui::InputFloat("SetTimer", &tutorial->setTimer);
-		ImGui::InputFloat("Timer", &tutorial->Timer);
-		ImGui::InputFloat("radius", &b);
-		ImGui::SliderFloat("Moveradius", &a, -0.01f, 0.01f);
-		sphere->radius += a;
-		ince.DrawSphere(plpos, sphere->radius, { 0,1,1,1 });
-		if (ImGui::TreeNode("Tutorial_UI"))
-		{
-			ince_ui.GetCanbas(tutorial->GetCanBass())->Gui();
+			int oo = tutorial->cheackCount;
+			ImGui::InputInt("TutorialCheckCount", &oo);
+			ImGui::Checkbox("RemoveFlag", &sphere->tutorialflag);
+			ImGui::InputInt("TutoriaruCount", &sphere->tutorialcount);
+			ImGui::InputFloat("SetTimer", &tutorial->setTimer);
+			ImGui::InputFloat("Timer", &tutorial->Timer);
+			ImGui::InputFloat("radius", &b);
+			ImGui::SliderFloat("Moveradius", &a, -0.01f, 0.01f);
+			sphere->radius += a;
+			ince.DrawSphere(plpos, sphere->radius, { 0,1,1,1 });
+			if (ImGui::TreeNode("Tutorial_UI"))
+			{
+				ince_ui.GetCanbas(tutorial->GetCanBass())->Gui();
+				ImGui::TreePop();
+			}
+
+
 			ImGui::TreePop();
 		}
-
-
-		ImGui::TreePop();
 	}
 	scene_data->deactivate(graphics.GetDeviceContext());
 	

@@ -10,6 +10,7 @@
 #include"variable_management_class_for_hit_test.h"
 #include <Graphics/graphics.h>
 #include"scene_management.h"
+#include"audio.h"
 using namespace DirectX;
 
 Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_)
@@ -25,6 +26,8 @@ Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_)
     Gimic_type = Gimic_Type::Lift;
     type_ = Gimic::LiftType::LEFT;
     SetisLift(ObjType::heavy);
+
+   
 }
 Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_, const char* filename_)
 {
@@ -39,6 +42,8 @@ Lift::Lift(ID3D11Device* device, XMFLOAT3 pos_, const char* filename_)
     Gimic_type = Gimic_Type::Lift;
     type_ = Gimic::LiftType::LEFT;
     SetisLift(ObjType::heavy);
+  
+
 }
 void Lift::Update(float elapsedTime)
 {
@@ -51,25 +56,38 @@ void Lift::Update(float elapsedTime)
     if (isLift_Objtype==ObjType::heavy|| isLift_Objtype == ObjType::Super_heavy)
     {
         SceneManagement& ince = SceneManagement::instance();
-        ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->play(255);
         DirectX::XMVECTOR P = DirectX::XMVectorLerp(Position_, Goal, moveRate);
         DirectX::XMStoreFloat(&Position.y, P);
-        if (Position.y <= EndPos.y-0.1f)
+        if (Position.y >= EndPos.y+0.1f)
+        {
+            ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->play();
+        }
+        else
         {
             ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->stop();
+
+        }
+        if (Position.y <= EndPos.y)
+        {
             DirectX::XMStoreFloat(&Position.y,Goal);
         }
     }
     else  if (isLift_Objtype == ObjType::cution || isLift_Objtype == ObjType::Super_cution)
     {
         SceneManagement& ince = SceneManagement::instance();
-        ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->play(255);
         DirectX::XMVECTOR P = DirectX::XMVectorLerp(Position_, Start, moveRate);
         DirectX::XMStoreFloat(&Position.y,P);
-        //if(Position.y>=)
-        if (Position.y >= StartPos.y)
+        if (Position.y <= StartPos.y - 0.1)
+        {
+            ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->play();
+        }
+        else
         {
             ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_LIFT_SOUND_EFFECTS))->stop();
+        }
+        if (Position.y >= StartPos.y)
+        {
+         
             DirectX::XMStoreFloat(&Position.y, Start);
         }
     }

@@ -1,7 +1,7 @@
 #include"Gimic.h"
 #include"objectManajer.h"
 #include"variable_management_class_for_hit_test.h"
-
+#include"scene_management.h"
 
 bool Gimic::Raycast(DirectX::XMFLOAT3 start, DirectX::XMFLOAT3 end, HitResult& Hit)
 {
@@ -74,7 +74,15 @@ void Gimic::Gimic_effect(Gimic_Type type)
             {
                 this->SetReturnTimer();
             }*/
+            if (!switchFlag)
+            {
+                SceneManagement& ince = SceneManagement::instance();
+                ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SWITCH))->stop();
+                ince.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SWITCH))->play(255);
+                switchFlag = true;
+            }
             FallDown(80,0.1f);
+            
 
         }
     

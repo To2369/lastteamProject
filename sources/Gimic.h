@@ -1,7 +1,7 @@
 #pragma once
 #include"object.h"
 #include"Graphics/RenderContext.h"
-
+#include"audio.h"
 class Gimic :public Object
 {
 public:
@@ -97,7 +97,7 @@ public:
     void Render(RenderContext* rc)override;
     bool gimic_VS_Object()override;
     void Gui()override;
-    
+    bool flag_se=false;
 
 private:
     const char* filename = ".\\resources\\stage1\\bottan.fbx";
@@ -183,7 +183,9 @@ class Lift :public Gimic
 public:
     Lift(ID3D11Device* device,XMFLOAT3 pos_);
     Lift(ID3D11Device* device,XMFLOAT3 pos_,const char* filename_);
-    ~Lift() {};
+    ~Lift() {
+       
+    };
 public:
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;
@@ -202,6 +204,7 @@ private:
     const char* box_filename = ".\\resources\\3Dmodel\\Cube\\Cube.fbx";
     float moveRate = 0.0f;
     float moveSpeed = 1.360f;
+
     vector<Model::mesh>meshes;
 
 };
@@ -223,5 +226,5 @@ private:
     bool y_flag = false;
     bool z_flag = false;
     const char* filename=".\\resources\\stage1\\tumiki.fbx";
-
+    
 };

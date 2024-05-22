@@ -8,6 +8,7 @@
 #include "../imgui/imgui_impl_dx11.h"
 #include "../imgui/imgui_impl_win32.h"
 #endif
+#include"PlayerManager.h"
 using namespace DirectX;
 Goal_navigation_Arrow::Goal_navigation_Arrow(ID3D11Device* dc)
 {
@@ -30,13 +31,14 @@ void Goal_navigation_Arrow::Update(float elapsedTime)
 {
     turnSpeed = TurnSpeed * elapsedTime;
 
-    XMFLOAT3 cameraeye{ Camera::instance().GetEye() };
+    PlayerManager& ince = PlayerManager::Instance();
+    XMFLOAT3 cameraeye{ ince.GetPlayer(0)->GetPosition() };
     XMFLOAT3 camerafront{ Camera::instance().GetFront() };
     cameraeye.z += camerafront.z * 1.3f;
     cameraeye.x += camerafront.x * 1.3f;
     cameraeye.y += camerafront.y * 1.3f + 0.5f;
     //if(cameraeye.y 
-   // Position = cameraeye;
+    Position = cameraeye;
 
 
     UpdateArrow_Front();

@@ -88,6 +88,6 @@ private:
 	PlayerManager& plm = PlayerManager::Instance();
 	bool ClearScreen(float elapsedTime);
 	bool Menu(float elapsedTime);
-	std::unique_ptr<Tutorial> tutorial;
+	std::unique_ptr<Tutorial> tutorial=nullptr;
 	bool disPlayCorsor = false;		//マウスの表示
 };
