@@ -150,8 +150,8 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			Gimic_Type::Goal, device,
 			{ 7.577f,7.223f,-0.535f });
 		{
-			//Lift
-			{
+			////Lift
+			/*{
 				obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 					{ 4.252f,7.290f,-0.020f },
 					"num1",
@@ -181,7 +181,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 					{ 4.208f,7.794f,-0.432f, },
 					"num1",
 					{ 0.000000f,-1.590007f,0.000000f });
-			}
+			}*/
 			//object
 			{
 				raylist = {};
@@ -204,7 +204,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			}
 		}
 		{
-			//lift
+			/*lift
 			{
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{ -0.891f,5.178f,0.012f },
@@ -228,7 +228,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				{ -0.871f,5.644f,-0.440f, },
 				"num2",
 				{ 0.000000f,-1.590007f,0.000000f });
-		    }
+		    }*/
 			//object
 			{
 				raylist = {};
@@ -365,9 +365,9 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 
 		}
 
-		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
+		/*unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
-		Rigister(move(stage));
+		Rigister(move(stage));*/
 		ince_UI.CreateGameSceneUI(device);
 	}
 	break;
