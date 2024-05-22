@@ -98,6 +98,7 @@ void Scene_Stage_Serect::initialize()
 	UIs.clear();
 
 	SceneManagement& scene_manager = SceneManagement::instance();
+	scene_manager.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 	if (!scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
 	{
 		scene_manager.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play();
@@ -147,6 +148,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressed)
 						{
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_1);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
@@ -158,6 +160,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a))
 						{
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_1);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
@@ -173,7 +176,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressed) 
 						{
-						
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_2);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
@@ -186,6 +189,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a))
 						{
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_2);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
@@ -201,7 +205,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressed) 
 						{
-							
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_3);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
@@ -215,6 +219,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a))
 						{
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							ince_st.SetStageName(StageName::stage1_3);
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();

@@ -97,6 +97,7 @@ void SceneTitle::initialize()
 	UIs.clear();
 
 	SceneManagement& scene_management = SceneManagement::instance();
+	scene_management.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 	if(!scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
 		scene_management.GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->play(255);
 	else
@@ -137,6 +138,7 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (isKKeyPressed && !wasKeyPressed)
 							{
+
 								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
 								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
