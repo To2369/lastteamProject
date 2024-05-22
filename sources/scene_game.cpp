@@ -61,7 +61,6 @@ void SceneGame::initialize()
 		1000.0f
 	);
 	camera_controller = std::make_unique<CameraController>();
-
 	//カーソルの初期設定
 	GamePadCorsor& GPCorsor = GamePadCorsor::Instance();
 	GPCorsor.Initialize();
@@ -81,6 +80,12 @@ void SceneGame::initialize()
 		//ステージのオブジェクト初期化
 		StageManager& ince = StageManager::incetance();
 		ince.Initialize_GameStage(ince.GetStageName(), graphics.GetDevice());
+	}
+	switch (StageManager::incetance().GetStageName())
+	{
+	case StageName::stage1_1:
+		camera_angle.y = -90.0f;
+		break;
 	}
 	/*Debug_ParameterObj = make_unique<DropBox_Road>(device);
 	Debug_ParameterObj->SetPosition({1.f, 0.8f, 0.5f});*/
