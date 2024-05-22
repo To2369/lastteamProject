@@ -137,6 +137,8 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (isKKeyPressed && !wasKeyPressed)
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
 							}
@@ -146,6 +148,8 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (pad.button_state(gamepad::button::a))
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
 							}
@@ -158,6 +162,8 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (isKKeyPressed && !wasKeyPressed)
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								PostQuitMessage(0);//実行終了
 							}
 						}
@@ -166,6 +172,8 @@ void SceneTitle::update(float elapsed_time)
 							ui->SetIsMouse(true);
 							if (pad.button_state(gamepad::button::a))
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								PostQuitMessage(0);//実行終了
 							}
 						}
@@ -236,8 +244,8 @@ void SceneTitle::render(float elapsed_time)
 
 void SceneTitle::finalize()
 {
-	if(SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
-		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
+	if(SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->queuing())
+		SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_TITLE))->stop();
 }
 
 void SceneTitle::setFramebuffer()

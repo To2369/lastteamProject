@@ -203,12 +203,12 @@ void SceneGame::initialize()
 		moveFlag[0] = true;
 		moveFlag[1] = false;
 		moveFlag[2] = false;
-	    tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move));
-		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera, XMFLOAT3(0.8f,0.f,0.1f),0.7f));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction, XMFLOAT3(-1.35f,0.2f,0.5f),0.6f));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection,XMFLOAT3(-1.0f,0.2f,0.5f),0.55f));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump,XMFLOAT3(-0.4f,0.f,0.1f),0.7f));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move,XMFLOAT3(1.6f,0.0f,0.0f ), 0.5f));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push,XMFLOAT3(999.f,999.f,999.f),0));
 
 
 	}
@@ -245,10 +245,7 @@ void SceneGame::update(float elapsed_time)
 	{
 		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->play(255);
 	}
-	else
-	{
-		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_CLEAR))->play(255);
-	}
+	
 	gamepad& pad = gamepad::Instance();
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();
@@ -676,6 +673,7 @@ void SceneGame::render(float elapsed_time)
 				}
 
 			};
+		
 		ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
 		Tutorial::TutorialSphere* sphere = tutorial->GetTutorialSphere(num);
 		ImGui::Text(tutorialmap(sphere->name_));
@@ -692,6 +690,21 @@ void SceneGame::render(float elapsed_time)
 		plpos.z += p_pos.z;
 		float a = 0;
 		float b = sphere->radius;
+
+		if(ImGui::Button("reset"))
+		{
+			for (int i = 0; i < tutorial->GetTutorialSphereCount(); i++)
+			{
+				tutorial->GetTutorialSphere(i)->tutorialflag = false;
+				tutorial->GetTutorialSphere(i)->tutorialcount= 0;
+			}
+		}
+		int oo = tutorial->cheackCount;
+		ImGui::InputInt("TutorialCheckCount", &oo);
+		ImGui::Checkbox("RemoveFlag", &sphere->tutorialflag);
+		ImGui::InputInt("TutoriaruCount",&sphere->tutorialcount);
+		ImGui::InputFloat("SetTimer", &tutorial->setTimer);
+		ImGui::InputFloat("Timer", &tutorial->Timer);
 		ImGui::InputFloat("radius", &b);
 		ImGui::SliderFloat("Moveradius", &a, -0.01f, 0.01f);
 		sphere->radius += a;
@@ -880,12 +893,16 @@ bool SceneGame::ClearScreen(float elapsedTime)
 									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
 									{
 										ince_st.SetStageName(i);
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 										break;
 									}
 
 									if (ince_st.GetStageName() == StageName::stage1_3)
 									{
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 
 									}
@@ -905,6 +922,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 								{
 									if (ince_st.GetStageName() != i && i > ince_st.GetStageName())
 									{
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 										ince_st.SetStageName(i);
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 										break;
@@ -912,6 +931,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 									if (ince_st.GetStageName() == StageName::stage1_3)
 									{
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+										SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 										SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 
 									}
@@ -929,6 +950,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 							if (isKKeyPressed && !wasKeyPressed_mouse)
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
 								break;
@@ -941,6 +964,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 							if (pad.button_state(gamepad::button::a, trigger_mode::falling_edge))
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new Scene_Stage_Serect));
 								break;
@@ -956,6 +981,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 							if (isKKeyPressed && !wasKeyPressed_mouse)
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new SceneTitle));
 								break;
@@ -967,6 +994,8 @@ bool SceneGame::ClearScreen(float elapsedTime)
 
 							if (pad.button_state(gamepad::button::a, trigger_mode::falling_edge))
 							{
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+								SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 								SceneManagement::instance().SceneChange(
 									new SceneLoading(new SceneTitle));
 								break;
@@ -1019,6 +1048,9 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressedMenu) {
+
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							Menu_ = false;
 						}
 					}
@@ -1026,6 +1058,8 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a,trigger_mode::falling_edge)){
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							Menu_ = false;
 						}
 					}
@@ -1037,7 +1071,8 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressedMenu) {
-
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							StageManager::incetance().SetStageName(StageManager::incetance().GetStageName());
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
@@ -1046,7 +1081,8 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a)){
-
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							StageManager::incetance().SetStageName(StageManager::incetance().GetStageName());
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneGame));
 						}
@@ -1059,7 +1095,8 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (isKKeyPressed && !wasKeyPressedMenu) {
-
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 						}
 					}
@@ -1067,7 +1104,8 @@ bool SceneGame::Menu(float elapsedTime)
 					{
 						ui->SetIsMouse(true);
 						if (pad.button_state(gamepad::button::a)){
-
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->stop();
+							SceneManagement::instance().GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_BUTTON_DECISION))->play();
 							SceneManagement::instance().SceneChange(new SceneLoading(new SceneTitle));
 						}
 					}

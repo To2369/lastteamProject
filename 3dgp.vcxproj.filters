@@ -274,6 +274,9 @@
     <ClCompile Include="sources\Switch_Gimic.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
+    <ClCompile Include="sources\audio.cpp">
+      <Filter>Headers\Audio</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -458,6 +461,9 @@
     </ClInclude>
     <ClInclude Include="sources\Tutorial.h">
       <Filter>Headers\Tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\audio.h">
+      <Filter>Headers\Audio</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

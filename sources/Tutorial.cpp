@@ -51,6 +51,7 @@ Tutorial::Tutorial()
         ui = make_unique<UI>(gr.GetDevice(),str.c_str());
         ui->SetID(UI_StringID::UI_ID::Tutorial_ID::Instruction_Move);
         uiid.push_back(ui->GetID());
+
         ui->SetPosition({ -426,360 });
         ui->SetHanteiFlag(false);
         uis.push_back(move(ui));
@@ -59,6 +60,7 @@ Tutorial::Tutorial()
         ui = make_unique<UI>(gr.GetDevice(),str.c_str());
         ui->SetID(UI_StringID::UI_ID::Tutorial_ID::Instruction_Push);
         uiid.push_back(ui->GetID());
+
         ui->SetPosition({-426,360 });
         ui->SetHanteiFlag(false);
         uis.push_back(move(ui));
@@ -97,43 +99,73 @@ void Tutorial::Update(float elapsedTime)
         bool a = false;
         XMFLOAT2 startpos = { 0.f,460.f };
         XMFLOAT2 endpos = { -426.f,460.f };
-        
-       
-
-       
-        if (id->name_ == Tutorial_MapName::Instruction_Push&&id->tutorialflag&&gimicflag)
+        int countbool = 0;
+        for (auto& check_flag : sphere)
         {
-            moveflag[0] = false;
-            moveflag[1] = false;
-            moveflag[2] = false;
-            
-            id->tutorialcount = 1;
-            ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, endpos, moveflag, 0.1f);
-        }
-        if (id->tutorialflag&&id->name_!=nowspheretype&& id->name_ != Tutorial_MapName::Instruction_Push)
-        {
-
-            moveflag[0] = false;
-            moveflag[1] = false;
-            moveflag[2] = false;
-            id->tutorialcount = 1;
-            ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, endpos, moveflag, 0.1f);
-
-        }
-        if (TutorialSphereVsPlayer(*id)&&id->tutorialcount<=0)
-        {
-            moveflag[0] = true;
-            moveflag[1] = false;
-            moveflag[2] = false;
-            nowspheretype = id->name_;
-            if (ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, startpos, moveflag, 0.1f))
+            if (check_flag->tutorialflag)
             {
-                id->tutorialflag = true;
+                countbool++;
+            }
+        }
+        cheackCount = countbool;
+        if (id->name_ == Tutorial_MapName::Instruction_Push)
+        {
+            if (id->name_ == Tutorial_MapName::Instruction_Push && id->tutorialflag && gimicflag)
+            {
+                moveflag[0] = false;
+                moveflag[1] = false;
+                moveflag[2] = false;
+
+                id->tutorialcount = 1;
+                ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, endpos, moveflag, 0.1f);
+            }
+            if (id->tutorialcount <= 0&& countbool>=5&&!id->tutorialflag)
+            {
+                moveflag[0] = true;
+                moveflag[1] = false;
+                moveflag[2] = false;
+                nowspheretype = id->name_;
+                Timer +=elapsedTime;
+                if (ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, startpos, moveflag, 0.1f)&&Timer>=setTimer)
+                {
+                    Timer = 0;
+                    id->tutorialflag = true;
+
+                }
+
+
+                
+            }
+        }
+        else
+        {
+            if (id->tutorialflag && id->name_ != nowspheretype||id->tutorialcount>0)
+            {
+
+                moveflag[0] = false;
+                moveflag[1] = false;
+                moveflag[2] = false;
+                id->tutorialcount = 1;
+                ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, endpos, moveflag, 0.1f);
 
             }
-            
-             
-            break;
+            if (TutorialSphereVsPlayer(*id) && !id->tutorialflag && id->tutorialcount <= 0||id->loopf)
+            {
+                moveflag[0] = true;
+                moveflag[1] = false;
+                moveflag[2] = false;
+                nowspheretype = id->name_;
+                id->loopf = true;
+                if (ince_ui.Update_Move_UI(elapsedTime, canbassid, id->uiid, startpos, moveflag, 0.1f))
+                {
+                    id->loopf = false;
+                    id->tutorialflag = true;
+
+                }
+
+
+                
+            }
         }
        
        

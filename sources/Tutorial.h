@@ -27,7 +27,7 @@ public:
     struct TutorialSphere
     {
         TutorialSphere() {};
-        TutorialSphere(bool f[3],std::string id, Tutorial_MapName name,DirectX::XMFLOAT3 pos={})
+        TutorialSphere(bool f[3], std::string id, Tutorial_MapName name, DirectX::XMFLOAT3 pos = {})
         {
             moveflag[0] = f[0];
             moveflag[1] = f[1];
@@ -36,12 +36,22 @@ public:
             uiid = id;
             name_ = name;
         }
+        TutorialSphere(bool f[3],std::string id, Tutorial_MapName name,DirectX::XMFLOAT3 pos,float rad)
+        {
+            moveflag[0] = f[0];
+            moveflag[1] = f[1];
+            moveflag[2] = f[2];
+            Position = pos;
+            uiid = id;
+            name_ = name;
+            radius = rad;
+        }
         Tutorial_MapName name_ = Tutorial_MapName::null;
         float radius = 0.5f;
         DirectX::XMFLOAT3 Position = {};
         bool moveflag[3] = {};
         std::string uiid;
-
+        bool loopf = false;
         int  tutorialcount;//Ž©•ª‚ª‰½‰ñŒÄ‚Î‚ê‚½‚©
         bool tutorialflag=false;//
     };
@@ -77,4 +87,8 @@ private:
     bool isInstruct = false;
     std::string canbassid="";
     std::vector<std::string> uiid;
+public://—Í‹Æ
+    float Timer = 0;
+    float setTimer = 3.f;
+    int cheackCount = 0;
 };
