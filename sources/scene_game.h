@@ -13,6 +13,7 @@
 #include "StageManager.h"
 #include"Goal_navi.h"
 #include "Graphics/sky_map.h"
+#include"Tutorial.h"
 class SceneGame : public Scene
 {
 public:
@@ -87,4 +88,5 @@ private:
 	PlayerManager& plm = PlayerManager::Instance();
 	bool ClearScreen(float elapsedTime);
 	bool Menu(float elapsedTime);
+	std::unique_ptr<Tutorial> tutorial;
 };

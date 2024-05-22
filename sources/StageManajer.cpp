@@ -168,9 +168,9 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 				);
 				filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
 				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
-					{ 4.247f,6.944f,-0.941f },
+					{ 4.247f,8.342f,-0.941f },
 					"num1",
-					{ 0.f,-1.6f,0.f }
+					{ 0.f,1.6f,0.f }
 				);
 
 				obj_Manager.Initialize(Chain_Type::lift_chain_L,
@@ -286,10 +286,12 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			//object
 			{
 				raylist = {};
+				raylist.IsSphereCollition = true;
 				unique_ptr<Object>obj = make_unique<Cution>(device, failepath::Object_failepath::Object::Clip.filename.c_str());
-				obj->SetScale({6.361f,6.408f,6.130f});
+				obj->SetScale({6.361f,6.208f,6.130f});
 				obj->israycast = raylist;
-				obj->SetPosition({ -3.076f,-0.486f,-0.51f });
+				obj->SetPosition({ -3.076f,-0.776f,-0.51f });
+				obj->SetRadius(0.228f);
 				obj_Manager.Rigister_obj(move(obj));
 				/*obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, false,
 					{
@@ -356,6 +358,10 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 					-0.393f,
 					-0.961f
 					},0.228f,raylist);
+				/*unique_ptr<Object> sobj = make_unique<Heavy>(device, failepath::Object_failepath::Object::Wall.filename.c_str());
+				sobj->SetPosition({0,1.f,0.f});
+				obj_Manager.Rigister_obj(move(sobj));*/
+
 			}
 
 		}
@@ -387,7 +393,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			obj_Manager.Initialize( ObjType::heavy, device, true,
 				{
 				 -3.119f,
-				0.556f,
+				1.956f,
 				-1.004f
 				}, 0.228f,raylist);
 
@@ -396,10 +402,10 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			raylist.IsRayCastInvisibleWall = false;
 			raylist.IsRayCastObject = false;
 			raylist.IsRayCastGround = true;
-			obj = make_unique<Super_Heavy>(device,failepath::Object_failepath::Object::Denti.filename.c_str());
+			obj = make_unique<Super_Heavy>(device,failepath::Object_failepath::Object::Light.filename.c_str());
 			obj->SetStatic_Objflag(true);
 			obj->israycast = raylist;
-			obj->SetPosition({-0.754f,3.177f,-2.597});
+			obj->SetPosition({-0.946f,4.0f,-2.625f });
 			obj->SetScale({1.f,1.f,1.f});
 			obj_Manager.Rigister_obj(move(obj));
 
@@ -412,13 +418,22 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			obj_Manager.Rigister_obj(move(obj));
 			
 			raylist = {};
-			obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
+			/*obj_Manager.Initialize(failepath::Object_failepath::Object::Clip.filename.c_str(), ObjType::Super_cution, device, true,
 				{
 				 0.076f,
 				0.486f,
 				-0.581f
-				}, 0.228f, raylist);
+				}, 0.228f, raylist);*/
+			obj = make_unique<Super_Cution>(device, failepath::Object_failepath::Object::Clip.filename.c_str());
+			obj->SetScale({10,10,10});
+			obj->SetPosition({ -4.397f,0.265f,-0.581f });
+			obj->SetStatic_Objflag(true);
+			obj->SetRadius(0.228f);
+			obj->israycast = raylist;
+			obj_Manager.Rigister_obj(move(obj));
 			raylist.IsRayCastGround = true;
+
+
 			obj_Manager.Initialize(failepath::Object_failepath::Object::kyappu.filename.c_str(), ObjType::Super_cution, device, true, { 3.566f,0.869f,-3.641f }, 0.123f, raylist);
 			/*	obj = make_unique<Super_Cution>(device,failepath::Object_failepath::Object::kyappu.filename.c_str());
 				obj->SetPosition({ 3.566f,0.869f,-3.641f });
@@ -523,10 +538,10 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			gimic = nullptr;
 
 			gimic = make_unique<Switch>(device);
-			gimic->SetPosition({ -0.830f,3.041f,-2.539f });
+			gimic->SetPosition({ -0.830f,3.139f,-2.539f });
 			gimic->SetMyObjeFlagtype(ObjType::Super_heavy);
 			gimic->SetGimicID("goalmae");
-			gimic->SetScale({ 2.115f,3.456f,3.496f });
+			gimic->SetScale({ 2.115f,14.207f,3.496f });
 			obj_Manager.Rigister_Gimic(move(gimic));
 			gimic = nullptr;
 			flags[0] = true;
@@ -545,7 +560,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
 				{ -3.114f,2.300f,-0.911f },
 				"gimic3",
-				{ -3.114f,0.641f,-0.911f });
+				{ -3.114f,0.941f,-0.911f });
 			
 			obj_Manager.Initialize(failepath::Object_failepath::Gimic::rihuto_downNotAnimation.filename.c_str(), Chain_Type::lift_P_Not_Animation,
 				{ -4.992f,2.293f,-1.071f },
@@ -559,7 +574,7 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			);
 
 			obj_Manager.Initialize(failepath::Object_failepath::Gimic::rihuto_ChainL.filename.c_str(),Chain_Type::lift_chain_L,
-				{ -4.023f,1.180f,-0.982f },1.2f,
+				{ -4.023f,1.180f,-0.982f },1.f,
 				"gimic3",
 				{ 0.000000f,0.f,0.000000f });
 

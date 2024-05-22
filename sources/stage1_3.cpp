@@ -17,6 +17,14 @@ Stage_1_2::Stage_1_2(ID3D11Device* device)
     Position={};
 }
 
+Stage_1_2::Stage_1_2(ID3D11Device* device, const char* filename_)
+{
+    initialaize_Set_attribute(ObjType::null, ObjType::null);
+    model = make_unique<Model>(Graphics::Instance().GetDevice(), filename_, true);
+    Scale = { 100.f,100.f,100.f };
+    Position = {};
+}
+
 void Stage_1_2::Update(float elapsedTime)
 {
     UpdateTransform();

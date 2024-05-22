@@ -65,7 +65,7 @@ Player::Player(ID3D11Device* device)
         ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"juu.png", ObjType::heavy, "heavy", uis, { 1200.f,600.f });
         ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"choojuu.png", ObjType::Super_heavy, "Super_heavy", uis, { 1200.f,600.f });
         ince_ui.CreateUI(graphics.GetDevice(), failepath::UI_Player_Property + L"nai.png", ObjType::null, "null", uis, { 1200.f,600.f});
-        ince_ui.UI_move(move(uis));
+        ince_ui.UiVector_Pointer_move(move(uis));
         ince_ui.CreateCanbas(UI_StringID::CanbasID::Player);
     }
     
@@ -374,10 +374,10 @@ void Player::ExtractionAttribute(float elapsedTime)
 
     VMCFHT& ince_ray = VMCFHT::instance();
     HitResult hit;
-   /* float mx = velocity.x * elapsedTime;
-    float mz = velocity.z * elapsedTime;*/
-    float mx =0.1f;
-    float mz =0.1f;
+    float mx = velocity.x * elapsedTime;
+    float mz = velocity.z * elapsedTime;
+   
+   
     XMFLOAT3 start{ position.x,position.y + 0.1f,position.z };
     XMFLOAT3 end{ position.x + mx,position.y + 0.1f,position.z + mz };
     DirectX::XMFLOAT3 outpos = { 0,0,0 };

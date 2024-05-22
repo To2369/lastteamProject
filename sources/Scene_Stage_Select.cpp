@@ -93,7 +93,7 @@ void Scene_Stage_Serect::initialize()
 
 
 	UIManager& ince = UIManager::incetance();
-	ince.UI_move(move(UIs));
+	ince.UiVector_Pointer_move(move(UIs));
 	ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 	UIs.clear();
 }
@@ -208,7 +208,7 @@ void Scene_Stage_Serect::update(float elapsedTime)
 		}
 	}
 	wasKeyPressed = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
-	ince.Update(elapsedTime);
+	ince.Update_Color_Alpha(elapsedTime);
 	GPCorsor.Update();
 #if USE_IMGUI
 	ImGui::Begin("sceneTitle");
@@ -256,7 +256,7 @@ void Scene_Stage_Serect::render(float elapsed_time)
 	//オブジェクト描画
 	{
 		UIManager& ince = UIManager::incetance();
-		ince.Render(&rc);
+		ince.Render(graphics);
 		//カーソルの初期設定
 		GamePadCorsor::Instance().Render(&rc);
 	}

@@ -7,7 +7,8 @@
 #include "../imgui/imgui_impl_win32.h"
 #endif
 #include "Graphics/graphics.h"
-
+#include"Tutorial.h"
+#include"UI.h"
 using namespace DirectX;
 using namespace std;
 
@@ -18,17 +19,19 @@ Stage_1_1::Stage_1_1(ID3D11Device* device)
     model = make_unique<Model>(device, filename, true);
     Scale = { 1.f,1.f,1.f };
     child_model = make_unique<Model>(device,filename2,true);
+  
 }
 
 void Stage_1_1::Update(float elapsedTime)
 {
-
+   
    // Position.y = +20;
     Position.y = -2.f;
     child_Position.x = 0.1f;
     child_Position.y = -2.6f;
     UpdateTransform();
     Child_UpdateTransform();
+   
 }
 
 void Stage_1_1::Render(RenderContext* rc)

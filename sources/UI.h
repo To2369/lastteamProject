@@ -1,5 +1,5 @@
 #pragma once
-#include "Graphics/RenderContext.h"
+#include "Graphics/graphics.h"
 #include"Graphics/sprite.h"
 #include <vector>
 #include"memory"
@@ -8,6 +8,15 @@ namespace UI_StringID
 {
     namespace UI_ID
     {
+        namespace Tutorial_ID
+        {
+            static std::string Instruction_Camera = "Instruction_Camera";
+            static std::string Instruction_Extraction = "Instruction_Extraction";
+            static std::string Instruction_Injection = "Instruction_Injection";
+            static std::string Instruction_Jump = "Instruction_Jump";
+            static std::string Instruction_Move = "Instruction_Move";
+            static std::string Instruction_Push = "Instruction_Push";
+        };
         //scene title ui id
         namespace Title_ID
         {
@@ -54,40 +63,15 @@ namespace UI_StringID
     };
 
 };
-class UI;
-class CanBas//こいつを中心にしてUI配置
-{
-public:
-    CanBas(std::vector<std::unique_ptr<UI>>&uis);
-    CanBas(std::vector<std::unique_ptr<UI>>&uis,std::string canbasID_);
-    ~CanBas();
-    void Update(float elapsedTime);
-    void Render(RenderContext* rc);
-    void Render(RenderContext* rc,std::string ui_id);
-    void SetOrijinPos(DirectX::XMFLOAT2 pos) { MainPos = pos; };
-    void SetCanbasID(std::string id) { canbasID = id; }
-    const DirectX::XMFLOAT2 GetOrijinPos()const{ return MainPos; };
-    void Gui();
-    void ResultInfo();
-public:
-    int GetUICount() { return Uis.size(); }
-    std::string GetCanbasID() { return canbasID; }
-    UI* GetUI(int i) { return Uis[i].get(); }
-    void UIClear();
-private:
-    std::string canbasID = "";
-    DirectX::XMFLOAT2 MainPos{};
-    std::vector<std::unique_ptr<UI>>Uis;
-    int random_value = 0;
-};
 
 class UI
 {
 public:
-    UI(ID3D11Device* device, const wchar_t* filename, DirectX::XMFLOAT2 scale = {}, DirectX::XMFLOAT2 pos = {});
+    UI(ID3D11Device* device, const wchar_t* filename, DirectX::XMFLOAT2 scale, DirectX::XMFLOAT2 pos = {});
+    UI(ID3D11Device* device, const wchar_t* filename);
     ~UI() {};
     void Update(float elapsedTime);
-    void Render(RenderContext* rc);
+    void Render(Graphics& gr);
     void Gui();
 public:
     void SetPosition(DirectX::XMFLOAT2 pos) { Pos = pos; };
@@ -100,24 +84,59 @@ public:
 public:
     DirectX::XMFLOAT2 GetPosition() { return sp_pos; }
     std::string GetID() { return ID; }
-    bool GetHanteiFlag(){ return hanteiflag; }
+    bool GetHanteiFlag() { return hanteiflag; }
     DirectX::XMFLOAT2 GetScale() { return Scale; };
     D3D11_TEXTURE2D_DESC& GetTexture2DDesc() { return Ui.get()->texture2d_desc; }
 public:
-   
+
 private:
     std::string ID;
     //当たり判定で使う正確なスプライトの位置
     DirectX::XMFLOAT2 sp_pos;
-    DirectX::XMFLOAT4 Color{1,1,1,1};
+    DirectX::XMFLOAT4 Color{ 1,1,1,1 };
     DirectX::XMFLOAT2 canbasPos;
     DirectX::XMFLOAT2 Pos;
     DirectX::XMFLOAT2 Scale;
     std::unique_ptr<sprite>Ui;
     std::string filename_gui;
     int random_value;
-    bool hanteiflag=false;
+    bool hanteiflag = false;
     bool Ismouse = false;
     bool hanten = false;
     float Color_alpha = 0.01f;
+};
+class CanBas//こいつを中心にしてUI配置
+{
+public:
+    CanBas(std::vector<std::unique_ptr<UI>>&uis);
+    CanBas(std::vector<std::unique_ptr<UI>>&uis,std::string canbasID_);
+    ~CanBas();
+    void Update(float elapsedTime);
+    void Render(Graphics&gr);
+    void Render(Graphics& gr,std::string ui_id);
+    void SetOrijinPos(DirectX::XMFLOAT2 pos) { MainPos = pos; };
+    void SetCanbasID(std::string id) { canbasID = id; }
+    const DirectX::XMFLOAT2 GetOrijinPos()const{ return MainPos; };
+    void Gui();
+    void ResultInfo();
+public:
+    int GetUICount() { return Uis.size(); }
+    std::string GetCanbasID() { return canbasID; }
+    UI* GetUI(int i) { return Uis[i].get(); }
+    UI*GetUI(std::string id) { 
+        UI* ui=nullptr;
+        for(auto&uis:Uis)
+            if (uis->GetID() == id)
+            {
+                ui = uis.get();
+                break;
+            }
+        return ui;
+    }
+    void UIClear();
+private:
+    std::string canbasID = "";
+    DirectX::XMFLOAT2 MainPos{};
+    std::vector<std::unique_ptr<UI>>Uis;
+    int random_value = 0;
 };

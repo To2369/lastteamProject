@@ -8,6 +8,8 @@ namespace failepath
    static wstring UI_Bottun_Other_Path_Wstring = L".\\resources\\UI\\Bottun_Other\\";//Bottun_Otherまでのパス
    static wstring UI_Mask_Path_Wstring = L".\\resources\\UI\\Mask\\";//Bottun_Otherまでのパス
    static wstring UI_Player_Property = L".\\resources\\UI\\player_property\\"; //player_propertyまでのパス
+   static wstring UI_Instructions_path_Wstring = L".\\resources\\UI\\Instructions\\Instruction_";//InstructionsのフォルダのInstructionまでのパス
+
    namespace Stage_failepath
    {
        static string  Stage1_Path = ".\\resources\\Stage1\\";//stage1までのパス
@@ -94,12 +96,14 @@ public:
         ObjType type,std::string id ,vector<unique_ptr<UI>>& uis,DirectX::XMFLOAT2 pos);
     
     void Gui();
-    void Update(float elapsedTime);
-    void Render(RenderContext* rc);
-    void Render(RenderContext* rc,std::string id);
-    void Render(RenderContext* rc, std::string canbas_id, std::string ui_id);
+    void Update_Color_Alpha(float elapsedTime);//coloralphaのupdate
+     bool Update_Move_UI(float elapsedTime, std::string canbasid, std::string uiid, XMFLOAT2 end, bool moveflag[2], float movespeed);//uiに動きを付けたいときに使う
+  
+    void Render(Graphics& rc);
+    void Render(Graphics& rc,std::string id);
+    void Render(Graphics& rc, std::string canbas_id, std::string ui_id);
     //uiのvectoをこのマネージャーにある、UIsに移動させる
-    void UI_move(vector<unique_ptr<UI>>ui) { UIs=move(ui); }
+    void UiVector_Pointer_move(vector<unique_ptr<UI>>ui) { UIs=move(ui); }
     /// <summary>
    /// 
    /// </summary>
@@ -118,8 +122,11 @@ public:
         if(id==can->GetCanbasID())
         return can.get(); 
     }
+    void Set_UIflags(bool f[3]);
 private:
     void GetStageObjectTypes();
+
+    bool UI_Moveflags[3];//0:x軸,1:y軸,2:z軸
     std::vector<ObjType>ObjectTypes;
     std::vector<unique_ptr<CanBas>>CanBass;
 private:

@@ -47,20 +47,20 @@ void CanBas::Update(float elapsedTime)
     }
 }
 
-void CanBas::Render(RenderContext* rc)
+void CanBas::Render(Graphics& gr)
 {
     for (auto& ui : Uis)
     {
-        ui->Render(rc);
+        ui->Render(gr);
     }
 }
 
-void CanBas::Render(RenderContext* rc, std::string ui_id)
+void CanBas::Render(Graphics&gr, std::string ui_id)
 {
     for (auto& ui : Uis)
     {
         if(ui->GetID()==ui_id)
-        ui->Render(rc);
+        ui->Render(gr);
     }
 }
 
@@ -80,13 +80,14 @@ void CanBas::Gui()
             MainPos.y += pos.y;
             TreePop();
         }
-        if (CollapsingHeader("UI_param", ImGuiTreeNodeFlags_DefaultOpen))
+        if (TreeNode("param"))
         {
             
             for (auto&ui:Uis)
             {
                 ui->Gui();
             }
+            ImGui::TreePop();
         }
     }
     if (TreeNode("Mouse"))
@@ -139,8 +140,30 @@ UI::UI(ID3D11Device*device,const wchar_t* filename, DirectX::XMFLOAT2 scale, Dir
     Scale = scale;
     Pos = pos;
     random_value = rand();
-   
+    Scale.x = GetTexture2DDesc().Width;
+    Scale.y = GetTexture2DDesc().Height;
  
+}
+
+UI::UI(ID3D11Device* device, const wchar_t* filename)
+{
+    Ui = make_unique<sprite>(device, filename);
+    int wlength = wcslen(filename);
+    int length = WideCharToMultiByte(
+        CP_UTF8,
+        0,
+        filename,//変換したいワイド文字列のポインター
+        wlength,//変換したいワイド文字列の長さ
+        nullptr,//変換したワイド文字列を入れるためのchar型のポインター
+        0,
+        nullptr,
+        nullptr);
+    string str(length, 0);
+    WideCharToMultiByte(CP_UTF8, 0, filename, wlength, &str[0], length, nullptr, nullptr);
+    filename_gui = str;
+    random_value = rand();
+    Scale.x = GetTexture2DDesc().Width;
+    Scale.y = GetTexture2DDesc().Height;
 }
 
 
@@ -170,18 +193,18 @@ void UI::Update(float elapsedTime)
 
 }
 
-void UI::Render(RenderContext* rc)
+void UI::Render(Graphics& gr)
 {
-    Graphics& graphics = Graphics::Instance();
+   
     
     XMVECTOR UC_pos=XMVectorSubtract(XMLoadFloat2(&Pos),XMLoadFloat2(&canbasPos));
    
     XMStoreFloat2(&sp_pos, UC_pos);
-    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(1), nullptr, 0xFFFFFFFF);
-    Ui->render(graphics.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y,
+    gr.GetDeviceContext()->OMSetBlendState(gr.GetBlendState(1), nullptr, 0xFFFFFFFF);
+    Ui->render(gr.GetDeviceContext(), sp_pos.x, sp_pos.y, Scale.x, Scale.y,
         Color.x,Color.y,Color.z,Color.w,
         0);
-    graphics.GetDeviceContext()->OMSetBlendState(graphics.GetBlendState(2), nullptr, 0xFFFFFFFF);
+    gr.GetDeviceContext()->OMSetBlendState(gr.GetBlendState(2), nullptr, 0xFFFFFFFF);
 }
 
 void UI::Gui()

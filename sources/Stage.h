@@ -1,5 +1,6 @@
 #pragma once
 #include"object.h"
+#include"Tutorial.h"
 class Stage :public Object
 {
 public:
@@ -52,6 +53,7 @@ class Stage_1_2 :public Stage
 {
 public:
     Stage_1_2(ID3D11Device* device);
+    Stage_1_2(ID3D11Device* device,const char*filename_);
     ~Stage_1_2()override {};
     void Update(float elapsedTime)override;
     void Render(RenderContext* rc)override;

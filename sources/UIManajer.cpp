@@ -193,6 +193,12 @@ bool UIManager::Mouse_VS_UI(DirectX::XMFLOAT2 SP_POS, XMFLOAT2 Scale)
     }
     return false;
 }
+void UIManager::Set_UIflags(bool f[3])
+{
+    UI_Moveflags[0] = f[0];
+    UI_Moveflags[1] = f[1];
+    UI_Moveflags[2] = f[2];
+}
 void UIManager::GetStageObjectTypes()
 {
     Objectmanajer& ince_o = Objectmanajer::incetance();
@@ -224,7 +230,7 @@ void UIManager::GetStageObjectTypes()
     }
 }
 
-void UIManager::Update(float elapsedTime)
+void UIManager::Update_Color_Alpha(float elapsedTime)
 {
 
     for (auto& canbas : CanBass)
@@ -233,7 +239,39 @@ void UIManager::Update(float elapsedTime)
     }
 }
 
-void UIManager::Render(RenderContext* rc)
+bool UIManager::Update_Move_UI(float elapsedTime, std::string canbasid, std::string uiid, XMFLOAT2 end, bool moveflag[2], float movespeed)
+{
+    UI* ui=nullptr;
+    for (auto& can : CanBass)
+    {
+        if (can->GetCanbasID() == canbasid)
+        {
+            if (!can->GetUI(uiid))return false;
+            ui = can->GetUI(uiid);
+            break;
+        }
+    }
+    if (!ui)return false;
+    XMFLOAT2 P{};
+    XMFLOAT2 P2{ ui->GetPosition()};
+    if (moveflag[0])
+    {
+        XMStoreFloat(&P.x,XMVectorLerp(XMLoadFloat(&P2.x), XMLoadFloat(&end.x),movespeed));
+        ui->SetPosition(P);
+        if (P.x > -0.5)return true;
+    }
+    else
+    {
+        XMStoreFloat(&P.x, XMVectorLerp(XMLoadFloat(&P2.x), XMLoadFloat(&end.x), movespeed));
+        ui->SetPosition(P);
+        if (P.x < -400.f)
+            return true;
+    }
+   
+    return false;
+}
+
+void UIManager::Render(Graphics& rc)
 {
     for (auto& canbas : CanBass)
     {
@@ -242,7 +280,7 @@ void UIManager::Render(RenderContext* rc)
 
 }
 
-void UIManager::Render(RenderContext* rc, std::string id)
+void UIManager::Render(Graphics& rc, std::string id)
 {
     for (auto& canbas : CanBass)
     {
@@ -253,7 +291,7 @@ void UIManager::Render(RenderContext* rc, std::string id)
     }
 }
 
-void UIManager::Render(RenderContext* rc, std::string canbas_id, std::string ui_id)
+void UIManager::Render(Graphics& rc, std::string canbas_id, std::string ui_id)
 {
     for (auto& canbas : CanBass)
     {

@@ -91,7 +91,7 @@ void SceneTitle::initialize()
 	UIs.push_back(move(ui));
 	ui = nullptr;
 	UIManager& ince = UIManager::incetance();
-	ince.UI_move(move(UIs));
+	ince.UiVector_Pointer_move(move(UIs));
 	ince.CreateCanbas();
 	UIs.clear();
 }
@@ -164,7 +164,7 @@ void SceneTitle::update(float elapsed_time)
 			}
 		}
 		wasKeyPressed = isKKeyPressed;//¡‰ñƒL[‚ª‰Ÿ‚³‚ê‚½‚©‚Ç‚¤‚©‚ðŽŸ‰ñ‚ÅŽg‚¤‚½‚ß‚É“ü‚ê‚Ä‚¨‚­
-		ince.Update(elapsed_time);
+		ince.Update_Color_Alpha(elapsed_time);
 		//SceneManagement::instance().SceneChange(new SceneLoading( new SceneGame));
 
 		GPCorsor.Update();
@@ -214,7 +214,7 @@ void SceneTitle::render(float elapsed_time)
 	{
 		GamePadCorsor::Instance().Render(&rc);
 		UIManager& ince = UIManager::incetance();
-		ince.Render(&rc);
+		ince.Render(graphics);
 	}
 
 	scene_data->deactivate(graphics.GetDeviceContext());

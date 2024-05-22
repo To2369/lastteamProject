@@ -129,7 +129,7 @@ void SceneGame::initialize()
 		UIs.push_back(move(ui));
 		ui = nullptr;
 
-		ince.UI_move(move(UIs));
+		ince.UiVector_Pointer_move(move(UIs));
 		ince.CreateCanbas(UI_StringID::CanbasID::Menu);
 		UIs.clear();
 
@@ -191,11 +191,25 @@ void SceneGame::initialize()
 
 		
 		UIManager& ince = UIManager::incetance();
-		ince.UI_move(move(UIs));
+		ince.UiVector_Pointer_move(move(UIs));
 		ince.CreateCanbas(UI_StringID::CanbasID::GameClear);
 		UIs.clear();
 	}
-	
+	{
+		tutorial = make_unique<Tutorial>();
+		bool moveFlag[3];
+		moveFlag[0] = true;
+		moveFlag[1] = false;
+		moveFlag[2] = false;
+	    tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Camera, Tutorial::Tutorial_MapName::Instruction_Camera));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Extraction, Tutorial::Tutorial_MapName::Instruction_Extraction));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Injection, Tutorial::Tutorial_MapName::Instruction_Injection));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Jump, Tutorial::Tutorial_MapName::Instruction_Jump));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Move, Tutorial::Tutorial_MapName::Instruction_Move));
+		tutorial->Add_TutorialSphere(make_unique<Tutorial::TutorialSphere>(moveFlag, UI_StringID::UI_ID::Tutorial_ID::Instruction_Push, Tutorial::Tutorial_MapName::Instruction_Push));
+
+
+	}
 }
 
 DirectX::XMFLOAT3 convert_screen_to_world(LONG x/*screen*/, LONG y/*screen*/, FLOAT z/*ndc*/, D3D11_VIEWPORT vp, const DirectX::XMFLOAT4X4& view_projection)
@@ -337,7 +351,7 @@ void SceneGame::update(float elapsed_time)
 	}
 	Objectmanajer::incetance().Update(elapsed_time);
 	Goal_navi->Update(elapsed_time);
-
+	tutorial->Update(elapsed_time);
 	//カメラ操作
 	{
 		currentCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
@@ -467,7 +481,7 @@ void SceneGame::render(float elapsed_time)
 	
 	graphics.GetDeviceContext()->OMSetDepthStencilState(graphics.GetDepthStencilState(3), 0);
 	graphics.GetDeviceContext()->RSSetState(graphics.GetRasterizerState(2));
-
+	
 	if (sky)
 	{
 		sky->blit(graphics.GetDeviceContext(), scene_data->data.view_projection);
@@ -520,47 +534,8 @@ void SceneGame::render(float elapsed_time)
 		DirectX::XMFLOAT3 c_pos{};
 		DirectX::XMFLOAT3 p_pos{};
 
-		if (ImGui::TreeNode("camera"))
-		{
-			ImGui::SliderFloat("input_camera_pos.x", &c_pos.x, -2.0f, +2.0f);
-			ImGui::SliderFloat("input_camera_pos.y", &c_pos.y, -2.0f, +2.0f);
-			ImGui::SliderFloat("input_camera_pos.z", &c_pos.z, -2.0f, +2.0f);
-			ImGui::InputFloat("camera_pos.x", &camera_position.x, -2.0f, +2.0f);
-			ImGui::InputFloat("camera_pos.y", &camera_position.y, -2.0f, +2.0f);
-			ImGui::InputFloat("camera_pos.z", &camera_position.z, -2.0f, +2.0f);
-			camera_position.x += c_pos.x;
-			camera_position.y += c_pos.y;
-			camera_position.z += c_pos.z;
-			ImGui::TreePop();
-		}
-		if (Debug_ParameterObj)
-		{
-
-			Debug_ParameterObj->BaseGui();
-		}
-		if (ImGui::TreeNode("player"))
-		{
-
-			XMFLOAT3 front{ Camera::instance().GetFront() };
-			XMFLOAT3 plpos = plm.GetPlayer(0)->GetPosition();
-			ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
-			ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
-			ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
-
-			ImGui::InputFloat("plpos.x", &plpos.x, -1.0f, +1.0f);
-			ImGui::InputFloat("plpos.y", &plpos.y, -2.0f, +2.0f);
-			ImGui::InputFloat("plpos.z", &plpos.z, -1.0f, +1.0f);
-			plpos.x += p_pos.x;
-			plpos.y += p_pos.y;
-			plpos.z += p_pos.z;
-			plm.GetPlayer(0)->SetPosition(plpos);
-			XMFLOAT3 vel = plm.GetPlayer(0)->GetVelocity();
-			ImGui::InputFloat3("vel", &vel.x);
-			ImGui::SliderFloat("set_vel", &vel.y, -100, 100);
-			plm.GetPlayer(0)->SetVelocity(vel);
-			ImGui::InputFloat("ms", &ms);
-			ImGui::TreePop();
-		}
+	
+		
 
 		/*ImGui::SliderFloat("camera_front.x", &front.x, -100.0f, +100.0f);
 		ImGui::SliderFloat("camera_front.y", &front.y, -1.0f, +2.0f);
@@ -614,18 +589,93 @@ void SceneGame::render(float elapsed_time)
 
 		}
 
-		ince_ui.Gui();
+		//ince_ui.Gui();
 
 		ImGui::End();
 		StageManager::incetance().Gui(graphics.GetDevice(), &rc);
 		//Objectmanajer::incetance().Gui(graphics.GetDevice());
 		//PlayerManager::Instance().DrawDebugGui();
 		//GetAsyncKeyState(VK_LBUTTON);
-		DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
-		ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
+	
+	
 #endif // !DEBUG
 	}
+	DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
 	
+	if (ImGui::TreeNode("tutorialSphere"))
+	{
+		DirectX::XMFLOAT3 c_pos{};
+		DirectX::XMFLOAT3 p_pos{};
+		static int num = 0;
+		ImGui::InputInt("number", &num);
+		if (num < 0)num = 0;
+		if (num >= tutorial->GetTutorialSphereCount())num = tutorial->GetTutorialSphereCount() - 1;
+
+		auto tutorialmap = [](Tutorial::Tutorial_MapName type)
+			{
+				switch (type)
+				{
+				case Tutorial::Tutorial_MapName::Instruction_Camera:
+					return"Instruction_Camera";
+					break;
+				case Tutorial::Tutorial_MapName::Instruction_Move:
+					return"Instruction_Move";
+
+					break;
+				case Tutorial::Tutorial_MapName::Instruction_Jump:
+					return"Instruction_Jump";
+
+					break;
+				case Tutorial::Tutorial_MapName::Instruction_Extraction:
+					return"Instruction_Extraction";
+
+					break;
+				case Tutorial::Tutorial_MapName::Instruction_Injection:
+					return"Instruction_Injection";
+
+					break;
+				case Tutorial::Tutorial_MapName::Instruction_Push:
+					return"Instruction_Push";
+
+					break;
+				case Tutorial::Tutorial_MapName::null:
+					return"null";
+
+					break;
+				default:
+					break;
+				}
+
+			};
+		ince.Render(graphics.GetDeviceContext(), rc.view, rc.projection);
+		Tutorial::TutorialSphere* sphere = tutorial->GetTutorialSphere(num);
+		ImGui::Text(tutorialmap(sphere->name_));
+		XMFLOAT3& plpos = sphere->Position;
+		ImGui::SliderFloat("input_pl.x", &p_pos.x, -1.0f, +1.0f);
+		ImGui::SliderFloat("input_pl.y", &p_pos.y, -1.0f, +1.0f);
+		ImGui::SliderFloat("input_pl.z", &p_pos.z, -1.0f, +1.0f);
+
+		ImGui::InputFloat("tutorialpos.x", &plpos.x, -1.0f, +1.0f);
+		ImGui::InputFloat("tutorialpos.y", &plpos.y, -2.0f, +2.0f);
+		ImGui::InputFloat("tutorialpos.z", &plpos.z, -1.0f, +1.0f);
+		plpos.x += p_pos.x;
+		plpos.y += p_pos.y;
+		plpos.z += p_pos.z;
+		float a = 0;
+		float b = sphere->radius;
+		ImGui::InputFloat("radius", &b);
+		ImGui::SliderFloat("Moveradius", &a, -0.01f, 0.01f);
+		sphere->radius += a;
+		ince.DrawSphere(plpos, sphere->radius, { 0,1,1,1 });
+		if (ImGui::TreeNode("Tutorial_UI"))
+		{
+			ince_ui.GetCanbas(tutorial->GetCanBass())->Gui();
+			ImGui::TreePop();
+		}
+
+
+		ImGui::TreePop();
+	}
 	scene_data->deactivate(graphics.GetDeviceContext());
 	
 	parametric_constant->deactivate(graphics.GetDeviceContext());
@@ -719,17 +769,18 @@ void SceneGame::render(float elapsed_time)
 				}
 				return str;
 			};
-		ince_ui.Render(&rc, UI_StringID::CanbasID::Player, id(type));
+		ince_ui.Render(graphics, UI_StringID::CanbasID::Player, id(type));
+		tutorial->Render(graphics);
 		//ince_ui.Render(&rc, UI_StringID::CanbasID::SceneGameUI);
 		if (ClearRenderUiFlag)
 		{
-			ince_ui.Render(&rc, UI_StringID::CanbasID::GameClear);
+			ince_ui.Render(graphics, UI_StringID::CanbasID::GameClear);
 			GamePadCorsor::Instance().Render(&rc);
 			
 		}
 		else if (MenuRenderUiFlag)
 		{
-			ince_ui.Render(&rc, UI_StringID::CanbasID::Menu);
+			ince_ui.Render(graphics, UI_StringID::CanbasID::Menu);
 			GamePadCorsor::Instance().Render(&rc);
 		}
 	}
@@ -892,7 +943,7 @@ bool SceneGame::ClearScreen(float elapsedTime)
 				}
 			}
 		}
-		ince.Update(elapsedTime);
+		ince.Update_Color_Alpha(elapsedTime);
 		return true;
 	}
 	wasKeyPressed_mouse = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
@@ -994,7 +1045,7 @@ bool SceneGame::Menu(float elapsedTime)
 
 	}
 	wasKeyPressedMenu = isKKeyPressed;//今回キーが押されたかどうかを次回で使うために入れておく
-	ince.Update(elapsedTime);
+	ince.Update_Color_Alpha(elapsedTime);
 
 	return Menu_;
 }

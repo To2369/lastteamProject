@@ -68,6 +68,9 @@
     <Filter Include="Headers\Audio">
       <UniqueIdentifier>{5e9a8421-ae8f-4b7a-867e-d12ac5453c7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\Tutorial">
+      <UniqueIdentifier>{37186777-642f-4a47-9676-c984cb404838}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -187,9 +190,6 @@
     <ClCompile Include="sources\Gimic.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Switch_Gimic.cpp">
-      <Filter>Sources\objects\gimic</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Door_Gimic.cpp">
       <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
@@ -253,9 +253,6 @@
     <ClCompile Include="sources\Scene_Stage_Select.cpp">
       <Filter>Sources\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="sources\scene_clear.cpp">
-      <Filter>Sources\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="sources\Stage1_5.cpp">
       <Filter>Sources\Stages\GameStage</Filter>
     </ClCompile>
@@ -268,14 +265,14 @@
     <ClCompile Include="sources\GamePadCorsor.cpp">
       <Filter>Headers\UI</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Audio\Audio.cpp">
-      <Filter>Headers\Audio</Filter>
+    <ClCompile Include="sources\Graphics\sky_map.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Audio\AudioResource.cpp">
-      <Filter>Headers\Audio</Filter>
+    <ClCompile Include="sources\Tutorial.cpp">
+      <Filter>Headers\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="sources\Audio\AudioSource.cpp">
-      <Filter>Headers\Audio</Filter>
+    <ClCompile Include="sources\Switch_Gimic.cpp">
+      <Filter>Sources\objects\gimic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -453,20 +450,14 @@
     <ClInclude Include="sources\Scene_Stage_Select.h">
       <Filter>Headers\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="sources\scene_clear.h">
-      <Filter>Headers\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="sources\GamePadCorsor.h">
       <Filter>Headers\UI</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Audio\Audio.h">
-      <Filter>Headers\Audio</Filter>
+    <ClInclude Include="sources\Graphics\sky_map.h">
+      <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="sources\Audio\AudioResource.h">
-      <Filter>Headers\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="sources\Audio\AudioSource.h">
-      <Filter>Headers\Audio</Filter>
+    <ClInclude Include="sources\Tutorial.h">
+      <Filter>Headers\Tutorial</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -495,6 +486,9 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="hlsl\debug.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="hlsl\sky_map.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -548,6 +542,15 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="hlsl\outline_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_box_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_ps.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="hlsl\sky_map_vs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
