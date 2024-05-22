@@ -27,9 +27,8 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 	{
 	case StageName::stage1_1:
 	{
-	
 		PlayerManager& ince_p = PlayerManager::Instance();
-		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,-0.066f });
+		ince_p.GetPlayer(0)->SetPosition({ 1.146f,0.900f,0.100f });
 		Object::CollitionList raylist;
 		raylist.IsRayCastGround = true;
 		raylist.IsRayCastInvisibleWall = true;
