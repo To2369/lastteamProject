@@ -103,7 +103,9 @@ public:
 		case WM_SIZE:
 		{
 #if 1
-
+			RECT client_rect;
+			GetClientRect(hwnd, &client_rect);
+			//graphics.on_size_changed(client_rect.right - client_rect.left, client_rect.bottom - client_rect.top);
 #endif
 			break;
 		}

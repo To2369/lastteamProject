@@ -32,9 +32,11 @@ Graphics::Graphics()
 	// インスタンス設定
 	_ASSERT_EXPR(instance == nullptr, "already instantiated");
 	instance = this;
+	//stylize_window(TRUE);
 
 	RECT client_rect;
 	GetClientRect(hwnd, &client_rect);
+
 	framebuffer_dimensions.cx = client_rect.right - client_rect.left;
 	framebuffer_dimensions.cy = client_rect.bottom - client_rect.top;
 

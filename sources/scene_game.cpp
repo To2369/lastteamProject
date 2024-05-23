@@ -742,6 +742,7 @@ void SceneGame::render(float elapsed_time)
 	
 #endif // !DEBUG
 	}
+#ifdef _DEBUG
 	DebugRenderer& ince = DebugRenderer::incetance(graphics.GetDevice());
 	if (tutorial)
 	{
@@ -836,6 +837,7 @@ void SceneGame::render(float elapsed_time)
 			ImGui::TreePop();
 		}
 	}
+#endif
 	scene_data->deactivate(graphics.GetDeviceContext());
 	
 	parametric_constant->deactivate(graphics.GetDeviceContext());
