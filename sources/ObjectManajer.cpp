@@ -197,9 +197,9 @@ void Objectmanajer::Initialize(Chain_Type type, XMFLOAT3 pos, std::string id,XMF
     }
     if (obj)
     {
-        obj->GetTransformComp()->SetPosition(pos);
+        obj->GetComp()->GetComponent<TransformComp>()->SetPosition(pos);
         obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
+        obj->GetComp()->GetComponent<TransformComp>()->SetAngle(angle);
 
         Rigister_Lift_Chains(move(obj));
     }
@@ -225,9 +225,9 @@ void Objectmanajer::Initialize(const char* filename, Chain_Type type, XMFLOAT3 p
     }
     if (obj)
     {
-        obj->GetTransformComp()->SetPosition(pos);
+        obj->GetComp()->GetComponent<TransformComp>()->SetPosition(pos);
         obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
+        obj->GetComp()->GetComponent<TransformComp>()->SetAngle(angle);
         Rigister_Lift_Chains(move(obj));
     }
 }
@@ -252,9 +252,9 @@ void Objectmanajer::Initialize(const char* filename, Chain_Type type, XMFLOAT3 p
     }
     if (obj)
     {
-        obj->GetTransformComp()->SetPosition(pos);
+        obj->GetComp()->GetComponent<TransformComp>()->SetPosition(pos);
         obj->SetID(id);
-        obj->GetTransformComp()->SetAngle(angle);
+        obj->GetComp()->GetComponent<TransformComp>()->SetAngle(angle);
         Rigister_Lift_Chains(move(obj));
     }
 }
@@ -333,7 +333,8 @@ void Objectmanajer::render(RenderContext* rc)
 
     for (const auto& chains : game_lift_chains)
     {
-        chains->Render();
+        if(chains->GetComp()-> GetComponent<RenderComp>())
+        chains->GetComp()-> GetComponent<RenderComp>()->render(Graphics::Instance(),chains->GetComp()-> GetComponent<TransformComp>()->Gettransform());
     }
     for (const auto& static_object : game_static_objes)
     {
@@ -766,7 +767,6 @@ bool Objectmanajer::Bounding_Box_vs_Bounding_Box(Player* player, Static_Object* 
       //  std::sort(arry.begin(),arry.end(),sort_);
       //  face_check = arry[0].type;
       */
-        int a = 0;
         return true;
     }
 

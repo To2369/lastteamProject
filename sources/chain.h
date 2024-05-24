@@ -9,11 +9,22 @@ enum class Chain_Type
     lift_P_Not_Animation,
     null
 };
-class BaseChain :public Comp
+class BaseChain
 {
 public:
-    BaseChain() {};
-    virtual ~BaseChain() override{}
+    virtual ~BaseChain() {
+    
+      
+    }
+    BaseChain() {
+        comp_ = new object();
+        
+        
+       /* comp_=*/ comp_->AddComponent<TransformComp>();
+      // comp_->AddComponent<RenderComp>();
+        
+    };
+    virtual void Update(float elapsedTime)=0;
     bool GetDestroy() { return destroy_this; };
 public:
     void SetID(std::string id) { ID = id; }
@@ -21,7 +32,12 @@ public:
     Chain_Type GetMyType() { return MyType; }
    virtual void ResultInfo();
     Gimic* LiftCheck();
+    virtual void Gui()=0;
+    void BaseGui();
+    object* GetComp() { return comp_; };
 protected:
+   
+    object*comp_;
     Chain_Type MyType = Chain_Type::null;
     std::string ID;
     bool destroy_this = false;
@@ -31,7 +47,15 @@ class Lift_chain_s:public BaseChain//ƒ`ƒF[ƒ“‚ª’Z‚¢‚â‚Â
 public:
     Lift_chain_s();
     Lift_chain_s(const char*filename_);
-    ~Lift_chain_s()override{};
+    ~Lift_chain_s()override {
+        if (comp_)
+        {
+            
+            delete comp_;
+            comp_ = nullptr;
+        }
+       
+    };
 public:
     void Update(float elapsedTme)override;
     void Gui()override;
@@ -45,7 +69,17 @@ class Lift_chain_l:public BaseChain//ƒ`ƒF[ƒ“‚ª’·‚¢‚â‚Â
 public:
     Lift_chain_l();
     Lift_chain_l(const char* filename_,float offset_=0);
-    ~Lift_chain_l()override {};
+    ~Lift_chain_l() override{
+       
+        if (comp_)
+        {
+            
+            delete comp_;
+            comp_ = nullptr;
+        }
+       
+       
+    };
     void Update(float elapsedTime)override;
     void Gui()override;
 private:
@@ -59,7 +93,14 @@ class Lift_chain_P :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚éAƒAƒjƒ[ƒV
 public:
     Lift_chain_P();
     Lift_chain_P(const char*filename_);
-    ~Lift_chain_P()override {};
+    ~Lift_chain_P()override {
+        if (comp_)
+        {
+            delete comp_;
+            comp_ = nullptr;
+        }
+       
+    };
     void Update(float elapsedTime)override;
     //void BaseChainGUI();
     void Gui()override;
@@ -74,7 +115,15 @@ class Lift_chain_Animatio_ndown :public BaseChain//ƒŠƒtƒg‚Ìã‚Éƒyƒ“ƒMƒ“‚ªæ‚Á‚Ä‚
 public:
     Lift_chain_Animatio_ndown();
     Lift_chain_Animatio_ndown(const char*filename_);
-    ~Lift_chain_Animatio_ndown()override { filenames.clear(); };
+    ~Lift_chain_Animatio_ndown()override {
+        if (comp_)
+        {
+           
+            delete comp_;
+            comp_ = nullptr;
+        }
+       
+        filenames.clear(); };
     void ResultInfo()override;
     void Update(float elapsedTime)override;
     void Gui()override;

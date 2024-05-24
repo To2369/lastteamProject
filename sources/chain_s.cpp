@@ -2,18 +2,18 @@
 
 Lift_chain_s::Lift_chain_s()
 {
-    transform = make_unique<TransformComp>();
-    render = make_unique<RenderComp>(filename,Graphics::Instance());
-    MyType = Chain_Type::lift_chain_S;
-    
+    MyType = Chain_Type::lift_chain_S;   
+    Graphics* gr = &Graphics::Instance();
+
+    comp_->AddComponent<RenderComp>(filename, gr);
 }
 
 Lift_chain_s::Lift_chain_s(const char* filename_)
 {
-    transform = make_unique<TransformComp>();
-    render = make_unique<RenderComp>(filename_, Graphics::Instance());
     MyType = Chain_Type::lift_chain_S;
+    Graphics* gr = &Graphics::Instance();
 
+    comp_->AddComponent<RenderComp>(filename_, gr);
 }
 
 void Lift_chain_s::Update(float elapsedTme)
@@ -21,19 +21,19 @@ void Lift_chain_s::Update(float elapsedTme)
     
     Gimic*gimic=LiftCheck();
     
-    render->Color.w = 1;
+    comp_->GetComponent<RenderComp>()->Color.w = 1;
     if (gimic)
     {
         if (gimic->GetIsLift() == ObjType::heavy || gimic->GetIsLift() == ObjType::Super_heavy)
         {
-            render->Color.w = 0;
+             comp_->GetComponent<RenderComp>()->Color.w = 0;
         }
         else if(gimic->GetIsLift() == ObjType::cution || gimic->GetIsLift() == ObjType::Super_cution)
         {
-            render->Color.w = 1;
+             comp_->GetComponent<RenderComp>()->Color.w = 1;
         }
     }
-    transform->UpdateTransform();
+     comp_->GetComponent<TransformComp>()->UpdateTransform();
   
 }
 
@@ -42,6 +42,6 @@ void Lift_chain_s::Gui()
 
     using namespace ImGui;
     BaseGui();
-    render->RenderCompGui();
+     comp_->GetComponent<RenderComp>()->RenderCompGui();
     Text(ID.c_str());
 }

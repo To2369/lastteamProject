@@ -17,6 +17,7 @@
 #include"objectManajer.h"
 #include"UIManajer.h"
 #include"PlayerManager.h"
+#include"debugclass.h"
 void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 {
 	using namespace std;
@@ -150,38 +151,38 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			Gimic_Type::Goal, device,
 			{ 7.577f,7.223f,-0.535f });
 		{
-			////Lift
-			{
-				obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-					{ 4.252f,7.290f,-0.020f },
-					"num1",
-					{ 4.252f,5.154f,-0.020f });
-				
-				
-				filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
-				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
-					{ 4.30f,7.287f,-0.948f },
-					"num1",
-					{ 0.f,-1.6f,0.f }
+			//////Lift
+			//{
+			//	obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+			//		{ 4.252f,7.290f,-0.020f },
+			//		"num1",
+			//		{ 4.252f,5.154f,-0.020f });
+			//	
+			//	
+			//	filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
+			//	obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
+			//		{ 4.30f,7.287f,-0.948f },
+			//		"num1",
+			//		{ 0.f,-1.6f,0.f }
 
-				);
-				filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
-				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
-					{ 4.247f,8.342f,-0.941f },
-					"num1",
-					{ 0.f,1.6f,0.f }
-				);
-
-				obj_Manager.Initialize(Chain_Type::lift_chain_L,
-					{ 4.304f,0,-0.432f, },
-					"num1",
-					{ 0.000000f,-1.620995f,0.000000f });
-
-				obj_Manager.Initialize(Chain_Type::lift_chain_S,
-					{ 4.208f,7.794f,-0.432f, },
-					"num1",
-					{ 0.000000f,-1.590007f,0.000000f });
-			}
+			//	);
+			//	filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
+			//	obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
+			//		{ 4.247f,8.342f,-0.941f },
+			//		"num1",
+			//		{ 0.f,1.6f,0.f }
+			//	);
+			//	filename = ".\\resources\\stage3\\C_L.fbx";
+			//	obj_Manager.Initialize(filename.c_str(),Chain_Type::lift_chain_L,
+			//		{ 4.304f,0,-0.432f, },
+			//		"num1",
+			//		{ 0.000000f,-1.620995f,0.000000f });
+			//	filename = ".\\resources\\stage3\\C_S.fbx";
+			//	obj_Manager.Initialize(filename.c_str(),Chain_Type::lift_chain_S,
+			//		{ 4.208f,7.794f,-0.432f, },
+			//		"num1",
+			//		{ 0.000000f,-1.590007f,0.000000f });
+			//}
 			//object
 			{
 				raylist = {};
@@ -204,31 +205,31 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 			}
 		}
 		{
-			//lift
-			{
-			obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-				{ -0.891f,5.178f,0.012f },
-				"num2",
-				{ -0.891f,3.089f,0.012f });
+			////lift
+			//{
+			//obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+			//	{ -0.891f,5.178f,0.012f },
+			//	"num2",
+			//	{ -0.891f,3.089f,0.012f });
 
-			obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
-				{ -0.839f,5.218f,-0.929f },
-				"num2",
-				{ 0.f,1.6f,0.f });
-			obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
-				{ -0.851f,4.808f,-0.914f },
-				"num2",
-				{ 0.f,-1.6f,0.f });
-			obj_Manager.Initialize(Chain_Type::lift_chain_L,
-				{ -0.860f,0.f,-0.440, },
-				"num2",
-				{ 0.000000f,-1.620995f,0.000000f });
+			//obj_Manager.Initialize(Chain_Type::lift_P_Not_Animation,
+			//	{ -0.839f,5.218f,-0.929f },
+			//	"num2",
+			//	{ 0.f,1.6f,0.f });
+			//obj_Manager.Initialize(Chain_Type::lift_P_Animatio_ndown,
+			//	{ -0.851f,4.808f,-0.914f },
+			//	"num2",
+			//	{ 0.f,-1.6f,0.f });
+			//obj_Manager.Initialize(Chain_Type::lift_chain_L,
+			//	{ -0.860f,0.f,-0.440, },
+			//	"num2",
+			//	{ 0.000000f,-1.620995f,0.000000f });
 
-			obj_Manager.Initialize(Chain_Type::lift_chain_S,
-				{ -0.871f,5.644f,-0.440f, },
-				"num2",
-				{ 0.000000f,-1.590007f,0.000000f });
-		    }
+			//obj_Manager.Initialize(Chain_Type::lift_chain_S,
+			//	{ -0.871f,5.644f,-0.440f, },
+			//	"num2",
+			//	{ 0.000000f,-1.590007f,0.000000f });
+		 //   }
 			//object
 			{
 				raylist = {};
@@ -253,35 +254,35 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 		}
 
 		{
-			//lift
-			{
-				obj_Manager.Initialize(name, Gimic_Type::Lift, device,
-					{ -5.158f,1.562f,-0.945f },
-					"num3",
-					{ -5.158f,-0.574f,-0.945f });
-				filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
-				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
-					{ -5.096f,1.555f,-0.013f },
-					"num3",
-					{ 0.f,-1.6f,0.f }
-				);
-				filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
-				obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
-					{ -5.157f,2.687f,-0.013f },
-					"num3",
-					{ 0.f,1.6f,0.f }
-				);
+			////lift
+			//{
+			//	obj_Manager.Initialize(name, Gimic_Type::Lift, device,
+			//		{ -5.158f,1.562f,-0.945f },
+			//		"num3",
+			//		{ -5.158f,-0.574f,-0.945f });
+			//	filename = failepath::Stage_failepath::Stage3_Path + "rihutoB.fbx";
+			//	obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Not_Animation,
+			//		{ -5.096f,1.555f,-0.013f },
+			//		"num3",
+			//		{ 0.f,-1.6f,0.f }
+			//	);
+			//	filename = failepath::Stage_failepath::Stage3_Path + "rihuto_Bdown_B.fbx";
+			//	obj_Manager.Initialize(filename.c_str(), Chain_Type::lift_P_Animatio_ndown,
+			//		{ -5.157f,2.687f,-0.013f },
+			//		"num3",
+			//		{ 0.f,1.6f,0.f }
+			//	);
 
-				obj_Manager.Initialize(Chain_Type::lift_chain_L,
-					{ -5.110f,0.f,-0.483f },
-					"num3",
-					{ 0.000000f,1.6f,0.000000f });
+			//	obj_Manager.Initialize(Chain_Type::lift_chain_L,
+			//		{ -5.110f,0.f,-0.483f },
+			//		"num3",
+			//		{ 0.000000f,1.6f,0.000000f });
 
-				obj_Manager.Initialize(Chain_Type::lift_chain_S,
-					{ -5.158f,2.025f, -0.492f },
-					"num3",
-					{ 0.000000f,1.6f,0.000000f });
-			}
+			//	obj_Manager.Initialize(Chain_Type::lift_chain_S,
+			//		{ -5.158f,2.025f, -0.492f },
+			//		"num3",
+			//		{ 0.000000f,1.6f,0.000000f });
+			//}
 			//object
 			{
 				raylist = {};
@@ -365,10 +366,12 @@ void StageManager::Initialize_GameStage(StageName name, ID3D11Device* device)
 
 		}
 
-		unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
+		/*unique_ptr<BaseChain>d_obj=make_unique<debugobj>();
+		obj_Manager.Rigister_Lift_Chains(move(d_obj));*/
+	/*	unique_ptr<Stage>stage = make_unique<Stage_1_2>(device);
 		stage->SetPosition({ 0.f, 0.5f, -0.5f });
 		Rigister(move(stage));
-		ince_UI.CreateGameSceneUI(device);
+		ince_UI.CreateGameSceneUI(device);*/
 	}
 	break;
 	case StageName::stage1_3:

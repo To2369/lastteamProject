@@ -4,16 +4,103 @@
 #include"memory"
 #include"Model.h"
 #include"Graphics/graphics.h"
+class object;
+class Comp
+{
+    friend class object;
+public:
+    Comp() { pSelf = nullptr; };
+    virtual ~Comp() { };
+public:
+    // virtual void Update(float elapsedTime) {};
+     //void BaseGui();
+      
+    __forceinline	object* GetGameObject() { return pSelf; }
+private:
+    object* pSelf;
+    
+};
+class object
+{
+public:
 
-class TransformComp
+    object() {};
+    ~object()
+    {
+        for (Comp* comp : pComponents) {
+            delete comp;
+        }
+        // リストをクリア
+        pComponents.clear();
+    }
+    /*
+        GetComponent
+        コンポーネントを継承した物を取得する　（何とかコンポーネントのインスタンスを取れる）
+        TypeComponent	: ダウンキャスト型
+        コンポーネントポインタを返却
+    */
+    template<typename	TypeComponent>
+    TypeComponent* GetComponent()
+    {
+        TypeComponent* pPointer = NULL;
+        for (auto& rrComponent : pComponents)
+        {
+            //登録されてる型pComponentsが戻り値の型に変えれるかどうか
+            pPointer = dynamic_cast<TypeComponent*>(rrComponent);
+            if (pPointer)
+                break;
+        }
+        return pPointer;
+    }
+    /*!
+       AddComponent
+       コンポーネントを継承した物を追加する
+       現状は処理をわかりやすくするため、
+       同じ型のコンポーネントは1つだけしか追加できないように制限を加えている。
+       TypeComponent	: 追加したいコンポーネントを継承した型
+       Arguments		: 可変長引数型種
+       _pArgs	: 可変長引数
+       追加されたコンポーネントポインタを返却
+   **/
+    template<typename	TypeComponent, typename ... Arguments>
+    TypeComponent* AddComponent(Arguments ... _pArgs)
+    {
+        //同じ型が存在してるか確認し、もしあったならnullptrを返す
+        if (GetComponent<TypeComponent>())
+        {
+            return	nullptr;
+        }
+        // std::forward を使って、_pArgs で受け取った引数をそのままTypeComponentに転送し、
+        // 引数の種類（左値または右値）を維持しながら展開しています。
+        TypeComponent* pTypeComponent = new TypeComponent(std::forward<Arguments>(_pArgs)...);
+        AddComponent(pTypeComponent);
+        return	pTypeComponent;
+    }
+
+private:
+    void AddComponent(Comp* _pComponent)
+    {
+
+        _pComponent->pSelf = this;
+        pComponents.push_back(_pComponent);
+    }
+private:
+    std::list<Comp*>	pComponents;
+};
+
+
+class TransformComp:public Comp
 {
 private:
+    
     DirectX::XMFLOAT3 Position{};
     DirectX::XMFLOAT3 Scale{1,1,1};
     DirectX::XMFLOAT3 Angle{};
     DirectX::XMFLOAT4X4 transform{ 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 
 public:
+    TransformComp() {};
+    ~TransformComp() override {};
     void UpdateTransform()
     {
         const DirectX::XMFLOAT4X4 coordinate_system_transforms[]{
@@ -76,21 +163,22 @@ public://get
      DirectX::XMFLOAT3 GetPosition() { return Position; }
      DirectX::XMFLOAT3 GetAngle() { return Angle; }
 };
-class RenderComp
+class RenderComp:public Comp
 {
   
 public:
-    RenderComp(const char* filename,Graphics&gr)
+    RenderComp(const char* filename,Graphics*gr)
     {
-        model = make_unique<Model>(gr.GetDevice(),filename,true);
+        model = make_unique<Model>(gr->GetDevice(),filename,true);
     };
-    RenderComp(const char* filename, Graphics& gr,vector<string>&filenames)
+    RenderComp(const char* filename, Graphics* gr,vector<string>&filenames)
     {
-        model = make_unique<Model>(gr.GetDevice(), filename,filenames, true);
-
+        model = make_unique<Model>(gr->GetDevice(), filename, filenames, true);
         anim.animation_clips = model->animation_clips;
         anim.scene_view = model->GetScene_View();
     };
+    RenderComp() {};
+    ~RenderComp() override{};
     struct Animation
     {
         ~Animation()
@@ -205,22 +293,6 @@ private:
 
 };
 
-class Comp
-{
-public:
-    Comp() {};
-  virtual ~Comp() {};
-public:
-    virtual void Update(float elapsedTime) {};
-    void Render();
-    void BaseGui();
-    virtual void Gui()=0;
-    TransformComp* GetTransformComp() { return transform.get();}
-    RenderComp* GetRenderComp() { return render.get();}
-protected:
-    std::unique_ptr<TransformComp> transform;//位置、スケール、回転、ワールド座標
-    std::unique_ptr<RenderComp> render;//描画系
-};
 
 
 #if 0

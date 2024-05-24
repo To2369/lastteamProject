@@ -71,6 +71,9 @@
     <Filter Include="Headers\Tutorial">
       <UniqueIdentifier>{37186777-642f-4a47-9676-c984cb404838}</UniqueIdentifier>
     </Filter>
+    <Filter Include="debug用">
+      <UniqueIdentifier>{14b3f873-633b-4d6f-9e04-d6c8be773905}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -464,6 +467,9 @@
     </ClInclude>
     <ClInclude Include="sources\audio.h">
       <Filter>Headers\Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\debugclass.h">
+      <Filter>debug用</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

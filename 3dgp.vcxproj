@@ -274,6 +274,7 @@
     <ClInclude Include="sources\collision_mesh.h" />
     <ClInclude Include="sources\Crack.h" />
     <ClInclude Include="sources\Cution.h" />
+    <ClInclude Include="sources\debugclass.h" />
     <ClInclude Include="sources\Fragile.h" />
     <ClInclude Include="sources\Gimic.h" />
     <ClInclude Include="sources\Goal_navi.h" />
