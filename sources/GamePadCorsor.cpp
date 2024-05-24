@@ -22,8 +22,8 @@ void GamePadCorsor::Update(float elapsedTime)
 	Graphics& graphics = Graphics::Instance();
 	currentPadCursorPos = SceneManagement::instance().GetCurrentCursorPosition();
 	PadcursorPos = SceneManagement::instance().GetCursorPosition();
-	float ax = pad.thumb_state_rx();
-	float ay = pad.thumb_state_ry();
+	float ax = pad.thumb_state_lx();
+	float ay = pad.thumb_state_ly();
 
 	speed = -20;
 
@@ -51,7 +51,7 @@ void GamePadCorsor::Update(float elapsedTime)
 		}
 	}
 
-	if (pad.thumb_state_rx() || pad.thumb_state_ry())
+	if (pad.thumb_state_lx() || pad.thumb_state_ly())
 	{
 		PadCursorsprPos.x -= (currentPadCursorPos.x - PadcursorPos.x);
 		PadCursorsprPos.y -= (currentPadCursorPos.y - PadcursorPos.y);
