@@ -6,6 +6,7 @@ Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown()
     MyType = Chain_Type::lift_P_Animatio_ndown;
     Graphics* gr = &Graphics::Instance();
    comp_->AddComponent<RenderComp>(filename,gr,filenames);
+   comp_->GetComponent<RenderComp>()->anim.LoopAnimation = false;
 }
 
 Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown(const char* filename_)
@@ -14,6 +15,8 @@ Lift_chain_Animatio_ndown::Lift_chain_Animatio_ndown(const char* filename_)
     MyType = Chain_Type::lift_P_Animatio_ndown;
     Graphics* gr = &Graphics::Instance();
     comp_->AddComponent<RenderComp>(filename, gr, filenames);
+    comp_->GetComponent<RenderComp>()->anim.LoopAnimation = false;
+
 }
 
 void Lift_chain_Animatio_ndown::ResultInfo()
@@ -42,8 +45,13 @@ void Lift_chain_Animatio_ndown::Update(float elapsedTime)
         }
         else if (gimic->GetIsLift() == ObjType::cution || gimic->GetIsLift() == ObjType::Super_cution)
         {
-             comp_->GetComponent<RenderComp>()->anim.animationStart = false;
-             comp_->GetComponent<RenderComp>()->Color.w = 1;
+            comp_->GetComponent<RenderComp>()->anim.animationStart = false;
+            if (comp_->GetComponent<RenderComp>()->anim.animationEnd)
+            {
+                comp_->GetComponent<RenderComp>()->anim.stop_animation = true;
+                comp_->GetComponent<RenderComp>()->Color.w = 1;
+            }
+             
             
         }
     }
