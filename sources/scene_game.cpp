@@ -75,7 +75,7 @@ void SceneGame::initialize()
 	//プレイヤー初期設定
 	PlayerManager& playerManager = PlayerManager::Instance();
 	unique_ptr<Player>pl = make_unique<Player>(graphics.GetDevice());
-	pl->SetPosition({ 0,30,0 });
+	pl->SetPosition({ 0,40,0 });
 	plm.Register(move(pl));
 	// ステージのオブジェクト初期化
 		StageManager & ince = StageManager::incetance();
@@ -275,7 +275,6 @@ void SceneGame::update(float elapsed_time)
 	pad.acquire();
 	UIManager& ince = UIManager::incetance();
 
-	ShowCursor(disPlayCorsor);			//マウスカーソル表示
 	if (ClearScreen(elapsed_time))
 	{
 		SceneManagement::instance().GetBgm(static_cast<int>(SceneManagement::SCENE_BGM::SCENE_GAME_NOW))->stop();

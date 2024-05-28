@@ -391,7 +391,6 @@ void Player::ExtractionAttribute(float elapsedTime)
     Ray_ObjType type2 = Ray_ObjType::DaynamicObjects;
     Objectmanajer& objMgr = Objectmanajer::incetance();
     int objCount = objMgr.Get_GameObjCount();
-    float x = gamePad.trigger_state_r();
     for (int i = 0; i < objCount; i++)
     {
         //四角と
@@ -399,7 +398,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         if (ince_ray.RayCast(start, end, hit,*obj))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) == true)
+            if (gamePad.button_state(gamepad::button::left_shoulder, trigger_mode::falling_edge) == true)
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
@@ -411,7 +410,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 break;
             }
             //注入(右クリック、トリガーボタン)
-            else if (x>0.1f && pullType)
+            else if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) && pullType)
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_INJECTION_SOUND))->play();
@@ -427,7 +426,7 @@ void Player::ExtractionAttribute(float elapsedTime)
         else if (objMgr.Sphere_VS_Player(position, radius, obj->GetPosition(), obj->GetRadius(), outpos))
         {
             //抽出(左クリック、RBボタン)
-            if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge))
+            if (gamePad.button_state(gamepad::button::left_shoulder, trigger_mode::falling_edge))
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_EXTRACTION))->play();
@@ -439,7 +438,7 @@ void Player::ExtractionAttribute(float elapsedTime)
                 break;
             }
             //注入(右クリック、トリガーボタン)
-            else if (x>0.1f && pullType)
+            else if (gamePad.button_state(gamepad::button::right_shoulder, trigger_mode::falling_edge) && pullType)
             {
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_SYRINGE_INTERCALATE))->play();
                 SceneMgr.GetSe(static_cast<int>(SceneManagement::SCENE_SE::SE_INJECTION_SOUND))->play();
