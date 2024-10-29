@@ -100,7 +100,7 @@ void SceneGame::initialize()
 		uint32_t height = static_cast<uint32_t>(graphics.GetWindowSize().cy);
 		framebuffers[0] = std::make_unique<framebuffer>(graphics.GetDevice(), width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
 		framebuffers[1] = std::make_unique<framebuffer>(graphics.GetDevice(), width / 2, height / 2, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
-		graphics.SetPixelShader(0, "shader\\outline_ps.cso");
+		//graphics.SetPixelShader(0, "shader\\outline_ps.cso");
 	}
 
 	{
